@@ -64,11 +64,11 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 **Goal**: Keyword search (case-insensitive) and allergen include/exclude filters, results grouped by category.
 **Independent Test**: Use SearchView to filter by keyword and allergen; verify grouping and filter accuracy.
 
-- [ ] T026 [P] [US2] Implement `sp_SearchProducts` stored procedure with parameters: @Keyword NVARCHAR, @IncludeAllergens NVARCHAR (CSV), @ExcludeAllergens NVARCHAR (CSV) (Database/03_CreateStoredProcedures.sql)
-- [ ] T027 [US2] Implement `ProductRepository.SearchProducts` using parameterized `FromSqlRaw` mapping to `sp_SearchProducts` (RestaurantOrderManagement.Data/Repositories/ProductRepository.cs)
-- [ ] T028 [US2] Implement `SearchViewModel` with `SearchQuery`, `IncludeAllergens`, `ExcludeAllergens`, and `SearchCommand` bound to UI (RestaurantOrderManagement.WPF/ViewModels/SearchViewModel.cs)
-- [ ] T029 [US2] Implement `SearchView.xaml` binding to `SearchViewModel` and showing grouped results by category (RestaurantOrderManagement.WPF/Views/SearchView.xaml)
-- [ ] T030 [US2] Add integration tests validating search with various filter combinations and ensuring case-insensitive search (RestaurantOrderManagement.Tests/Integration/SearchTests.cs)
+- [X] T026 [P] [US2] Implement `sp_SearchProducts` stored procedure with parameters: @Keyword NVARCHAR, @IncludeAllergens NVARCHAR (CSV), @ExcludeAllergens NVARCHAR (CSV) (Database/03_CreateStoredProcedures.sql)
+- [X] T027 [US2] Implement `ProductRepository.SearchProducts` using parameterized `FromSqlRaw` mapping to `sp_SearchProducts` (RestaurantOrderManagement.Data/Repositories/ProductRepository.cs)
+- [X] T028 [US2] Implement `SearchViewModel` with `SearchQuery`, `IncludeAllergens`, `ExcludeAllergens`, and `SearchCommand` bound to UI (RestaurantOrderManagement.WPF/ViewModels/SearchViewModel.cs)
+- [X] T029 [US2] Implement `SearchView.xaml` binding to `SearchViewModel` and showing grouped results by category (RestaurantOrderManagement.WPF/Views/SearchView.xaml)
+- [X] T030 [US2] Add integration tests validating search with various filter combinations and ensuring case-insensitive search (RestaurantOrderManagement.Tests/Integration/SearchTests.cs)
 
 ---
 

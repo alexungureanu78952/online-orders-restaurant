@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="900"
+             d:DesignHeight="600"
+        d:DesignWidth="900"
              Background="#F5F5F5">
     <Grid>
         <Grid.RowDefinitions>
@@ -15,13 +16,24 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0" Background="#2C3E50" Padding="20">
-            <TextBlock Text="Restaurant Menu" FontSize="28" FontWeight="Bold" Foreground="White"/>
-            <TextBlock Text="Browse our delicious offerings" FontSize="14" Foreground="#ECF0F1" Margin="0,5,0,0"/>
+        <StackPanel Grid.Row="0"
+                Background="#2C3E50"
+                Padding="20">
+            <TextBlock Text="Restaurant Menu"
+                    FontSize="28"
+                    FontWeight="Bold"
+                    Foreground="White"/>
+            <TextBlock Text="Browse our delicious offerings"
+                    FontSize="14"
+                    Foreground="#ECF0F1"
+                    Margin="0,5,0,0"/>
         </StackPanel>
 
         <!-- Category Selection and Search -->
-        <Grid Grid.Row="1" Padding="20" Background="White" Margin="0,0,0,10">
+        <Grid Grid.Row="1"
+                Padding="20"
+                Background="White"
+                Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
@@ -29,8 +41,12 @@
             </Grid.ColumnDefinitions>
 
             <!-- Categories ComboBox -->
-            <StackPanel Grid.Column="0" Margin="0,0,20,0">
-                <TextBlock Text="Category" FontSize="12" FontWeight="Bold" Margin="0,0,0,5"/>
+            <StackPanel Grid.Column="0"
+                    Margin="0,0,20,0">
+                <TextBlock Text="Category"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Margin="0,0,0,5"/>
                 <ComboBox x:Name="CategoryComboBox"
                           ItemsSource="{Binding Categories}"
                           SelectedItem="{Binding SelectedCategory}"
@@ -40,15 +56,21 @@
             </StackPanel>
 
             <!-- Search Box (placeholder for future implementation) -->
-            <StackPanel Grid.Column="1" Margin="0,0,20,0">
-                <TextBlock Text="Search" FontSize="12" FontWeight="Bold" Margin="0,0,0,5"/>
-                <TextBox Padding="10,8" Foreground="#7F8C8D" ToolTip="Enter product name or keyword..."/>
+            <StackPanel Grid.Column="1"
+                    Margin="0,0,20,0">
+                <TextBlock Text="Search"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Margin="0,0,0,5"/>
+                <TextBox Padding="10,8"
+                        Foreground="#7F8C8D"
+                        ToolTip="Enter product name or keyword..."/>
             </StackPanel>
 
             <!-- Refresh Button -->
-            <Button Grid.Column="2" 
+            <Button Grid.Column="2"
                     Command="{Binding RefreshCommand}"
-                    Background="#3498DB" 
+                    Background="#3498DB"
                     Foreground="White"
                     Padding="15,8"
                     FontWeight="Bold"
@@ -58,47 +80,71 @@
         </Grid>
 
         <!-- Products List -->
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="2"
+                VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding ProductsByCategory}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" Margin="20,10"/>
+                        <WrapPanel Orientation="Horizontal"
+                                Margin="20,10"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <!-- Product Card -->
-                        <Border Width="250" Height="320" Margin="10" Background="White" 
-                                CornerRadius="8" BorderBrush="#E0E0E0" BorderThickness="1">
+                        <Border Width="250"
+                                Height="320"
+                                Margin="10"
+                                Background="White"
+                                CornerRadius="8"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1">
                             <StackPanel VerticalAlignment="Stretch">
                                 <!-- Product Image -->
-                                <Rectangle Height="140" Fill="#ECF0F1" Margin="0,0,0,10" VerticalAlignment="Top">
+                                <Rectangle Height="140"
+                                        Fill="#ECF0F1"
+                                        Margin="0,0,0,10"
+                                        VerticalAlignment="Top">
                                     <!-- In real app, bind to first ImageUrl from ImageUrls collection -->
                                     <Rectangle.Fill>
-                                        <ImageBrush Stretch="UniformToFill" ImageSource="https://via.placeholder.com/250x140?text=No+Image"/>
+                                        <ImageBrush Stretch="UniformToFill"
+                                                ImageSource="https://via.placeholder.com/250x140?text=No+Image"/>
                                     </Rectangle.Fill>
                                 </Rectangle>
 
                                 <!-- Product Info -->
-                                <StackPanel Padding="15,0,15,10" VerticalAlignment="Stretch">
+                                <StackPanel Padding="15,0,15,10"
+                                        VerticalAlignment="Stretch">
                                     <!-- Product Code (not ID) -->
-                                    <TextBlock Text="{Binding DisplayCode}" FontSize="10" Foreground="#7F8C8D"/>
+                                    <TextBlock Text="{Binding DisplayCode}"
+                                            FontSize="10"
+                                            Foreground="#7F8C8D"/>
 
                                     <!-- Product Name -->
-                                    <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold" 
-                                               TextWrapping="Wrap" Margin="0,3,0,5"/>
+                                    <TextBlock Text="{Binding Name}"
+                                            FontSize="14"
+                                            FontWeight="Bold"
+                                               TextWrapping="Wrap"
+                                            Margin="0,3,0,5"/>
 
                                     <!-- Description -->
-                                    <TextBlock Text="{Binding Description}" FontSize="11" 
-                                               Foreground="#7F8C8D" TextWrapping="Wrap"
-                                               TextTrimming="CharacterEllipsis" MaxHeight="40" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{Binding Description}"
+                                            FontSize="11"
+                                               Foreground="#7F8C8D"
+                                            TextWrapping="Wrap"
+                                               TextTrimming="CharacterEllipsis"
+                                            MaxHeight="40"
+                                            Margin="0,0,0,5"/>
 
                                     <!-- Portion Size -->
-                                    <TextBlock Text="{Binding PortionQuantity, StringFormat='Portion: {0}g'}" 
-                                               FontSize="10" Foreground="#95A5A6" Margin="0,0,0,5"/>
+                                    <TextBlock Text="{Binding PortionQuantity, StringFormat='Portion: {0}g'}"
+                                               FontSize="10"
+                                            Foreground="#95A5A6"
+                                            Margin="0,0,0,5"/>
 
                                     <!-- Allergens -->
-                                    <ItemsControl ItemsSource="{Binding Allergens}" Margin="0,0,0,5">
+                                    <ItemsControl ItemsSource="{Binding Allergens}"
+                                            Margin="0,0,0,5">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <WrapPanel Orientation="Horizontal"/>
@@ -106,9 +152,15 @@
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Background="#FFE6E6" BorderBrush="#E74C3C" 
-                                                        BorderThickness="1" CornerRadius="3" Padding="5,2" Margin="2">
-                                                    <TextBlock Text="{Binding Name}" FontSize="9" Foreground="#C0392B"/>
+                                                <Border Background="#FFE6E6"
+                                                        BorderBrush="#E74C3C"
+                                                        BorderThickness="1"
+                                                        CornerRadius="3"
+                                                        Padding="5,2"
+                                                        Margin="2">
+                                                    <TextBlock Text="{Binding Name}"
+                                                            FontSize="9"
+                                                            Foreground="#C0392B"/>
                                                 </Border>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
@@ -121,15 +173,24 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <TextBlock Grid.Column="0" Text="{Binding Price, StringFormat='${0:F2}'}" 
-                                                   FontSize="16" FontWeight="Bold" Foreground="#27AE60"/>
+                                        <TextBlock Grid.Column="0"
+                                                Text="{Binding Price, StringFormat='${0:F2}'}"
+                                                   FontSize="16"
+                                                FontWeight="Bold"
+                                                Foreground="#27AE60"/>
 
-                                        <TextBlock Grid.Column="1" Text="Available" FontSize="10" 
-                                                   Foreground="#27AE60" FontWeight="Bold"
+                                        <TextBlock Grid.Column="1"
+                                                Text="Available"
+                                                FontSize="10"
+                                                   Foreground="#27AE60"
+                                                FontWeight="Bold"
                                                    Visibility="{Binding IsAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-                                        <TextBlock Grid.Column="1" Text="Out of Stock" FontSize="10" 
-                                                   Foreground="#E74C3C" FontWeight="Bold"
+                                        <TextBlock Grid.Column="1"
+                                                Text="Out of Stock"
+                                                FontSize="10"
+                                                   Foreground="#E74C3C"
+                                                FontWeight="Bold"
                                                    Visibility="{Binding IsAvailable, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                     </Grid>
                                 </StackPanel>
@@ -141,12 +202,17 @@
         </ScrollViewer>
 
         <!-- Status Bar -->
-        <StatusBar Grid.Row="3" Background="#ECF0F1" Height="30">
+        <StatusBar Grid.Row="3"
+                Background="#ECF0F1"
+                Height="30">
             <StatusBarItem>
-                <TextBlock Text="{Binding ErrorMessage, FallbackValue='Ready'}" Foreground="#E74C3C" FontWeight="Bold"/>
+                <TextBlock Text="{Binding ErrorMessage, FallbackValue='Ready'}"
+                        Foreground="#E74C3C"
+                        FontWeight="Bold"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock Text="{Binding ProductsByCategory.Count, StringFormat='Total: {0} products'}" Foreground="#7F8C8D"/>
+                <TextBlock Text="{Binding ProductsByCategory.Count, StringFormat='Total: {0} products'}"
+                        Foreground="#7F8C8D"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

@@ -27,7 +27,7 @@ namespace RestaurantOrderManagement.Services.Implementations
         public async Task<IEnumerable<CategoryDTO>> GetCategoriesAsync()
         {
             var categories = await _productRepository.GetAllAsync(); // Gets from context
-            
+
             // Map to DTOs without IDs
             return categories.Select(c => new CategoryDTO
             {
