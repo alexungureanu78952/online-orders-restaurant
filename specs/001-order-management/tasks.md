@@ -77,11 +77,11 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 **Goal**: Registration and login with validation and unique email enforcement.
 **Independent Test**: Register a user, assert login works, and email uniqueness enforced.
 
-- [ ] T031 [P] [US3] Implement `User` EF model and unique email constraint mapping (RestaurantOrderManagement.Data/Models/User.cs)
-- [ ] T032 [US3] Implement `sp_CreateUser` and `sp_GetUserByEmail` stored procedures and add them to Database/03_CreateStoredProcedures.sql
-- [ ] T033 [US3] Implement `AuthenticationService.RegisterAsync` and `LoginAsync` using parameterized stored procedures or EF with hashed passwords (RestaurantOrderManagement.Services/Implementations/AuthenticationService.cs)
-- [ ] T034 [US3] Implement `RegistrationView` and `RegistrationViewModel` with data binding and password validation rules (RestaurantOrderManagement.WPF/Views/RegistrationView.xaml, ViewModels/RegistrationViewModel.cs)
-- [ ] T035 [US3] Add unit tests for registration/login and duplicate email rejection (RestaurantOrderManagement.Tests/Services/AuthenticationServiceTests.cs)
+- [X] T031 [P] [US3] Implement `User` EF model and unique email constraint mapping (RestaurantOrderManagement.Data/Models/User.cs)
+- [X] T032 [US3] Implement `sp_CreateUser` and `sp_GetUserByEmail` stored procedures and add them to Database/03_CreateStoredProcedures.sql
+- [X] T033 [US3] Implement `AuthenticationService.RegisterAsync` and `LoginAsync` using parameterized stored procedures or EF with hashed passwords (RestaurantOrderManagement.Services/Implementations/AuthenticationService.cs)
+- [X] T034 [US3] Implement `RegistrationView` and `RegistrationViewModel` with data binding and password validation rules (RestaurantOrderManagement.WPF/Views/RegistrationView.xaml, ViewModels/RegistrationViewModel.cs)
+- [X] T035 [US3] Add unit tests for registration/login and duplicate email rejection (RestaurantOrderManagement.Tests/Services/AuthenticationServiceTests.cs)
 
 ---
 
