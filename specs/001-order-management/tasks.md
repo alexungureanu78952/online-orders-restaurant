@@ -90,11 +90,11 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 **Goal**: Authenticated clients can add products to cart, submit orders, update inventory, and receive configured discounts/fees.
 **Independent Test**: Place an order as a client, verify order is created, OrderCode returned, inventory updated, and totals/discounts applied.
 
-- [ ] T036 [US4] Implement `sp_CreateOrder` with parameters for user, items (table-valued param), shipping, discounts, and return `OrderCode` (Database/03_CreateStoredProcedures.sql)
-- [ ] T037 [US4] Implement `OrderRepository.CreateOrderAsync` that calls `sp_CreateOrder` with parameterized inputs and maps returned `OrderCode` (RestaurantOrderManagement.Data/Repositories/OrderRepository.cs)
-- [ ] T038 [US4] Implement `OrderService` with order composition, discount calculation using `ConfigurationService`, and inventory update orchestration (RestaurantOrderManagement.Services/Implementations/OrderService.cs)
-- [ ] T039 [US4] Implement `OrderCartView` and `OrderCartViewModel` with data binding for add/remove/update quantity commands (RestaurantOrderManagement.WPF/Views/OrderCartView.xaml, ViewModels/OrderCartViewModel.cs)
-- [ ] T040 [US4] Add tests to validate order totals, discount rules, shipping fee behavior, and that UI shows `OrderCode` instead of numeric `OrderId` (RestaurantOrderManagement.Tests/Services/OrderServiceTests.cs)
+- [X] T036 [US4] sp_CreateOrder stored procedure with parameters (already exists - verified parameterization)
+- [X] T037 [US4] OrderRepository.CreateOrderAsync fixed to properly parse sp_CreateOrder result with DataReader
+- [X] T038 [US4] OrderService implemented with order composition, discount calculation, and inventory logic
+- [X] T039 [US4] OrderCartViewModel and OrderCartView.xaml created with shopping cart functionality
+- [X] T040 [US4] OrderServiceTests added with 20+ test cases covering creation, discounts, fees, and status management
 
 ---
 
