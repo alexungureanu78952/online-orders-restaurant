@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RestaurantConfiguration>
+  <Pricing>
+    <MinOrderForFreeShipping>100</MinOrderForFreeShipping>
+    <ShippingFee>15</ShippingFee>
+    <LargeOrderDiscountThreshold>200</LargeOrderDiscountThreshold>
+    <LargeOrderDiscountPercent>10</LargeOrderDiscountPercent>
+    <MenuBundleDiscountPercent>15</MenuBundleDiscountPercent>
+  </Pricing>
+  <Discounts>
+    <FrequentOrderThreshold>5</FrequentOrderThreshold>
+    <FrequentOrderTimeWindow>30</FrequentOrderTimeWindow>
+    <FrequentOrderDiscountPercent>8</FrequentOrderDiscountPercent>
+  </Discounts>
+  <Inventory>
+    <LowStockThreshold>500</LowStockThreshold>
+  </Inventory>
+</RestaurantConfiguration>

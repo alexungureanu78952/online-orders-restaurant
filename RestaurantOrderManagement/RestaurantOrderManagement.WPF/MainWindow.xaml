@@ -1,0 +1,13 @@
+<Window x:Class="RestaurantOrderManagement.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Restaurant Order Management"
+        Height="450"
+        Width="800">
+    <Grid>
+        <TextBlock Text="Welcome to Restaurant Order Management"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                FontSize="16"/>
+    </Grid>
+</Window>
