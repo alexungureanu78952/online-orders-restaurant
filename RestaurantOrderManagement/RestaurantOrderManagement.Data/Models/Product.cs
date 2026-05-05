@@ -5,6 +5,7 @@ namespace RestaurantOrderManagement.Data.Models
         public int ProductId { get; set; }
         public int CategoryId { get; set; }
         public string Name { get; set; }
+        public string DisplayCode { get; set; } // Customer-facing product code (e.g., "PIZZA-001"), never show ProductId
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int PortionQuantity { get; set; }

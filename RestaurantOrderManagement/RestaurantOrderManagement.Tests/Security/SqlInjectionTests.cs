@@ -50,7 +50,7 @@ namespace RestaurantOrderManagement.Tests.Security
                 // Act - Attempt SQL injection: categoryId = "1 OR 1=1"
                 // With parameterized query, this should be treated as literal value, not SQL code
                 var injectionAttempt = "1 OR 1=1";
-                
+
                 // This would normally throw a conversion error since "1 OR 1=1" isn't a valid int
                 // Or return no results because int parsing fails
                 var products = await repository.GetProductsByCategoryAsync(int.Parse(injectionAttempt));
@@ -272,7 +272,7 @@ namespace RestaurantOrderManagement.Tests.Security
         public async Task AllRepositoryMethods_UseParameterizedQueries()
         {
             // Test that all repository methods follow the parameterized pattern
-            
+
             var methods = new[]
             {
                 nameof(ProductRepository.GetProductsByCategoryAsync),
@@ -305,7 +305,7 @@ namespace RestaurantOrderManagement.Tests.Security
         public void Parameterized_Query_Pattern_Documentation()
         {
             // Document the secure pattern used throughout the application
-            
+
             string securePattern = @"
             ✓ CORRECT - Parameterized Query:
             return await _context.Products

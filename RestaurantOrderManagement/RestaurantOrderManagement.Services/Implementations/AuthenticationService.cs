@@ -20,7 +20,7 @@ namespace RestaurantOrderManagement.Services.Implementations
         /// <summary>
         /// Register new user with email and password
         /// </summary>
-        public async Task<(bool Success, string Message, int? UserId)> RegisterAsync(string email, string password, 
+        public async Task<(bool Success, string Message, int? UserId)> RegisterAsync(string email, string password,
             string firstName, string lastName, string phoneNumber = null, string deliveryAddress = null)
         {
             try
@@ -41,7 +41,7 @@ namespace RestaurantOrderManagement.Services.Implementations
                 var passwordHash = HashPassword(password);
 
                 // Create user
-                var userId = await _userRepository.CreateUserAsync(email, passwordHash, firstName, lastName, 
+                var userId = await _userRepository.CreateUserAsync(email, passwordHash, firstName, lastName,
                     phoneNumber, deliveryAddress, "Client");
 
                 if (userId > 0)
@@ -92,7 +92,7 @@ namespace RestaurantOrderManagement.Services.Implementations
             // TODO: Upgrade to bcrypt using: 
             // Install-Package BCrypt.Net-Next
             // return BCrypt.Net.BCrypt.HashPassword(password);
-            
+
             using (var sha256 = SHA256.Create())
             {
                 var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
@@ -107,7 +107,7 @@ namespace RestaurantOrderManagement.Services.Implementations
         {
             // TODO: Upgrade to bcrypt:
             // return BCrypt.Net.BCrypt.Verify(password, hash);
-            
+
             var hashOfInput = HashPassword(password);
             return hashOfInput.Equals(hash);
         }

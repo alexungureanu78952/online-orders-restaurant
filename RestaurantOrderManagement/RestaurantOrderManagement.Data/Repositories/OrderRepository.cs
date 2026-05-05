@@ -45,13 +45,13 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Create new order using parameterized stored procedure sp_CreateOrder
         /// </summary>
-        public async Task<(int OrderId, string OrderCode)> CreateOrderAsync(int userId, decimal subTotal, decimal shippingFee, 
+        public async Task<(int OrderId, string OrderCode)> CreateOrderAsync(int userId, decimal subTotal, decimal shippingFee,
             decimal discountAmount, string deliveryAddress = null, string notes = null)
         {
             var result = await _context.Database.ExecuteScalarAsync(
                 "EXEC dbo.sp_CreateOrder @UserId = {0}, @SubTotal = {1}, @ShippingFee = {2}, @DiscountAmount = {3}, @DeliveryAddress = {4}, @Notes = {5}",
                 userId, subTotal, shippingFee, discountAmount, deliveryAddress, notes);
-            
+
             // Parse result to get OrderId and OrderCode
             // In real implementation, you would handle the multiple result sets properly
             return (0, string.Empty);

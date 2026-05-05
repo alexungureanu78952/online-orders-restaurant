@@ -48,14 +48,14 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 **Goal**: Display categories and products with images, prices, portions, and allergen lists. Mark unavailable products and menus.
 **Independent Test**: Launch WPF app, open MenuBrowseView, verify categories and product details display as specified; unavailable products are non-orderable.
 
-- [ ] T018 [P] [US1] Create `Category` and `Product` EF models and mapping to DB tables (RestaurantOrderManagement.Data/Models/Category.cs, Product.cs)
-- [ ] T019 [P] [US1] Create `ProductImage`, `Allergen`, and `ProductAllergen` models and mappings (RestaurantOrderManagement.Data/Models/)
-- [ ] T020 [US1] Implement `ProductRepository.GetProductsByCategory` calling `sp_GetProductsByCategory` with parameterized category id/name (RestaurantOrderManagement.Data/Repositories/ProductRepository.cs)
-- [ ] T021 [US1] Implement `ProductService` and `IProductService` that returns DTOs without internal IDs (RestaurantOrderManagement.Services/Implementations/ProductService.cs)
-- [ ] T022 [US1] Implement `MenuBrowseViewModel` exposing bound collections `Categories` and `ProductsByCategory` and commands for refresh (RestaurantOrderManagement.WPF/ViewModels/MenuBrowseViewModel.cs)
-- [ ] T023 [US1] Implement `MenuBrowseView.xaml` binding to `MenuBrowseViewModel` with item templates that show images, price, portion, allergens, and availability (RestaurantOrderManagement.WPF/Views/MenuBrowseView.xaml)
-- [ ] T024 [US1] Add localization-friendly user-facing product code: `DisplayCode` or `SKU` (not DB integer) and ensure `Product` DTO uses it for UI (RestaurantOrderManagement.Data/Models/Product.cs)
-- [ ] T025 [US1] Add unit tests for `MenuBrowseViewModel` to assert view model contains no ID fields and correctly maps service DTOs (RestaurantOrderManagement.Tests/ViewModels/MenuBrowseViewModelTests.cs)
+- [X] T018 [P] [US1] Create `Category` and `Product` EF models and mapping to DB tables (RestaurantOrderManagement.Data/Models/Category.cs, Product.cs)
+- [X] T019 [P] [US1] Create `ProductImage`, `Allergen`, and `ProductAllergen` models and mappings (RestaurantOrderManagement.Data/Models/)
+- [X] T020 [US1] Implement `ProductRepository.GetProductsByCategory` calling `sp_GetProductsByCategory` with parameterized category id/name (RestaurantOrderManagement.Data/Repositories/ProductRepository.cs)
+- [X] T021 [US1] Implement `ProductService` and `IProductService` that returns DTOs without internal IDs (RestaurantOrderManagement.Services/Implementations/ProductService.cs)
+- [X] T022 [US1] Implement `MenuBrowseViewModel` exposing bound collections `Categories` and `ProductsByCategory` and commands for refresh (RestaurantOrderManagement.WPF/ViewModels/MenuBrowseViewModel.cs)
+- [X] T023 [US1] Implement `MenuBrowseView.xaml` binding to `MenuBrowseViewModel` with item templates that show images, price, portion, allergens, and availability (RestaurantOrderManagement.WPF/Views/MenuBrowseView.xaml)
+- [X] T024 [US1] Add localization-friendly user-facing product code: `DisplayCode` or `SKU` (not DB integer) and ensure `Product` DTO uses it for UI (RestaurantOrderManagement.Data/Models/Product.cs)
+- [X] T025 [US1] Add unit tests for `MenuBrowseViewModel` to assert view model contains no ID fields and correctly maps service DTOs (RestaurantOrderManagement.Tests/ViewModels/MenuBrowseViewModelTests.cs)
 
 ---
 
