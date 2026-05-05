@@ -31,22 +31,18 @@
             <!-- Categories ComboBox -->
             <StackPanel Grid.Column="0" Margin="0,0,20,0">
                 <TextBlock Text="Category" FontSize="12" FontWeight="Bold" Margin="0,0,0,5"/>
-                <ComboBox ItemsSource="{Binding Categories}"
+                <ComboBox x:Name="CategoryComboBox"
+                          ItemsSource="{Binding Categories}"
                           SelectedItem="{Binding SelectedCategory}"
                           DisplayMemberPath="Name"
-                          Padding="10,8">
-                    <i:Interaction.Triggers xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:InvokeCommandAction Command="{Binding LoadProductsByCategoryCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </ComboBox>
+                          Padding="10,8"
+                          SelectionChanged="OnCategorySelectionChanged"/>
             </StackPanel>
 
             <!-- Search Box (placeholder for future implementation) -->
             <StackPanel Grid.Column="1" Margin="0,0,20,0">
                 <TextBlock Text="Search" FontSize="12" FontWeight="Bold" Margin="0,0,0,5"/>
-                <TextBox Padding="10,8" PlaceholderText="Enter product name or keyword..." Foreground="#7F8C8D"/>
+                <TextBox Padding="10,8" Foreground="#7F8C8D" ToolTip="Enter product name or keyword..."/>
             </StackPanel>
 
             <!-- Refresh Button -->
@@ -73,8 +69,7 @@
                     <DataTemplate>
                         <!-- Product Card -->
                         <Border Width="250" Height="320" Margin="10" Background="White" 
-                                CornerRadius="8" BorderBrush="#E0E0E0" BorderThickness="1"
-                                Effect="{StaticResource ShadowEffect}">
+                                CornerRadius="8" BorderBrush="#E0E0E0" BorderThickness="1">
                             <StackPanel VerticalAlignment="Stretch">
                                 <!-- Product Image -->
                                 <Rectangle Height="140" Fill="#ECF0F1" Margin="0,0,0,10" VerticalAlignment="Top">
@@ -148,8 +143,7 @@
         <!-- Status Bar -->
         <StatusBar Grid.Row="3" Background="#ECF0F1" Height="30">
             <StatusBarItem>
-                <TextBlock Text="{Binding ErrorMessage, FallbackValue='Ready'}" 
-                           Foreground="{Binding ErrorMessage, Converter={StaticResource ErrorColorConverter}}"/>
+                <TextBlock Text="{Binding ErrorMessage, FallbackValue='Ready'}" Foreground="#E74C3C" FontWeight="Bold"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
                 <TextBlock Text="{Binding ProductsByCategory.Count, StringFormat='Total: {0} products'}" Foreground="#7F8C8D"/>

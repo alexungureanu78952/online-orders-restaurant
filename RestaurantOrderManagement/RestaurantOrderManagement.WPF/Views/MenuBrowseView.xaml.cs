@@ -9,5 +9,13 @@ namespace RestaurantOrderManagement.Views
         {
             InitializeComponent();
         }
+
+        private void OnCategorySelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DataContext is MenuBrowseViewModel viewModel)
+            {
+                viewModel.LoadProductsByCategoryCommand.ExecuteAsync(null);
+            }
+        }
     }
 }
