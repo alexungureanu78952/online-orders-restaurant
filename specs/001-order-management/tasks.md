@@ -16,11 +16,11 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-- [ ] T001 Create solution and projects per plan: RestaurantOrderManagement.sln and the projects at repository root (Presentation, Services, Data, Tests) (RestaurantOrderManagement.sln)
-- [ ] T002 Initialize `RestaurantOrderManagement.WPF` project with MVVM Toolkit and configure App.xaml, MainWindow (RestaurantOrderManagement.WPF/)
-- [ ] T003 Initialize `RestaurantOrderManagement.Data` project with EF Core, create `RestaurantDbContext.cs` skeleton (RestaurantOrderManagement.Data/Context/RestaurantDbContext.cs)
-- [ ] T004 Add `RestaurantOrderManagement.Services` project and create Interfaces folder with service interfaces skeleton (RestaurantOrderManagement.Services/Interfaces/)
-- [ ] T005 Add CI-friendly config, logging, and DI bootstrap: configure `appsettings.json`, Serilog, and DI registration placeholder (RestaurantOrderManagement.WPF/App.xaml.cs, RestaurantOrderManagement.Services/Startup.cs)
+- [X] T001 Create solution and projects per plan: RestaurantOrderManagement.sln and the projects at repository root (Presentation, Services, Data, Tests) (RestaurantOrderManagement.sln)
+- [X] T002 Initialize `RestaurantOrderManagement.WPF` project with MVVM Toolkit and configure App.xaml, MainWindow (RestaurantOrderManagement.WPF/)
+- [X] T003 Initialize `RestaurantOrderManagement.Data` project with EF Core, create `RestaurantDbContext.cs` skeleton (RestaurantOrderManagement.Data/Context/RestaurantDbContext.cs)
+- [X] T004 Add `RestaurantOrderManagement.Services` project and create Interfaces folder with service interfaces skeleton (RestaurantOrderManagement.Services/Interfaces/)
+- [X] T005 Add CI-friendly config, logging, and DI bootstrap: configure `appsettings.json`, Serilog, and DI registration placeholder (RestaurantOrderManagement.WPF/App.xaml.cs, RestaurantOrderManagement.Services/Startup.cs)
 
 ---
 
@@ -28,18 +28,18 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 
 **Purpose**: Database, schema, stored procedures, EF integration, repositories, authentication, configuration, and 3NF validation. Complete before implementing user stories.
 
-- [ ] T006 Create database schema scripts in Database/02_CreateTables.sql following `specs/001-order-management/data-model.md` (Database/02_CreateTables.sql)
-- [ ] T007 Implement migrations and seed data using EF Core migrations and add `Initial_Schema` migration (RestaurantOrderManagement.Data/Migrations/Initial_Schema.cs)
-- [ ] T008 Design and add stored procedure scripts (minimum 10) in Database/03_CreateStoredProcedures.sql: include at least these procedures: sp_CreateProduct, sp_UpdateProduct, sp_DeleteProduct, sp_GetProductById, sp_GetProductsByCategory, sp_SearchProducts, sp_CreateOrder, sp_GetOrderDetails, sp_UpdateOrderStatus, sp_UpdateInventory, sp_GetLowStockProducts, sp_GetUserOrders (Database/03_CreateStoredProcedures.sql)
-- [ ] T009 Implement `StoredProcedures.md` contract in specs/contracts/stored-procedures.md listing parameters, return schemas, and examples for every stored procedure (specs/001-order-management/contracts/stored-procedures.md)
-- [ ] T010 Implement repositories and EF wrappers that call stored procedures via parameterized `FromSqlRaw`/`ExecuteSqlRaw` (RestaurantOrderManagement.Data/Repositories/*Repository.cs)
-- [ ] T011 Create `IRepository` and `GenericRepository` and concrete `ProductRepository` and `OrderRepository` with methods mapped to stored procedures (RestaurantOrderManagement.Data/Repositories/)
-- [ ] T012 Add database unit/integration tests that validate each stored procedure's behavior and parameterization (RestaurantOrderManagement.Tests/Data/StoredProcedureTests.cs)
-- [ ] T013 Validate 3NF compliance with a documented checklist and SQL constraints; add `3NF-verification.md` in specs (specs/001-order-management/checklists/3NF-verification.md)
-- [ ] T014 Implement secure parameterized query patterns and add a static analyzer / code-review checklist item to enforce no string-concatenated SQL (RestaurantOrderManagement.Data/CodeReview/ParameterizedQueriesChecklist.md)
-- [ ] T015 Implement configuration store and loader: `Configuration` entity, `RestaurantConfig.xml` sample, and `ConfigurationService` that caches settings on startup (RestaurantOrderManagement.Data/Models/Configuration.cs, RestaurantOrderManagement.Services/Implementations/ConfigurationService.cs)
-- [ ] T016 Implement authentication scaffolding (IAuthenticationService + AuthenticationService) with hashed passwords and role enforcement (RestaurantOrderManagement.Services/Implementations/AuthenticationService.cs)
-- [ ] T017 Create a SQL injection test suite that attempts common injection patterns against repository parameterized calls and ensure they are blocked (RestaurantOrderManagement.Tests/Security/SqlInjectionTests.cs)
+- [X] T006 Create database schema scripts in Database/02_CreateTables.sql following `specs/001-order-management/data-model.md` (Database/02_CreateTables.sql)
+- [X] T007 Implement migrations and seed data using EF Core migrations and add `Initial_Schema` migration (RestaurantOrderManagement.Data/Migrations/Initial_Schema.cs)
+- [X] T008 Design and add stored procedure scripts (minimum 10) in Database/03_CreateStoredProcedures.sql: include at least these procedures: sp_CreateProduct, sp_UpdateProduct, sp_DeleteProduct, sp_GetProductById, sp_GetProductsByCategory, sp_SearchProducts, sp_CreateOrder, sp_GetOrderDetails, sp_UpdateOrderStatus, sp_UpdateInventory, sp_GetLowStockProducts, sp_GetUserOrders (Database/03_CreateStoredProcedures.sql)
+- [X] T009 Implement `StoredProcedures.md` contract in specs/contracts/stored-procedures.md listing parameters, return schemas, and examples for every stored procedure (specs/001-order-management/contracts/stored-procedures.md)
+- [X] T010 Implement repositories and EF wrappers that call stored procedures via parameterized `FromSqlRaw`/`ExecuteSqlRaw` (RestaurantOrderManagement.Data/Repositories/*Repository.cs)
+- [X] T011 Create `IRepository` and `GenericRepository` and concrete `ProductRepository` and `OrderRepository` with methods mapped to stored procedures (RestaurantOrderManagement.Data/Repositories/)
+- [X] T012 Add database unit/integration tests that validate each stored procedure's behavior and parameterization (RestaurantOrderManagement.Tests/Data/StoredProcedureTests.cs)
+- [X] T013 Validate 3NF compliance with a documented checklist and SQL constraints; add `3NF-verification.md` in specs (specs/001-order-management/checklists/3NF-verification.md)
+- [X] T014 Implement secure parameterized query patterns and add a static analyzer / code-review checklist item to enforce no string-concatenated SQL (RestaurantOrderManagement.Data/CodeReview/ParameterizedQueriesChecklist.md)
+- [X] T015 Implement configuration store and loader: `Configuration` entity, `RestaurantConfig.xml` sample, and `ConfigurationService` that caches settings on startup (RestaurantOrderManagement.Data/Models/Configuration.cs, RestaurantOrderManagement.Services/Implementations/ConfigurationService.cs)
+- [X] T016 Implement authentication scaffolding (IAuthenticationService + AuthenticationService) with hashed passwords and role enforcement (RestaurantOrderManagement.Services/Implementations/AuthenticationService.cs)
+- [X] T017 Create a SQL injection test suite that attempts common injection patterns against repository parameterized calls and ensure they are blocked (RestaurantOrderManagement.Tests/Security/SqlInjectionTests.cs)
 
 ---
 
