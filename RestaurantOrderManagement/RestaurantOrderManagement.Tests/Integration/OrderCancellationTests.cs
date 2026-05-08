@@ -81,7 +81,7 @@ namespace RestaurantOrderManagement.Tests.Integration
 
             // Assert
             Assert.True(result);
-            
+
             // Verify inventory was restored for both items
             _productRepositoryMock.Verify(
                 r => r.UpdateInventoryAsync(productId1, quantity1),
@@ -223,7 +223,7 @@ namespace RestaurantOrderManagement.Tests.Integration
 
             // Assert
             Assert.True(result);
-            
+
             // Verify all items restored
             _productRepositoryMock.Verify(
                 r => r.UpdateInventoryAsync(10, 200),

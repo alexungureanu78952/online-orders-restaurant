@@ -60,7 +60,7 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
                 var orders = await _orderService.GetUserOrdersAsync(_currentUserId);
                 UserOrders.Clear();
-                
+
                 foreach (var order in orders.OrderByDescending(o => o.OrderDate))
                 {
                     UserOrders.Add(order);

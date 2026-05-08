@@ -16,7 +16,7 @@ namespace RestaurantOrderManagement.Services.Implementations
         private readonly UserRepository _userRepository;
         private readonly IConfigurationService _configService;
 
-        public OrderService(OrderRepository orderRepository, ProductRepository productRepository, 
+        public OrderService(OrderRepository orderRepository, ProductRepository productRepository,
                            UserRepository userRepository, IConfigurationService configService)
         {
             _orderRepository = orderRepository;
@@ -78,7 +78,7 @@ namespace RestaurantOrderManagement.Services.Implementations
             decimal shippingFee = await CalculateShippingFeeAsync(subTotal);
 
             // Create order via stored procedure
-            var (orderId, orderCode) = await _orderRepository.CreateOrderAsync(userId, subTotal, shippingFee, 
+            var (orderId, orderCode) = await _orderRepository.CreateOrderAsync(userId, subTotal, shippingFee,
                 discountAmount, deliveryAddress, null);
 
             // Create OrderItems for each cart item
@@ -237,7 +237,7 @@ namespace RestaurantOrderManagement.Services.Implementations
         private async Task<decimal> CalculateShippingFeeAsync(decimal subTotal)
         {
             var minForFreeShipping = await _configService.GetMinOrderForFreeShippingAsync();
-            
+
             if (subTotal >= minForFreeShipping)
                 return 0;
 

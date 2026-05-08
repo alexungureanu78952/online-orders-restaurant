@@ -3,38 +3,74 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DesignHeight="600"
+        d:DesignWidth="800">
     <Grid Background="#F5F5F5">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="20">
                 <!-- Header -->
-                <TextBlock Text="Shopping Cart" FontSize="28" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,10"/>
-                <TextBlock Text="Review your items and complete checkout" FontSize="14" Foreground="#7F8C8D" Margin="0,0,0,20"/>
+                <TextBlock Text="Shopping Cart"
+                        FontSize="28"
+                        FontWeight="Bold"
+                        Foreground="#2C3E50"
+                        Margin="0,0,0,10"/>
+                <TextBlock Text="Review your items and complete checkout"
+                        FontSize="14"
+                        Foreground="#7F8C8D"
+                        Margin="0,0,0,20"/>
 
                 <!-- Success Message Banner -->
-                <Border Background="#D4EDDA" BorderBrush="#28A745" BorderThickness="1" CornerRadius="4" Padding="15" Margin="0,0,0,15"
-                    Visibility="{Binding SuccessMessage, FallbackValue=Collapsed}">
+                <Border Background="#D4EDDA"
+                        BorderBrush="#28A745"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="15"
+                        Margin="0,0,0,15"
+                        Visibility="{Binding SuccessMessage, FallbackValue=Collapsed}">
                     <StackPanel>
-                        <TextBlock Text="✓ Order Created Successfully!" FontSize="14" Foreground="#155724" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding SuccessMessage}" FontSize="12" Foreground="#155724" Margin="0,5,0,5"/>
-                        <TextBlock Text="{Binding OrderCode, StringFormat='Order Code: {0}'}" FontSize="12" Foreground="#155724" FontWeight="Bold"/>
+                        <TextBlock Text="✓ Order Created Successfully!"
+                                FontSize="14"
+                                Foreground="#155724"
+                                FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SuccessMessage}"
+                                FontSize="12"
+                                Foreground="#155724"
+                                Margin="0,5,0,5"/>
+                        <TextBlock Text="{Binding OrderCode, StringFormat='Order Code: {0}'}"
+                                FontSize="12"
+                                Foreground="#155724"
+                                FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
 
                 <!-- Error Message Banner -->
-                <Border Background="#F8D7DA" BorderBrush="#DC3545" BorderThickness="1" CornerRadius="4" Padding="15" Margin="0,0,0,15"
-                    Visibility="{Binding ErrorMessage, FallbackValue=Collapsed}">
-                    <TextBlock Text="{Binding ErrorMessage}" FontSize="12" Foreground="#721C24" TextWrapping="Wrap"/>
+                <Border Background="#F8D7DA"
+                        BorderBrush="#DC3545"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="15"
+                        Margin="0,0,0,15"
+                        Visibility="{Binding ErrorMessage, FallbackValue=Collapsed}">
+                    <TextBlock Text="{Binding ErrorMessage}"
+                            FontSize="12"
+                            Foreground="#721C24"
+                            TextWrapping="Wrap"/>
                 </Border>
 
                 <!-- Cart Empty State -->
-                <TextBlock Text="Your cart is empty. Browse our menu to add items." FontSize="14" Foreground="#7F8C8D" Margin="0,40,0,40"
+                <TextBlock Text="Your cart is empty. Browse our menu to add items."
+                        FontSize="14"
+                        Foreground="#7F8C8D"
+                        Margin="0,40,0,40"
                            Visibility="{Binding IsCartEmpty, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                 <!-- Cart Items Section (if not empty) -->
                 <StackPanel Visibility="{Binding IsCartEmpty, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                     <!-- Items Header -->
-                    <Grid Background="#34495E" Padding="10" CornerRadius="4" Margin="0,0,0,10">
+                    <Grid Background="#34495E"
+                            Padding="10"
+                            CornerRadius="4"
+                            Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="100"/>
@@ -42,18 +78,47 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="80"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Product" FontSize="12" Foreground="White" FontWeight="Bold" Grid.Column="0"/>
-                        <TextBlock Text="Unit Price" FontSize="12" Foreground="White" FontWeight="Bold" Grid.Column="1" TextAlignment="Right"/>
-                        <TextBlock Text="Quantity" FontSize="12" Foreground="White" FontWeight="Bold" Grid.Column="2" TextAlignment="Center"/>
-                        <TextBlock Text="Total" FontSize="12" Foreground="White" FontWeight="Bold" Grid.Column="3" TextAlignment="Right"/>
-                        <TextBlock Text="Action" FontSize="12" Foreground="White" FontWeight="Bold" Grid.Column="4" TextAlignment="Center"/>
+                        <TextBlock Text="Product"
+                                FontSize="12"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Grid.Column="0"/>
+                        <TextBlock Text="Unit Price"
+                                FontSize="12"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Grid.Column="1"
+                                TextAlignment="Right"/>
+                        <TextBlock Text="Quantity"
+                                FontSize="12"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Grid.Column="2"
+                                TextAlignment="Center"/>
+                        <TextBlock Text="Total"
+                                FontSize="12"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Grid.Column="3"
+                                TextAlignment="Right"/>
+                        <TextBlock Text="Action"
+                                FontSize="12"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Grid.Column="4"
+                                TextAlignment="Center"/>
                     </Grid>
 
                     <!-- Cart Items List -->
                     <ItemsControl ItemsSource="{Binding CartItems}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Background="White" Padding="10" Margin="0,0,0,8" BorderBrush="#E0E0E0" BorderThickness="1" CornerRadius="4">
+                                <Grid Background="White"
+                                        Padding="10"
+                                        Margin="0,0,0,8"
+                                        BorderBrush="#E0E0E0"
+                                        BorderThickness="1"
+                                        CornerRadius="4">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="100"/>
@@ -63,30 +128,61 @@
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Product Name -->
-                                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                        <TextBlock Text="{Binding ProductName}" FontSize="13" FontWeight="Bold" Foreground="#2C3E50"/>
+                                    <StackPanel Grid.Column="0"
+                                            Margin="0,0,10,0">
+                                        <TextBlock Text="{Binding ProductName}"
+                                                FontSize="13"
+                                                FontWeight="Bold"
+                                                Foreground="#2C3E50"/>
                                     </StackPanel>
 
                                     <!-- Unit Price -->
-                                    <TextBlock Text="{Binding UnitPrice, StringFormat='{0:C}'}" FontSize="12" Foreground="#34495E" Grid.Column="1" TextAlignment="Right" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding UnitPrice, StringFormat='{0:C}'}"
+                                            FontSize="12"
+                                            Foreground="#34495E"
+                                            Grid.Column="1"
+                                            TextAlignment="Right"
+                                            VerticalAlignment="Center"/>
 
                                     <!-- Quantity -->
-                                    <TextBlock Text="{Binding Quantity}" FontSize="12" Foreground="#34495E" Grid.Column="2" TextAlignment="Center" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Quantity}"
+                                            FontSize="12"
+                                            Foreground="#34495E"
+                                            Grid.Column="2"
+                                            TextAlignment="Center"
+                                            VerticalAlignment="Center"/>
 
                                     <!-- Item Total -->
-                                    <TextBlock Text="{Binding ItemTotal, StringFormat='{0:C}'}" FontSize="12" FontWeight="Bold" Foreground="#2C3E50" Grid.Column="3" TextAlignment="Right" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding ItemTotal, StringFormat='{0:C}'}"
+                                            FontSize="12"
+                                            FontWeight="Bold"
+                                            Foreground="#2C3E50"
+                                            Grid.Column="3"
+                                            TextAlignment="Right"
+                                            VerticalAlignment="Center"/>
 
                                     <!-- Remove Button -->
-                                    <Button Content="✕" Background="#E74C3C" Foreground="White" Grid.Column="4" FontSize="14" Padding="5,3" HorizontalAlignment="Center"
-                                        Command="{Binding DataContext.RemoveFromCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        CommandParameter="{Binding ProductId}"/>
+                                    <Button Content="✕"
+                                            Background="#E74C3C"
+                                            Foreground="White"
+                                            Grid.Column="4"
+                                            FontSize="14"
+                                            Padding="5,3"
+                                            HorizontalAlignment="Center"
+                                            Command="{Binding DataContext.RemoveFromCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding ProductId}"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
                     <!-- Pricing Summary -->
-                    <Border Background="White" Padding="15" CornerRadius="4" Margin="0,20,0,20" BorderBrush="#E0E0E0" BorderThickness="1">
+                    <Border Background="White"
+                            Padding="15"
+                            CornerRadius="4"
+                            Margin="0,20,0,20"
+                            BorderBrush="#E0E0E0"
+                            BorderThickness="1">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -102,31 +198,89 @@
                             </Grid.ColumnDefinitions>
 
                             <!-- Subtotal -->
-                            <TextBlock Text="Subtotal:" FontSize="12" Foreground="#7F8C8D" Grid.Row="0" Grid.Column="0"/>
-                            <TextBlock Text="{Binding SubTotal, StringFormat='{0:C}'}" FontSize="12" Foreground="#34495E" Grid.Row="0" Grid.Column="1" TextAlignment="Right"/>
+                            <TextBlock Text="Subtotal:"
+                                    FontSize="12"
+                                    Foreground="#7F8C8D"
+                                    Grid.Row="0"
+                                    Grid.Column="0"/>
+                            <TextBlock Text="{Binding SubTotal, StringFormat='{0:C}'}"
+                                    FontSize="12"
+                                    Foreground="#34495E"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    TextAlignment="Right"/>
 
                             <!-- Shipping Fee -->
-                            <TextBlock Text="Shipping Fee:" FontSize="12" Foreground="#7F8C8D" Grid.Row="1" Grid.Column="0" Margin="0,8,0,0"/>
-                            <TextBlock Text="{Binding ShippingFee, StringFormat='{0:C}'}" FontSize="12" Foreground="#34495E" Grid.Row="1" Grid.Column="1" TextAlignment="Right" Margin="0,8,0,0"/>
+                            <TextBlock Text="Shipping Fee:"
+                                    FontSize="12"
+                                    Foreground="#7F8C8D"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"/>
+                            <TextBlock Text="{Binding ShippingFee, StringFormat='{0:C}'}"
+                                    FontSize="12"
+                                    Foreground="#34495E"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    TextAlignment="Right"
+                                    Margin="0,8,0,0"/>
 
                             <!-- Discount -->
-                            <TextBlock Text="Discount:" FontSize="12" Foreground="#7F8C8D" Grid.Row="2" Grid.Column="0" Margin="0,8,0,0"/>
-                            <TextBlock Text="{Binding DiscountAmount, StringFormat='-{0:C}'}" FontSize="12" Foreground="#27AE60" Grid.Row="2" Grid.Column="1" TextAlignment="Right" Margin="0,8,0,0"/>
+                            <TextBlock Text="Discount:"
+                                    FontSize="12"
+                                    Foreground="#7F8C8D"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="0,8,0,0"/>
+                            <TextBlock Text="{Binding DiscountAmount, StringFormat='-{0:C}'}"
+                                    FontSize="12"
+                                    Foreground="#27AE60"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    TextAlignment="Right"
+                                    Margin="0,8,0,0"/>
 
                             <!-- Separator -->
-                            <Rectangle Background="#E0E0E0" Height="1" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,5"/>
+                            <Rectangle Background="#E0E0E0"
+                                    Height="1"
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    Margin="0,5"/>
 
                             <!-- Total Cost -->
-                            <TextBlock Text="Total Cost:" FontSize="14" FontWeight="Bold" Foreground="#2C3E50" Grid.Row="5" Grid.Column="0"/>
-                            <TextBlock Text="{Binding TotalCost, StringFormat='{0:C}'}" FontSize="14" FontWeight="Bold" Foreground="#27AE60" Grid.Row="5" Grid.Column="1" TextAlignment="Right"/>
+                            <TextBlock Text="Total Cost:"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Foreground="#2C3E50"
+                                    Grid.Row="5"
+                                    Grid.Column="0"/>
+                            <TextBlock Text="{Binding TotalCost, StringFormat='{0:C}'}"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Foreground="#27AE60"
+                                    Grid.Row="5"
+                                    Grid.Column="1"
+                                    TextAlignment="Right"/>
                         </Grid>
                     </Border>
 
                     <!-- Delivery Address -->
-                    <TextBlock Text="Delivery Address" FontSize="12" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,8"/>
-                    <TextBox Text="{Binding DeliveryAddress, UpdateSourceTrigger=PropertyChanged}" 
-                             Padding="10" FontSize="12" BorderBrush="#BDC3C7" BorderThickness="1" CornerRadius="4" 
-                             Height="80" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,20"
+                    <TextBlock Text="Delivery Address"
+                            FontSize="12"
+                            FontWeight="Bold"
+                            Foreground="#2C3E50"
+                            Margin="0,0,0,8"/>
+                    <TextBox Text="{Binding DeliveryAddress, UpdateSourceTrigger=PropertyChanged}"
+                             Padding="10"
+                            FontSize="12"
+                            BorderBrush="#BDC3C7"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                             Height="80"
+                            TextWrapping="Wrap"
+                            AcceptsReturn="True"
+                            Margin="0,0,0,20"
                              IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"/>
 
                     <!-- Action Buttons -->
@@ -137,20 +291,34 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Clear Cart Button -->
-                        <Button Content="Clear Cart" Background="#95A5A6" Foreground="White" FontSize="12" Padding="10,8" CornerRadius="4"
-                            Command="{Binding ClearCartCommand}"
-                            IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                                Grid.Column="0" Margin="0,0,10,0"/>
+                        <Button Content="Clear Cart"
+                                Background="#95A5A6"
+                                Foreground="White"
+                                FontSize="12"
+                                Padding="10,8"
+                                CornerRadius="4"
+                                Command="{Binding ClearCartCommand}"
+                                IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                Grid.Column="0"
+                                Margin="0,0,10,0"/>
 
                         <!-- Checkout Button -->
-                        <Button Content="Complete Order" Background="#27AE60" Foreground="White" FontSize="12" Padding="10,8" CornerRadius="4"
+                        <Button Content="Complete Order"
+                                Background="#27AE60"
+                                Foreground="White"
+                                FontSize="12"
+                                Padding="10,8"
+                                CornerRadius="4"
                                 Command="{Binding SubmitOrderAsyncCommand}"
                                 IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"
                                 Grid.Column="1"/>
                     </Grid>
 
                     <!-- Loading Indicator -->
-                    <TextBlock Text="Processing order..." FontSize="12" Foreground="#3498DB" Margin="0,20,0,0"
+                    <TextBlock Text="Processing order..."
+                            FontSize="12"
+                            Foreground="#3498DB"
+                            Margin="0,20,0,0"
                                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"/>
                 </StackPanel>
             </StackPanel>

@@ -148,12 +148,12 @@ namespace RestaurantOrderManagement.Tests.Services
             var items = new List<(int, int)> { (1, 2) };
 
             var user = new User { UserId = userId, Email = "test@test.com" };
-            var unavailableProduct = new Product 
-            { 
-                ProductId = 1, 
-                Name = "Out of Stock Pizza", 
-                Price = 10.00m, 
-                IsAvailable = false 
+            var unavailableProduct = new Product
+            {
+                ProductId = 1,
+                Name = "Out of Stock Pizza",
+                Price = 10.00m,
+                IsAvailable = false
             };
 
             _mockUserRepository.Setup(r => r.GetByIdAsync(userId)).ReturnsAsync(user);

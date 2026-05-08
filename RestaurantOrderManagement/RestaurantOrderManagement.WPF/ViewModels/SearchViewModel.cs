@@ -50,8 +50,8 @@ namespace RestaurantOrderManagement.ViewModels
         [RelayCommand]
         public async Task PerformSearchAsync()
         {
-            if (string.IsNullOrWhiteSpace(SearchQuery) && 
-                string.IsNullOrWhiteSpace(IncludeAllergens) && 
+            if (string.IsNullOrWhiteSpace(SearchQuery) &&
+                string.IsNullOrWhiteSpace(IncludeAllergens) &&
                 string.IsNullOrWhiteSpace(ExcludeAllergens))
             {
                 ErrorMessage = "Please enter search criteria";
@@ -70,7 +70,7 @@ namespace RestaurantOrderManagement.ViewModels
                 var excludeAllergensParam = string.IsNullOrWhiteSpace(ExcludeAllergens) ? null : ExcludeAllergens.Trim();
 
                 var results = await _productService.SearchProductsAsync(keyword, includeAllergensParam, excludeAllergensParam);
-                
+
                 if (results == null || !results.Any())
                 {
                     ErrorMessage = "No products found matching your criteria";

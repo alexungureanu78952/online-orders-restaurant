@@ -87,7 +87,7 @@ namespace RestaurantOrderManagement.Tests.Services
             Assert.Null(userId);
             Assert.Contains("already registered", message.ToLower());
             _mockUserRepository.Verify(
-                r => r.CreateUserAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), 
+                r => r.CreateUserAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()),
                 Times.Never);
         }

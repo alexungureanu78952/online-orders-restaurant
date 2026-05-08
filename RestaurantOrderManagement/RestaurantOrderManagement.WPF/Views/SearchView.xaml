@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="700" d:DesignWidth="1000"
+             d:DesignHeight="700"
+        d:DesignWidth="1000"
              Background="#F5F5F5">
     <Grid>
         <Grid.RowDefinitions>
@@ -15,13 +16,24 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0" Background="#2C3E50" Padding="20">
-            <TextBlock Text="Search Menu" FontSize="28" FontWeight="Bold" Foreground="White"/>
-            <TextBlock Text="Find products by keyword and allergen preferences" FontSize="14" Foreground="#ECF0F1" Margin="0,5,0,0"/>
+        <StackPanel Grid.Row="0"
+                Background="#2C3E50"
+                Padding="20">
+            <TextBlock Text="Search Menu"
+                    FontSize="28"
+                    FontWeight="Bold"
+                    Foreground="White"/>
+            <TextBlock Text="Find products by keyword and allergen preferences"
+                    FontSize="14"
+                    Foreground="#ECF0F1"
+                    Margin="0,5,0,0"/>
         </StackPanel>
 
         <!-- Search Filters -->
-        <Grid Grid.Row="1" Padding="20" Background="White" Margin="0,0,0,10">
+        <Grid Grid.Row="1"
+                Padding="20"
+                Background="White"
+                Margin="0,0,0,10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -34,17 +46,27 @@
             </Grid.ColumnDefinitions>
 
             <!-- Keyword Search -->
-            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,20,0">
-                <TextBlock Text="Keyword" FontSize="12" FontWeight="Bold" Margin="0,0,0,5"/>
-                <TextBox x:Name="KeywordBox" 
+            <StackPanel Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,0,20,0">
+                <TextBlock Text="Keyword"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Margin="0,0,0,5"/>
+                <TextBox x:Name="KeywordBox"
                          Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
                          Padding="10,8"
                          ToolTip="Enter product name or description"/>
             </StackPanel>
 
             <!-- Include Allergens -->
-            <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,20,0">
-                <TextBlock Text="Must Include Allergens (comma-separated IDs)" FontSize="12" FontWeight="Bold" Margin="0,0,0,5"/>
+            <StackPanel Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="0,0,20,0">
+                <TextBlock Text="Must Include Allergens (comma-separated IDs)"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Margin="0,0,0,5"/>
                 <TextBox x:Name="IncludeAllergensBox"
                          Text="{Binding IncludeAllergens, UpdateSourceTrigger=PropertyChanged}"
                          Padding="10,8"
@@ -52,7 +74,9 @@
             </StackPanel>
 
             <!-- Search Button -->
-            <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom">
+            <StackPanel Grid.Row="0"
+                    Grid.Column="2"
+                    VerticalAlignment="Bottom">
                 <Button Command="{Binding PerformSearchCommand}"
                         Background="#27AE60"
                         Foreground="White"
@@ -63,8 +87,13 @@
             </StackPanel>
 
             <!-- Exclude Allergens -->
-            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,15,20,0">
-                <TextBlock Text="Exclude Allergens (comma-separated IDs)" FontSize="12" FontWeight="Bold" Margin="0,0,0,5"/>
+            <StackPanel Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="0,15,20,0">
+                <TextBlock Text="Exclude Allergens (comma-separated IDs)"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Margin="0,0,0,5"/>
                 <TextBox x:Name="ExcludeAllergensBox"
                          Text="{Binding ExcludeAllergens, UpdateSourceTrigger=PropertyChanged}"
                          Padding="10,8"
@@ -72,7 +101,10 @@
             </StackPanel>
 
             <!-- Clear Button -->
-            <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,15,0,0" VerticalAlignment="Bottom">
+            <StackPanel Grid.Row="1"
+                    Grid.Column="2"
+                    Margin="0,15,0,0"
+                    VerticalAlignment="Bottom">
                 <Button Command="{Binding ClearFiltersCommand}"
                         Background="#95A5A6"
                         Foreground="White"
@@ -84,17 +116,22 @@
         </Grid>
 
         <!-- Results -->
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer Grid.Row="2"
+                VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Disabled">
             <ItemsControl ItemsSource="{Binding GroupedResults}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <!-- Category Group -->
                         <StackPanel Margin="20,10">
                             <!-- Category Header -->
-                            <Border Background="#34495E" Padding="15,10" CornerRadius="4" Margin="0,0,0,15">
-                                <TextBlock Text="{Binding CategoryName}" 
-                                           FontSize="18" 
-                                           FontWeight="Bold" 
+                            <Border Background="#34495E"
+                                    Padding="15,10"
+                                    CornerRadius="4"
+                                    Margin="0,0,0,15">
+                                <TextBlock Text="{Binding CategoryName}"
+                                           FontSize="18"
+                                           FontWeight="Bold"
                                            Foreground="White"/>
                             </Border>
 
@@ -102,54 +139,64 @@
                             <ItemsControl ItemsSource="{Binding Products}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" Margin="0,0,0,20"/>
+                                        <WrapPanel Orientation="Horizontal"
+                                                Margin="0,0,0,20"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <!-- Product Card -->
-                                        <Border Width="250" Height="320" Margin="10" Background="White"
-                                                CornerRadius="8" BorderBrush="#E0E0E0" BorderThickness="1">
+                                        <Border Width="250"
+                                                Height="320"
+                                                Margin="10"
+                                                Background="White"
+                                                CornerRadius="8"
+                                                BorderBrush="#E0E0E0"
+                                                BorderThickness="1">
                                             <StackPanel VerticalAlignment="Stretch">
                                                 <!-- Product Image Placeholder -->
-                                                <Rectangle Height="140" Fill="#ECF0F1" Margin="0,0,0,10">
+                                                <Rectangle Height="140"
+                                                        Fill="#ECF0F1"
+                                                        Margin="0,0,0,10">
                                                     <Rectangle.Fill>
-                                                        <ImageBrush Stretch="UniformToFill" 
+                                                        <ImageBrush Stretch="UniformToFill"
                                                                     ImageSource="https://via.placeholder.com/250x140?text=Product"/>
                                                     </Rectangle.Fill>
                                                 </Rectangle>
 
                                                 <!-- Product Info -->
-                                                <StackPanel Padding="15,0,15,10" VerticalAlignment="Stretch">
+                                                <StackPanel Padding="15,0,15,10"
+                                                        VerticalAlignment="Stretch">
                                                     <!-- Product Code -->
-                                                    <TextBlock Text="{Binding DisplayCode}" 
-                                                               FontSize="10" 
+                                                    <TextBlock Text="{Binding DisplayCode}"
+                                                               FontSize="10"
                                                                Foreground="#7F8C8D"/>
 
                                                     <!-- Product Name -->
-                                                    <TextBlock Text="{Binding Name}" 
-                                                               FontSize="14" 
+                                                    <TextBlock Text="{Binding Name}"
+                                                               FontSize="14"
                                                                FontWeight="Bold"
-                                                               TextWrapping="Wrap" 
+                                                               TextWrapping="Wrap"
                                                                Margin="0,3,0,5"/>
 
                                                     <!-- Description -->
-                                                    <TextBlock Text="{Binding Description}" 
+                                                    <TextBlock Text="{Binding Description}"
                                                                FontSize="11"
-                                                               Foreground="#7F8C8D" 
+                                                               Foreground="#7F8C8D"
                                                                TextWrapping="Wrap"
-                                                               TextTrimming="CharacterEllipsis" 
-                                                               MaxHeight="40" 
+                                                               TextTrimming="CharacterEllipsis"
+                                                               MaxHeight="40"
                                                                Margin="0,0,0,5"/>
 
                                                     <!-- Portion Size -->
                                                     <TextBlock Text="{Binding PortionQuantity, StringFormat='Portion: {0}g'}"
-                                                               FontSize="10" 
-                                                               Foreground="#95A5A6" 
+                                                               FontSize="10"
+                                                               Foreground="#95A5A6"
                                                                Margin="0,0,0,5"/>
 
                                                     <!-- Allergens -->
-                                                    <ItemsControl ItemsSource="{Binding Allergens}" Margin="0,0,0,5">
+                                                    <ItemsControl ItemsSource="{Binding Allergens}"
+                                                            Margin="0,0,0,5">
                                                         <ItemsControl.ItemsPanel>
                                                             <ItemsPanelTemplate>
                                                                 <WrapPanel Orientation="Horizontal"/>
@@ -157,14 +204,14 @@
                                                         </ItemsControl.ItemsPanel>
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
-                                                                <Border Background="#FFE6E6" 
+                                                                <Border Background="#FFE6E6"
                                                                         BorderBrush="#E74C3C"
-                                                                        BorderThickness="1" 
-                                                                        CornerRadius="3" 
-                                                                        Padding="5,2" 
+                                                                        BorderThickness="1"
+                                                                        CornerRadius="3"
+                                                                        Padding="5,2"
                                                                         Margin="2">
-                                                                    <TextBlock Text="{Binding Name}" 
-                                                                               FontSize="9" 
+                                                                    <TextBlock Text="{Binding Name}"
+                                                                               FontSize="9"
                                                                                Foreground="#C0392B"/>
                                                                 </Border>
                                                             </DataTemplate>
@@ -178,23 +225,23 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
 
-                                                        <TextBlock Grid.Column="0" 
+                                                        <TextBlock Grid.Column="0"
                                                                    Text="{Binding Price, StringFormat='${0:F2}'}"
-                                                                   FontSize="16" 
-                                                                   FontWeight="Bold" 
+                                                                   FontSize="16"
+                                                                   FontWeight="Bold"
                                                                    Foreground="#27AE60"/>
 
-                                                        <TextBlock Grid.Column="1" 
-                                                                   Text="Available" 
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="Available"
                                                                    FontSize="10"
-                                                                   Foreground="#27AE60" 
+                                                                   Foreground="#27AE60"
                                                                    FontWeight="Bold"
                                                                    Visibility="{Binding IsAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                                                         <TextBlock Grid.Column="1"
-                                                                   Text="Out of Stock" 
+                                                                   Text="Out of Stock"
                                                                    FontSize="10"
-                                                                   Foreground="#E74C3C" 
+                                                                   Foreground="#E74C3C"
                                                                    FontWeight="Bold"
                                                                    Visibility="{Binding IsAvailable, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                                                     </Grid>
@@ -210,23 +257,25 @@
             </ItemsControl>
 
             <!-- Empty State -->
-            <TextBlock x:Name="EmptyStateMessage" 
-                       Text="No results found" 
-                       FontSize="16" 
+            <TextBlock x:Name="EmptyStateMessage"
+                       Text="No results found"
+                       FontSize="16"
                        Foreground="#95A5A6"
                        Padding="20"
                        Visibility="Collapsed"/>
         </ScrollViewer>
 
         <!-- Status Bar -->
-        <StatusBar Grid.Row="3" Background="#ECF0F1" Height="30">
+        <StatusBar Grid.Row="3"
+                Background="#ECF0F1"
+                Height="30">
             <StatusBarItem>
-                <TextBlock Text="{Binding ErrorMessage, FallbackValue='Ready'}" 
-                           Foreground="#E74C3C" 
+                <TextBlock Text="{Binding ErrorMessage, FallbackValue='Ready'}"
+                           Foreground="#E74C3C"
                            FontWeight="Bold"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock Text="{Binding ResultCount, StringFormat='Results: {0}'}" 
+                <TextBlock Text="{Binding ResultCount, StringFormat='Results: {0}'}"
                            Foreground="#7F8C8D"/>
             </StatusBarItem>
         </StatusBar>

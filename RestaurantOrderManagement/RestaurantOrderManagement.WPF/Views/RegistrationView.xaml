@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="750" d:DesignWidth="500"
+             d:DesignHeight="750"
+        d:DesignWidth="500"
              Background="#F5F5F5">
     <Grid>
         <Grid.RowDefinitions>
@@ -14,19 +15,35 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0" Background="#2C3E50" Padding="20">
-            <TextBlock Text="Create Account" FontSize="28" FontWeight="Bold" Foreground="White"/>
-            <TextBlock Text="Join us and start ordering" FontSize="14" Foreground="#ECF0F1" Margin="0,5,0,0"/>
+        <StackPanel Grid.Row="0"
+                Background="#2C3E50"
+                Padding="20">
+            <TextBlock Text="Create Account"
+                    FontSize="28"
+                    FontWeight="Bold"
+                    Foreground="White"/>
+            <TextBlock Text="Join us and start ordering"
+                    FontSize="14"
+                    Foreground="#ECF0F1"
+                    Margin="0,5,0,0"/>
         </StackPanel>
 
         <!-- Registration Form -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Padding="30" Background="White" Margin="10,10,10,0">
+        <ScrollViewer Grid.Row="1"
+                VerticalScrollBarVisibility="Auto">
+            <StackPanel Padding="30"
+                    Background="White"
+                    Margin="10,10,10,0">
 
                 <!-- Success Message -->
-                <Border Background="#D4EDDA" BorderBrush="#28A745" BorderThickness="1" CornerRadius="4" Padding="15" Margin="0,0,0,15"
+                <Border Background="#D4EDDA"
+                        BorderBrush="#28A745"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="15"
+                        Margin="0,0,0,15"
                         Visibility="{Binding SuccessMessage, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <TextBlock Text="{Binding SuccessMessage}" 
+                    <TextBlock Text="{Binding SuccessMessage}"
                                Foreground="#155724"
                                FontSize="12"
                                FontWeight="Bold"
@@ -34,9 +51,14 @@
                 </Border>
 
                 <!-- Error Message -->
-                <Border Background="#F8D7DA" BorderBrush="#F5C6CB" BorderThickness="1" CornerRadius="4" Padding="15" Margin="0,0,0,15"
+                <Border Background="#F8D7DA"
+                        BorderBrush="#F5C6CB"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="15"
+                        Margin="0,0,0,15"
                         Visibility="{Binding ErrorMessage, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <TextBlock Text="{Binding ErrorMessage}" 
+                    <TextBlock Text="{Binding ErrorMessage}"
                                Foreground="#721C24"
                                FontSize="12"
                                FontWeight="Bold"
@@ -44,7 +66,11 @@
                 </Border>
 
                 <!-- Email -->
-                <TextBlock Text="Email Address *" FontSize="12" FontWeight="Bold" Margin="0,0,0,5" Foreground="#2C3E50"/>
+                <TextBlock Text="Email Address *"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Margin="0,0,0,5"
+                        Foreground="#2C3E50"/>
                 <TextBox x:Name="EmailBox"
                          Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
                          Padding="12,10"
@@ -62,8 +88,13 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                        <TextBlock Text="First Name *" FontSize="12" FontWeight="Bold" Margin="0,0,0,5" Foreground="#2C3E50"/>
+                    <StackPanel Grid.Column="0"
+                            Margin="0,0,10,0">
+                        <TextBlock Text="First Name *"
+                                FontSize="12"
+                                FontWeight="Bold"
+                                Margin="0,0,0,5"
+                                Foreground="#2C3E50"/>
                         <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"
                                  Padding="12,10"
                                  FontSize="11"
@@ -72,8 +103,13 @@
                                  BorderThickness="1"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                        <TextBlock Text="Last Name *" FontSize="12" FontWeight="Bold" Margin="0,0,0,5" Foreground="#2C3E50"/>
+                    <StackPanel Grid.Column="1"
+                            Margin="10,0,0,0">
+                        <TextBlock Text="Last Name *"
+                                FontSize="12"
+                                FontWeight="Bold"
+                                Margin="0,0,0,5"
+                                Foreground="#2C3E50"/>
                         <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"
                                  Padding="12,10"
                                  FontSize="11"
@@ -84,7 +120,11 @@
                 </Grid>
 
                 <!-- Password -->
-                <TextBlock Text="Password *" FontSize="12" FontWeight="Bold" Margin="0,0,0,5" Foreground="#2C3E50"/>
+                <TextBlock Text="Password *"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Margin="0,0,0,5"
+                        Foreground="#2C3E50"/>
                 <TextBox x:Name="PasswordBox"
                          Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
                          Padding="12,10"
@@ -96,7 +136,11 @@
                          ToolTip="At least 6 characters"/>
 
                 <!-- Confirm Password -->
-                <TextBlock Text="Confirm Password *" FontSize="12" FontWeight="Bold" Margin="0,0,0,5" Foreground="#2C3E50"/>
+                <TextBlock Text="Confirm Password *"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Margin="0,0,0,5"
+                        Foreground="#2C3E50"/>
                 <TextBox x:Name="ConfirmPasswordBox"
                          Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}"
                          Padding="12,10"
@@ -108,7 +152,11 @@
                          ToolTip="Must match password"/>
 
                 <!-- Phone Number -->
-                <TextBlock Text="Phone Number (optional)" FontSize="12" FontWeight="Bold" Margin="0,0,0,5" Foreground="#2C3E50"/>
+                <TextBlock Text="Phone Number (optional)"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Margin="0,0,0,5"
+                        Foreground="#2C3E50"/>
                 <TextBox Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
                          Padding="12,10"
                          FontSize="11"
@@ -119,7 +167,11 @@
                          ToolTip="Enter your phone number"/>
 
                 <!-- Delivery Address -->
-                <TextBlock Text="Delivery Address (optional)" FontSize="12" FontWeight="Bold" Margin="0,0,0,5" Foreground="#2C3E50"/>
+                <TextBlock Text="Delivery Address (optional)"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Margin="0,0,0,5"
+                        Foreground="#2C3E50"/>
                 <TextBox Text="{Binding DeliveryAddress, UpdateSourceTrigger=PropertyChanged}"
                          Padding="12,10"
                          FontSize="11"
@@ -134,13 +186,19 @@
                          ToolTip="Enter your delivery address"/>
 
                 <!-- Required Fields Note -->
-                <TextBlock Text="* Required fields" FontSize="10" Foreground="#95A5A6" Margin="0,0,0,20"/>
+                <TextBlock Text="* Required fields"
+                        FontSize="10"
+                        Foreground="#95A5A6"
+                        Margin="0,0,0,20"/>
 
             </StackPanel>
         </ScrollViewer>
 
         <!-- Footer with Buttons -->
-        <Grid Grid.Row="2" Background="White" Padding="30,20" Margin="10,0,10,10">
+        <Grid Grid.Row="2"
+                Background="White"
+                Padding="30,20"
+                Margin="10,0,10,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -167,7 +225,8 @@
                     Padding="15,12"
                     FontWeight="Bold"
                     FontSize="12">
-                <TextBlock Text="{Binding IsLoading, StringFormat='{0:Register}'}" Foreground="White"/>
+                <TextBlock Text="{Binding IsLoading, StringFormat='{0:Register}'}"
+                        Foreground="White"/>
             </Button>
         </Grid>
     </Grid>

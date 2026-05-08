@@ -116,11 +116,11 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 **Goal**: Employees view all orders, filter active orders, update statuses, and see customer info.
 **Independent Test**: Log in as employee and perform status updates visible to clients.
 
-- [ ] T046 [P] [US6] Implement `AdminDashboardView` and `OrderManagementView` WPF views; `OrderManagementViewModel` exposes filters and bulk status update commands (RestaurantOrderManagement.WPF/Views/OrderManagementView.xaml)
-- [ ] T047 [US6] Implement `sp_GetAllOrders` and `sp_UpdateOrderStatus` stored procedures (Database/03_CreateStoredProcedures.sql)
-- [ ] T048 [US6] Implement `OrderRepository.GetAllOrders` and `UpdateOrderStatus` with parameterized calls (RestaurantOrderManagement.Data/Repositories/OrderRepository.cs)
-- [ ] T049 [US6] Add `Employee` role checks in `AuthenticationService` and ViewModel authorization guards (RestaurantOrderManagement.Services/Implementations/AuthenticationService.cs)
-- [ ] T050 [US6] Add tests verifying employee-only access to management views and that updates propagate to client views (RestaurantOrderManagement.Tests/Integration/EmployeeFlowTests.cs)
+- [X] T046 [P] [US6] Implement `AdminDashboardView` and `OrderManagementView` WPF views; `OrderManagementViewModel` exposes filters and bulk status update commands (RestaurantOrderManagement.WPF/Views/OrderManagementView.xaml, ViewModels/OrderManagementViewModel.cs)
+- [X] T047 [US6] Implement `sp_GetAllOrders` and `sp_UpdateOrderStatus` stored procedures (Database/03_CreateStoredProcedures.sql)
+- [X] T048 [US6] Implement `OrderRepository.GetAllOrders` and `UpdateOrderStatus` with parameterized calls (RestaurantOrderManagement.Data/Repositories/OrderRepository.cs)
+- [X] T049 [US6] Add `Employee` role checks in `AuthenticationService` and ViewModel authorization guards (RestaurantOrderManagement.Services/Implementations/AuthenticationService.cs)
+- [X] T050 [US6] Add tests verifying employee-only access to management views and that updates propagate to client views (RestaurantOrderManagement.Tests/Integration/EmployeeFlowTests.cs)
 
 ---
 
