@@ -152,7 +152,21 @@ namespace RestaurantOrderManagement.Services.Implementations
             if (order.Status == "livrata" || order.Status == "anulata")
                 return false;
 
-            return await _orderRepository.UpdateOrderStatusAsync(orderId, newStatus);
+            var updated = await _orderRepository.UpdateOrderStatusAsync(orderId, newStatus);
+            if (!updated)
+                return false;
+
+            if (newStatus == "anulata")
+            {
+                foreach (var item in order.OrderItems ?? Enumerable.Empty<OrderItem>())
+                {
+                    var restored = await _productRepository.UpdateInventoryAsync(item.ProductId, item.Quantity);
+                    if (!restored)
+                        throw new InvalidOperationException($"Failed to restore inventory for product {item.ProductId}");
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

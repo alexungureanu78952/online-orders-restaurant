@@ -13,7 +13,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Get user by email using parameterized stored procedure sp_GetUserByEmail
         /// </summary>
-        public async Task<User> GetUserByEmailAsync(string email)
+        public virtual async Task<User> GetUserByEmailAsync(string email)
         {
             return await _context.Users
                 .FromSqlRaw("EXEC dbo.sp_GetUserByEmail @Email = {0}", email)
@@ -23,7 +23,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Create new user using parameterized stored procedure sp_CreateUser
         /// </summary>
-        public async Task<int> CreateUserAsync(string email, string passwordHash, string firstName, string lastName,
+        public virtual async Task<int> CreateUserAsync(string email, string passwordHash, string firstName, string lastName,
             string phoneNumber = null, string deliveryAddress = null, string role = "Client")
         {
             var result = await _context.Database.ExecuteScalarAsync(
@@ -35,7 +35,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Update last login date using parameterized stored procedure sp_UpdateLastLoginDate
         /// </summary>
-        public async Task<bool> UpdateLastLoginDateAsync(int userId)
+        public virtual async Task<bool> UpdateLastLoginDateAsync(int userId)
         {
             var result = await _context.Database.ExecuteAsync(
                 "EXEC dbo.sp_UpdateLastLoginDate @UserId = {0}",

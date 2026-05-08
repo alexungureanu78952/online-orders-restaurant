@@ -103,11 +103,11 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 **Goal**: Clients view order history and active orders with status and estimated delivery time; can cancel active orders.
 **Independent Test**: Place orders and verify history, active list, and cancel behavior restores inventory.
 
-- [ ] T041 [US5] Implement `sp_GetUserOrders` and `sp_GetOrderDetails` (Database/03_CreateStoredProcedures.sql)
-- [ ] T042 [US5] Implement `OrderRepository.GetUserOrders` and `GetOrderDetails` using EF parameterized calls (RestaurantOrderManagement.Data/Repositories/OrderRepository.cs)
-- [ ] T043 [US5] Implement `OrderHistoryViewModel` and `OrderHistoryView` with bindings for order list, details, and `CancelOrderCommand` (RestaurantOrderManagement.WPF/ViewModels/OrderHistoryViewModel.cs)
-- [ ] T044 [US5] Implement `OrderService.CancelOrderAsync` to validate cancellable statuses, call `sp_UpdateOrderStatus` to set 'anulata', and restore inventory (RestaurantOrderManagement.Services/Implementations/OrderService.cs)
-- [ ] T045 [US5] Add tests for cancel flow and inventory restoration (RestaurantOrderManagement.Tests/Integration/OrderCancellationTests.cs)
+- [X] T041 [US5] Implement `sp_GetUserOrders` and `sp_GetOrderDetails` (Database/03_CreateStoredProcedures.sql)
+- [X] T042 [US5] Implement `OrderRepository.GetUserOrders` and `GetOrderDetails` using EF parameterized calls (RestaurantOrderManagement.Data/Repositories/OrderRepository.cs)
+- [X] T043 [US5] Implement `OrderHistoryViewModel` and `OrderHistoryView` with bindings for order list, details, and `CancelOrderCommand` (RestaurantOrderManagement.WPF/ViewModels/OrderHistoryViewModel.cs, Views/OrderHistoryView.xaml)
+- [X] T044 [US5] Implement `OrderService.CancelOrderAsync` to validate cancellable statuses, call `sp_UpdateOrderStatus` to set 'anulata', and restore inventory (RestaurantOrderManagement.Services/Implementations/OrderService.cs)
+- [X] T045 [US5] Add tests for cancel flow and inventory restoration (RestaurantOrderManagement.Tests/Integration/OrderCancellationTests.cs)
 
 ---
 

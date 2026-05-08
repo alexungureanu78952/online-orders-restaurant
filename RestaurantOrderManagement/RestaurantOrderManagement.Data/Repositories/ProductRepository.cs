@@ -13,7 +13,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Get products by category using parameterized stored procedure sp_GetProductsByCategory
         /// </summary>
-        public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId)
+        public virtual async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId)
         {
             return await _context.Products
                 .FromSqlRaw("EXEC dbo.sp_GetProductsByCategory @CategoryId = {0}", categoryId)
@@ -23,7 +23,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Get product by ID using parameterized stored procedure sp_GetProductById
         /// </summary>
-        public async Task<Product> GetProductByIdAsync(int productId)
+        public virtual async Task<Product> GetProductByIdAsync(int productId)
         {
             return await _context.Products
                 .FromSqlRaw("EXEC dbo.sp_GetProductById @ProductId = {0}", productId)
@@ -33,7 +33,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Search products by keyword and allergen filters using parameterized sp_SearchProducts
         /// </summary>
-        public async Task<IEnumerable<Product>> SearchProductsAsync(string keyword, string includeAllergens, string excludeAllergens)
+        public virtual async Task<IEnumerable<Product>> SearchProductsAsync(string keyword, string includeAllergens, string excludeAllergens)
         {
             return await _context.Products
                 .FromSqlRaw("EXEC dbo.sp_SearchProducts @Keyword = {0}, @IncludeAllergens = {1}, @ExcludeAllergens = {2}",
@@ -44,7 +44,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Create new product using parameterized stored procedure sp_CreateProduct
         /// </summary>
-        public async Task<int> CreateProductAsync(int categoryId, string name, string description, decimal price, int portionQuantity, int totalQuantity)
+        public virtual async Task<int> CreateProductAsync(int categoryId, string name, string description, decimal price, int portionQuantity, int totalQuantity)
         {
             var result = await _context.Database.ExecuteScalarAsync(
                 "EXEC dbo.sp_CreateProduct @CategoryId = {0}, @Name = {1}, @Description = {2}, @Price = {3}, @PortionQuantity = {4}, @TotalQuantity = {5}",
@@ -55,7 +55,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Update product using parameterized stored procedure sp_UpdateProduct
         /// </summary>
-        public async Task<bool> UpdateProductAsync(int productId, string name, string description, decimal price, int portionQuantity, bool isAvailable)
+        public virtual async Task<bool> UpdateProductAsync(int productId, string name, string description, decimal price, int portionQuantity, bool isAvailable)
         {
             var result = await _context.Database.ExecuteAsync(
                 "EXEC dbo.sp_UpdateProduct @ProductId = {0}, @Name = {1}, @Description = {2}, @Price = {3}, @PortionQuantity = {4}, @IsAvailable = {5}",
@@ -66,7 +66,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Delete product using parameterized stored procedure sp_DeleteProduct
         /// </summary>
-        public async Task<bool> DeleteProductAsync(int productId)
+        public virtual async Task<bool> DeleteProductAsync(int productId)
         {
             var result = await _context.Database.ExecuteAsync(
                 "EXEC dbo.sp_DeleteProduct @ProductId = {0}",
@@ -77,7 +77,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Get low stock products using parameterized stored procedure sp_GetLowStockProducts
         /// </summary>
-        public async Task<IEnumerable<Product>> GetLowStockProductsAsync()
+        public virtual async Task<IEnumerable<Product>> GetLowStockProductsAsync()
         {
             return await _context.Products
                 .FromSqlRaw("EXEC dbo.sp_GetLowStockProducts")
@@ -87,7 +87,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// <summary>
         /// Update inventory using parameterized stored procedure sp_UpdateInventory
         /// </summary>
-        public async Task<bool> UpdateInventoryAsync(int productId, int quantityChange)
+        public virtual async Task<bool> UpdateInventoryAsync(int productId, int quantityChange)
         {
             var result = await _context.Database.ExecuteAsync(
                 "EXEC dbo.sp_UpdateInventory @ProductId = {0}, @QuantityChange = {1}",
