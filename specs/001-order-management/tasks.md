@@ -153,10 +153,10 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 **Goal**: Exportable reports for orders, revenue, and inventory; configuration and misc tasks for final grading.
 **Independent Test**: Generate a report for a selected period and export CSV.
 
-- [ ] T059 [US9] Implement `ReportService` that uses parameterized queries/stored procedures to generate order and revenue summaries (RestaurantOrderManagement.Services/Implementations/ReportService.cs)
-- [ ] T060 [US9] Implement `ReportsView` and `ReportsViewModel` with export CSV functionality (RestaurantOrderManagement.WPF/Views/ReportsView.xaml)
-- [ ] T061 [US9] Add Quickstart and README updates describing how to run DB scripts and the app (specs/001-order-management/quickstart.md)
-- [ ] T062 [US9] Finalize security checklist ensuring all queries are parameterized and no IDs are shown in UI (specs/001-order-management/checklists/security-checklist.md)
+- [X] T059 [US9] Implement `ReportService` that uses parameterized queries/stored procedures to generate order and revenue summaries (RestaurantOrderManagement.Services/Implementations/ReportService.cs)
+- [X] T060 [US9] Implement `ReportsView` and `ReportsViewModel` with export CSV functionality (RestaurantOrderManagement.WPF/Views/ReportsView.xaml)
+- [X] T061 [US9] Add Quickstart and README updates describing how to run DB scripts and the app (specs/001-order-management/quickstart.md)
+- [X] T062 [US9] Finalize security checklist ensuring all queries are parameterized and no IDs are shown in UI (specs/001-order-management/checklists/security-checklist.md)
 
 ---
 

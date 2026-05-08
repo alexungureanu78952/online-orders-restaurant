@@ -224,6 +224,46 @@ dotnet test --filter "FullyQualifiedName~AuthenticationServiceTests"
 dotnet test /p:CollectCoverage=true
 ```
 
+## Generating Reports
+
+The application provides built-in reporting capabilities for business analytics:
+
+### Available Reports
+
+1. **Order Summary** - Order counts and averages by status
+2. **Revenue Report** - Revenue breakdown by order status
+3. **Inventory Status** - Current stock levels by category
+4. **Order Details** - Detailed order information with customer and revenue data
+
+### Accessing Reports
+
+1. Log in as Employee (use employee account credentials)
+2. Navigate to Reports tab in main navigation
+3. Select date range for analysis (defaults to last 30 days)
+4. Click report button to generate:
+   - "Order Summary" - Order count and value metrics
+   - "Revenue Report" - Revenue analytics with shipping and discounts
+   - "Inventory Status" - Stock levels and low-stock alerts
+   - "Order Details" - Full order information with customer contact
+
+### Exporting to CSV
+
+After generating a report:
+
+1. Click "Export to CSV" button below the report
+2. File is saved to: `C:\Users\{YourUsername}\Documents\RestaurantOrderManagement_Reports\`
+3. Filename format: `ReportType_yyyyMMdd_HHmmss.csv`
+4. Open in Excel or any spreadsheet application
+
+### Report Data Sources
+
+All reports use parameterized stored procedures for security:
+
+- `sp_GetOrderSummary` - Aggregates orders by status
+- `sp_GetRevenueSummary` - Aggregates revenue metrics by status
+- `sp_GetInventorySummary` - Gets current inventory levels
+- `sp_GetOrdersByDateRange` - Retrieves detailed order information
+
 ## Debugging Tips
 
 ### Debug Stored Procedures

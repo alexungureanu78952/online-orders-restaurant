@@ -708,4 +708,136 @@ BEGIN
 END;
 GO
 
+-- =====================================================
+-- REPORTING PROCEDURES
+-- =====================================================
+
+-- sp_GetOrderSummary: Get order count and status breakdown for date range
+IF OBJECT_ID('dbo.sp_GetOrderSummary', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.sp_GetOrderSummary;
+GO
+
+CREATE PROCEDURE dbo.sp_GetOrderSummary
+    @FromDate DATETIME = NULL,
+    @ToDate DATETIME = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Default to current month if no dates provided
+    SET @FromDate = ISNULL(@FromDate, DATEADD(MONTH, -1, GETDATE()));
+    SET @ToDate = ISNULL(@ToDate, GETDATE());
+    
+    SELECT 
+        [Status],
+        COUNT(*) AS OrderCount,
+        AVG(CAST(Total AS DECIMAL(10,2))) AS AvgOrderValue,
+        MIN(CreatedDate) AS FirstOrder,
+        MAX(CreatedDate) AS LastOrder
+    FROM dbo.[Order]
+    WHERE CreatedDate >= @FromDate
+        AND CreatedDate <= @ToDate
+    GROUP BY [Status]
+    ORDER BY OrderCount DESC;
+END;
+GO
+
+-- sp_GetRevenueSummary: Get revenue totals by status and date range
+IF OBJECT_ID('dbo.sp_GetRevenueSummary', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.sp_GetRevenueSummary;
+GO
+
+CREATE PROCEDURE dbo.sp_GetRevenueSummary
+    @FromDate DATETIME = NULL,
+    @ToDate DATETIME = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Default to current month if no dates provided
+    SET @FromDate = ISNULL(@FromDate, DATEADD(MONTH, -1, GETDATE()));
+    SET @ToDate = ISNULL(@ToDate, GETDATE());
+    
+    SELECT 
+        [Status],
+        COUNT(*) AS OrderCount,
+        CAST(SUM(SubTotal) AS DECIMAL(10,2)) AS TotalSubtotal,
+        CAST(SUM(ShippingFee) AS DECIMAL(10,2)) AS TotalShipping,
+        CAST(SUM(DiscountAmount) AS DECIMAL(10,2)) AS TotalDiscount,
+        CAST(SUM(Total) AS DECIMAL(10,2)) AS TotalRevenue,
+        CAST(AVG(Total) AS DECIMAL(10,2)) AS AvgOrderTotal
+    FROM dbo.[Order]
+    WHERE CreatedDate >= @FromDate
+        AND CreatedDate <= @ToDate
+    GROUP BY [Status]
+    ORDER BY TotalRevenue DESC;
+END;
+GO
+
+-- sp_GetInventorySummary: Get current inventory levels by category
+IF OBJECT_ID('dbo.sp_GetInventorySummary', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.sp_GetInventorySummary;
+GO
+
+CREATE PROCEDURE dbo.sp_GetInventorySummary
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        c.CategoryId,
+        c.[Name] AS CategoryName,
+        COUNT(p.ProductId) AS ProductCount,
+        SUM(CAST(p.TotalQuantity AS INT)) AS TotalStock,
+        AVG(CAST(p.TotalQuantity AS INT)) AS AvgStockPerProduct,
+        MIN(CAST(p.TotalQuantity AS INT)) AS MinStock,
+        MAX(CAST(p.TotalQuantity AS INT)) AS MaxStock,
+        SUM(CASE WHEN p.TotalQuantity < 500 THEN 1 ELSE 0 END) AS LowStockCount
+    FROM dbo.Category c
+    LEFT JOIN dbo.Product p ON c.CategoryId = p.CategoryId AND p.IsDeleted = 0
+    WHERE c.IsActive = 1
+    GROUP BY c.CategoryId, c.[Name]
+    ORDER BY c.[Name];
+END;
+GO
+
+-- sp_GetOrdersByDateRange: Get detailed order report for date range with customer and revenue info
+IF OBJECT_ID('dbo.sp_GetOrdersByDateRange', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.sp_GetOrdersByDateRange;
+GO
+
+CREATE PROCEDURE dbo.sp_GetOrdersByDateRange
+    @FromDate DATETIME = NULL,
+    @ToDate DATETIME = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Default to current month if no dates provided
+    SET @FromDate = ISNULL(@FromDate, DATEADD(MONTH, -1, GETDATE()));
+    SET @ToDate = ISNULL(@ToDate, GETDATE());
+    
+    SELECT 
+        o.OrderId,
+        o.OrderCode,
+        u.FirstName + ' ' + u.LastName AS CustomerName,
+        u.Email,
+        o.CreatedDate,
+        o.[Status],
+        o.SubTotal,
+        o.ShippingFee,
+        o.DiscountAmount,
+        o.Total,
+        COUNT(oi.OrderItemId) AS ItemCount
+    FROM dbo.[Order] o
+    INNER JOIN dbo.[User] u ON o.UserId = u.UserId
+    LEFT JOIN dbo.OrderItem oi ON o.OrderId = oi.OrderId
+    WHERE o.CreatedDate >= @FromDate
+        AND o.CreatedDate <= @ToDate
+    GROUP BY o.OrderId, o.OrderCode, u.FirstName, u.LastName, u.Email, o.CreatedDate, o.[Status], 
+             o.SubTotal, o.ShippingFee, o.DiscountAmount, o.Total
+    ORDER BY o.CreatedDate DESC;
+END;
+GO
+
 PRINT 'Stored procedures created successfully.';

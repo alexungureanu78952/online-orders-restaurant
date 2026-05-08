@@ -266,6 +266,42 @@ Should NOT: Return admin user data
 
 ---
 
+## Phase 11: Reporting & Analytics (User Story 9)
+
+### Reporting Stored Procedures
+
+- [X] `sp_GetOrderSummary(@FromDate, @ToDate)` - Uses `@FromDate`, `@ToDate` parameters
+- [X] `sp_GetRevenueSummary(@FromDate, @ToDate)` - Uses `@FromDate`, `@ToDate` parameters
+- [X] `sp_GetInventorySummary()` - No user input parameters (safe)
+- [X] `sp_GetOrdersByDateRange(@FromDate, @ToDate)` - Uses `@FromDate`, `@ToDate` parameters
+
+All reporting procedures parameterized; no date range concatenation in SQL construction.
+
+### ReportService.cs Implementation
+
+- [X] All report queries use `context.Database.SqlQuery<T>("EXEC dbo.sp_Name @Param = {0}", value)`
+- [X] DateTime parameters passed as separate arguments (not concatenated)
+- [X] No user input directly in SQL strings
+- [X] All methods use async Task<IEnumerable<>> pattern
+- [X] Exception handling wraps database errors in InvalidOperationException
+
+### ReportsViewModel.cs - No ID Exposure
+
+- [X] OrderDetailDto uses OrderCode (not OrderId) for display
+- [X] No CategoryId exposed in InventorySummaryDto (uses CategoryName instead)
+- [X] No ProductId in display DTOs
+- [X] CSV export methods use EscapeCSVField() preventing injection via output
+- [X] All CSV fields properly quoted if containing special characters
+
+### UI Layer (ReportsView.xaml)
+
+- [X] DataGrids display user-friendly values (Order Codes, category names, status values)
+- [X] No internal database IDs shown in any column
+- [X] Date range pickers use DateTime controls (no string parsing)
+- [X] CSV export respects parameterized data (no additional SQL construction)
+
+---
+
 ## Conclusion
 
 ✅ **SQL injection risk: MITIGATED**
