@@ -94,5 +94,56 @@ namespace RestaurantOrderManagement.Data.Repositories
                 productId, quantityChange);
             return result > 0;
         }
+
+        /// <summary>
+        /// Get all products from the context (including deleted)
+        /// </summary>
+        public virtual async Task<IEnumerable<Product>> GetAllProductsAsync()
+        {
+            return await _context.Products.Include(p => p.Category).ToListAsync();
+        }
+
+        /// <summary>
+        /// Get category by ID using parameterized stored procedure sp_GetCategoryById
+        /// </summary>
+        public virtual async Task<Category> GetCategoryByIdAsync(int categoryId)
+        {
+            return await _context.Categories
+                .FromSqlRaw("EXEC dbo.sp_GetCategoryById @CategoryId = {0}", categoryId)
+                .FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Create new category using parameterized stored procedure sp_CreateCategory
+        /// </summary>
+        public virtual async Task<int> CreateCategoryAsync(string name, string description)
+        {
+            var result = await _context.Database.ExecuteScalarAsync(
+                "EXEC dbo.sp_CreateCategory @Name = {0}, @Description = {1}",
+                name, description);
+            return result != null ? Convert.ToInt32(result) : 0;
+        }
+
+        /// <summary>
+        /// Update category using parameterized stored procedure sp_UpdateCategory
+        /// </summary>
+        public virtual async Task<bool> UpdateCategoryAsync(int categoryId, string name, string description, bool isActive)
+        {
+            var result = await _context.Database.ExecuteAsync(
+                "EXEC dbo.sp_UpdateCategory @CategoryId = {0}, @Name = {1}, @Description = {2}, @IsActive = {3}",
+                categoryId, name, description, isActive);
+            return result > 0;
+        }
+
+        /// <summary>
+        /// Delete (soft delete) category using parameterized stored procedure sp_DeleteCategory
+        /// </summary>
+        public virtual async Task<bool> DeleteCategoryAsync(int categoryId)
+        {
+            var result = await _context.Database.ExecuteAsync(
+                "EXEC dbo.sp_DeleteCategory @CategoryId = {0}",
+                categoryId);
+            return result > 0;
+        }
     }
 }

@@ -251,6 +251,95 @@ END;
 GO
 
 -- =====================================================
+-- CATEGORY CRUD PROCEDURES
+-- =====================================================
+
+-- sp_GetCategoryById: Retrieve category by ID
+IF OBJECT_ID('dbo.sp_GetCategoryById', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.sp_GetCategoryById;
+GO
+
+CREATE PROCEDURE dbo.sp_GetCategoryById
+    @CategoryId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        CategoryId,
+        [Name],
+        [Description],
+        IsActive,
+        CreatedDate
+    FROM dbo.Category
+    WHERE CategoryId = @CategoryId;
+END;
+GO
+
+-- sp_CreateCategory: Create new category
+IF OBJECT_ID('dbo.sp_CreateCategory', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.sp_CreateCategory;
+GO
+
+CREATE PROCEDURE dbo.sp_CreateCategory
+    @Name NVARCHAR(100),
+    @Description NVARCHAR(500) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    BEGIN TRY
+        INSERT INTO dbo.Category ([Name], [Description], IsActive, CreatedDate)
+        VALUES (@Name, @Description, 1, GETDATE());
+        
+        SELECT CAST(SCOPE_IDENTITY() AS INT) AS CategoryId;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH;
+END;
+GO
+
+-- sp_UpdateCategory: Update existing category
+IF OBJECT_ID('dbo.sp_UpdateCategory', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.sp_UpdateCategory;
+GO
+
+CREATE PROCEDURE dbo.sp_UpdateCategory
+    @CategoryId INT,
+    @Name NVARCHAR(100),
+    @Description NVARCHAR(500) = NULL,
+    @IsActive BIT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    UPDATE dbo.Category
+    SET [Name] = @Name,
+        [Description] = @Description,
+        IsActive = @IsActive
+    WHERE CategoryId = @CategoryId;
+END;
+GO
+
+-- sp_DeleteCategory: Soft delete category (mark inactive)
+IF OBJECT_ID('dbo.sp_DeleteCategory', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.sp_DeleteCategory;
+GO
+
+CREATE PROCEDURE dbo.sp_DeleteCategory
+    @CategoryId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    UPDATE dbo.Category
+    SET IsActive = 0
+    WHERE CategoryId = @CategoryId;
+END;
+GO
+
+-- =====================================================
 -- USER PROCEDURES
 -- =====================================================
 

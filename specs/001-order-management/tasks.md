@@ -141,10 +141,10 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 **Goal**: Employees can create/update/delete categories and products (CRUD) — satisfies grading CRUD requirement on at least 2 tables.
 **Independent Test**: Create/update/delete a product and category via admin UI; verify DB changes via stored procedures.
 
-- [ ] T055 [US8] Implement `sp_CreateProduct`, `sp_UpdateProduct`, `sp_DeleteProduct` stored procedures (Database/03_CreateStoredProcedures.sql)
-- [ ] T056 [US8] Implement `ProductRepository` CRUD methods that call these stored procedures with parameterized inputs (RestaurantOrderManagement.Data/Repositories/ProductRepository.cs)
-- [ ] T057 [US8] Implement `ProductManagementView` and `ProductManagementViewModel` for employee CRUD operations (RestaurantOrderManagement.WPF/Views/ProductManagementView.xaml)
-- [ ] T058 [US8] Add unit and integration tests covering product & category CRUD (RestaurantOrderManagement.Tests/Integration/ProductCrudTests.cs)
+- [X] T055 [US8] Implement `sp_CreateProduct`, `sp_UpdateProduct`, `sp_DeleteProduct` stored procedures (Database/03_CreateStoredProcedures.sql)
+- [X] T056 [US8] Implement `ProductRepository` CRUD methods that call these stored procedures with parameterized inputs (RestaurantOrderManagement.Data/Repositories/ProductRepository.cs)
+- [X] T057 [US8] Implement `ProductManagementView` and `ProductManagementViewModel` for employee CRUD operations (RestaurantOrderManagement.WPF/Views/ProductManagementView.xaml)
+- [X] T058 [US8] Add unit and integration tests covering product & category CRUD (RestaurantOrderManagement.Tests/Integration/ProductCrudTests.cs)
 
 ---
 

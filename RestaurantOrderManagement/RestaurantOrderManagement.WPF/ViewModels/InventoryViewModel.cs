@@ -104,7 +104,7 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 if (restocked != null)
                 {
                     SuccessMessage = $"{restocked.Name} restocked by {RestockQuantity}g. New quantity: {restocked.TotalQuantity}g";
-                    
+
                     // Refresh the list to show updated quantities
                     await LoadLowStockProductsAsync();
                     SelectedProduct = null;
