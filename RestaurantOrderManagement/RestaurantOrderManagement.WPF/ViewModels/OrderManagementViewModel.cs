@@ -122,7 +122,7 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 if (updated)
                 {
                     SuccessMessage = $"Order {SelectedOrder.OrderCode} updated to {NewStatusSelection}";
-                    
+
                     // Refresh the list to show updated status
                     await LoadAllOrdersAsync();
                     SelectedOrder = null;
@@ -148,7 +148,7 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         /// </summary>
         public string GetCustomerName(Order order)
         {
-            return order?.User != null 
+            return order?.User != null
                 ? $"{order.User.FirstName} {order.User.LastName}"
                 : "Unknown";
         }

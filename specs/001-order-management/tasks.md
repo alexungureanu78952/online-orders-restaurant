@@ -129,10 +129,10 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 **Goal**: Employees view low-stock products, update inventory, and trigger reorder notifications.
 **Independent Test**: Reduce product quantity below threshold and verify it appears in low stock list.
 
-- [ ] T051 [US7] Implement `sp_GetLowStockProducts` stored procedure and `sp_UpdateInventory` (Database/03_CreateStoredProcedures.sql)
-- [ ] T052 [US7] Implement `InventoryService` and `InventoryViewModel` to surface low-stock items and support manual restock actions (RestaurantOrderManagement.Services/Implementations/InventoryService.cs, RestaurantOrderManagement.WPF/ViewModels/InventoryViewModel.cs)
-- [ ] T053 [US7] Add UI for restocking products with parameterized calls (RestaurantOrderManagement.WPF/Views/InventoryView.xaml)
-- [ ] T054 [US7] Add tests for low-stock detection and restock flows (RestaurantOrderManagement.Tests/Integration/InventoryTests.cs)
+- [X] T051 [US7] Implement `sp_GetLowStockProducts` stored procedure and `sp_UpdateInventory` (Database/03_CreateStoredProcedures.sql)
+- [X] T052 [US7] Implement `InventoryService` and `InventoryViewModel` to surface low-stock items and support manual restock actions (RestaurantOrderManagement.Services/Implementations/InventoryService.cs, RestaurantOrderManagement.WPF/ViewModels/InventoryViewModel.cs)
+- [X] T053 [US7] Add UI for restocking products with parameterized calls (RestaurantOrderManagement.WPF/Views/InventoryView.xaml)
+- [X] T054 [US7] Add tests for low-stock detection and restock flows (RestaurantOrderManagement.Tests/Integration/InventoryTests.cs)
 
 ---
 
