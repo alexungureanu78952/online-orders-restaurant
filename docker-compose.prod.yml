@@ -1,0 +1,211 @@
+version: '3.8'
+
+# Production Override Configuration for Restaurant Order Management System
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# This file contains production-specific overrides:
+# - Resource limits to prevent host resource exhaustion
+# - Security hardening (localhost-only binding)
+# - Enhanced logging
+# - Performance tuning
+# - Backup automation hints
+
+services:
+
+  sqlserver:
+    # Production-specific settings for SQL Server
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    
+    # Only bind to localhost (not accessible from network)
+    ports:
+      - "127.0.0.1:1433:1433"
+    
+    # Production environment
+    environment:
+      MSSQL_MEMORY_LIMIT_MB: 2048
+      MSSQL_MEMORY_LIMIT_MB: 2048
+      MSSQL_BACKUP_DIR: /var/opt/mssql/backup
+    
+    # Enhanced logging for production monitoring
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
+        labels: "service=sqlserver,environment=production"
+
+  app-services:
+    # Production-specific settings for Application Services
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '1'
+          memory: 512M
+    
+    # Only bind to localhost for security
+    ports:
+      - "127.0.0.1:5000:5000"
+      - "127.0.0.1:5001:5001"
+    
+    # Production environment
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      DOTNET_GCHeapAffinitizeMask: 3
+      DOTNET_GCHeapCount: 2
+    
+    # Enhanced logging for production monitoring
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+        labels: "service=app-services,environment=production"
+    
+    # Production restart policy - always restart on failure
+    restart: always
+
+# ===================================================
+# Production Configuration Notes
+# ===================================================
+#
+# SECURITY:
+# --------
+# 1. Services only bind to 127.0.0.1 (localhost)
+#    - Access from external systems requires SSH tunneling or VPN
+#    - Prevents accidental exposure on open networks
+#
+# 2. Always use strong passwords in .env
+#    - Generate with: openssl rand -base64 32
+#    - Rotate regularly
+#    - Never commit .env to version control
+#
+# 3. Use HTTPS for any external API exposure
+#    - Implement SSL certificate management
+#    - Use Let's Encrypt with auto-renewal
+#
+# RESOURCE LIMITS:
+# ----------------
+# 1. SQL Server: 2GB memory limit (adjust based on data size)
+#    - Prevents memory exhaustion
+#    - Allows room for other services
+#
+# 2. App Services: 1GB memory limit
+#    - Sufficient for .NET services
+#    - Prevents single service from consuming host resources
+#
+# 3. CPU limits: 2 cores per service
+#    - Adjust based on actual workload
+#    - Monitor with: docker stats
+#
+# LOGGING:
+# --------
+# 1. JSON-file logging with rotation
+#    - Max 100MB per file (sqlserver) / 100MB (app)
+#    - Keep 5 files (sqlserver) / 10 files (app)
+#    - Prevents disk exhaustion
+#
+# 2. Configure centralized logging (optional):
+#    - ELK Stack (Elasticsearch, Logstash, Kibana)
+#    - Splunk
+#    - Azure Monitor
+#    - CloudWatch
+#
+# 3. Monitor logs regularly for errors:
+#    - docker-compose logs | grep ERROR
+#    - Set up log alerts
+#
+# BACKUP STRATEGY:
+# ----------------
+# 1. Automated daily backups (example cron):
+#    - 0 2 * * * /path/to/backup-db.sh "password"
+#
+# 2. Store backups outside of docker-volumes:
+#    - /mnt/backups/production/
+#    - S3 bucket
+#    - NAS/network storage
+#
+# 3. Test recovery regularly:
+#    - Monthly restore drills
+#    - Document recovery procedure
+#    - Measure RTO/RPO
+#
+# MONITORING:
+# -----------
+# 1. Container health:
+#    - docker-compose ps
+#    - Watch for restarts in 'docker stats'
+#
+# 2. Database health:
+#    - Connection pool usage
+#    - Query performance
+#    - Index fragmentation
+#
+# 3. Application health:
+#    - Service availability
+#    - Error rates
+#    - Performance metrics
+#
+# 4. System resources:
+#    - CPU usage
+#    - Memory usage
+#    - Disk usage (especially backups)
+#    - Network I/O
+#
+# UPDATES & PATCHES:
+# ------------------
+# 1. SQL Server updates:
+#    - docker pull mcr.microsoft.com/mssql/server:2019-latest
+#    - Test in staging first
+#    - Plan maintenance window
+#    - docker-compose restart sqlserver
+#
+# 2. Application updates:
+#    - docker-compose build --pull --no-cache
+#    - Test with staging
+#    - Zero-downtime deploy (if possible)
+#    - docker-compose up -d
+#
+# COMPLIANCE & AUDITING:
+# ----------------------
+# 1. Database audit logs:
+#    - Enable SQL Server audit
+#    - Track schema changes
+#    - Monitor authentication
+#
+# 2. Application logs:
+#    - Log all data access
+#    - Track user actions
+#    - Monitor API calls
+#
+# 3. Backup verification:
+#    - Test restore monthly
+#    - Document backup integrity checks
+#    - Maintain audit trail
+#
+# DISASTER RECOVERY:
+# ------------------
+# 1. Backup location:
+#    - Keep off-site backup (cloud storage)
+#    - Test restore from off-site
+#    - Document RTO/RPO targets
+#
+# 2. Recovery procedure:
+#    - Maintain runbook
+#    - Regular drills
+#    - Version control procedures
+#
+# 3. High availability (advanced):
+#    - Database replication
+#    - Service failover
+#    - Load balancing
+#

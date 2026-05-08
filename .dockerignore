@@ -1,0 +1,93 @@
+# Docker Build Exclusions
+# Excludes unnecessary files from Docker build context to reduce image size and build time
+
+# Version Control
+.git
+.gitignore
+.gitattributes
+
+# IDE & Editor Files
+.vscode
+.vs
+.idea
+*.code-workspace
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Build Outputs
+bin/
+obj/
+dist/
+build/
+*.dll
+*.exe
+*.pdb
+
+# NuGet
+packages/
+.nuget/
+
+# Node (if used for frontend tooling)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Test Results
+TestResults/
+.coverage/
+*.trx
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+appveyor.yml
+
+# Documentation (optional - include if needed)
+# *.md
+# docs/
+
+# Logs
+*.log
+logs/
+
+# Docker Files (don't include in context)
+Dockerfile
+docker-compose.yml
+docker-entrypoint.sh
+.dockerignore
+
+# Environment Files
+.env
+.env.local
+.env.*.local
+
+# Docker Volumes
+docker-volumes/
+
+# Specification (optional - keep for reference)
+# specs/
+
+# Temporary Files
+*.tmp
+*.temp
+*.backup
+
+# OS Specific
+__pycache__
+.pytest_cache/
+.venv/
+env/
+
+# Large Files
+*.iso
+*.dmg
+*.exe
+*.msi
+
+# Cache
+.cache/
+.eslintcache

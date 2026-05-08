@@ -33,13 +33,13 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
             // Smoke Test: Category retrieval for menu display
             // Validate: Categories load, products are filtered by availability
             // Expected: At least 3 categories with products
-            
+
             // Arrange
             var expectedCategoryCount = 3; // Minimum for restaurant
-            
+
             // Act
             // var categories = await categoryService.GetAllCategoriesAsync();
-            
+
             // Assert
             // Assert.NotEmpty(categories);
             // Assert.True(categories.Count >= expectedCategoryCount);
@@ -59,10 +59,10 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
 
             // Arrange
             var searchKeyword = "soup";
-            
+
             // Act
             // var results = await productService.SearchProductsAsync(searchKeyword, null, null);
-            
+
             // Assert
             // Assert.NotEmpty(results);
             // Assert.All(results, p => Assert.True(
@@ -80,10 +80,10 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
 
             // Arrange
             var excludeAllergenIds = "1,2"; // e.g., gluten, dairy
-            
+
             // Act
             // var results = await productService.SearchProductsAsync(null, null, excludeAllergenIds);
-            
+
             // Assert
             // Assert.NotEmpty(results);
             // Verify allergens are excluded (integration test would verify detail)
@@ -102,10 +102,10 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
 
             // Arrange
             var userId = 1;
-            var cartItems = new List<(int ProductId, int Quantity)> 
-            { 
-                (101, 2), 
-                (102, 1) 
+            var cartItems = new List<(int ProductId, int Quantity)>
+            {
+                (101, 2),
+                (102, 1)
             };
             var subtotal = 45.99m;
             var shipping = 5.00m;
@@ -113,7 +113,7 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
 
             // Act
             // var order = await orderService.CreateOrderAsync(userId, subtotal, shipping, discount);
-            
+
             // Assert
             // Assert.NotNull(order);
             // Assert.NotNull(order.OrderCode);
@@ -135,10 +135,10 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
 
             // Arrange
             var userId = 1;
-            
+
             // Act
             // var orders = await orderService.GetUserOrdersAsync(userId);
-            
+
             // Assert
             // Assert.NotEmpty(orders);
             // Assert.All(orders, o => Assert.NotNull(o.OrderCode));
@@ -160,12 +160,12 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
 
             // Arrange
             var orderId = 1;
-            var statusSequence = new[] 
-            { 
+            var statusSequence = new[]
+            {
                 "inregistrata",
-                "se pregateste", 
-                "a plecat la client", 
-                "livrata" 
+                "se pregateste",
+                "a plecat la client",
+                "livrata"
             };
 
             // Act & Assert
@@ -197,7 +197,7 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
             // Act
             // await inventoryService.UpdateInventoryAsync(productId, -orderQuantity);
             // var updatedProduct = await productService.GetProductByIdAsync(productId);
-            
+
             // Assert
             // Assert.Equal(expectedStockAfter, updatedProduct.TotalQuantity);
             // Assert.True(updatedProduct.IsAvailable); // Still in stock
@@ -212,10 +212,10 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
 
             // Arrange - Set a product to low stock
             var lowStockThreshold = 50;
-            
+
             // Act
             // var lowStockProducts = await inventoryService.GetLowStockProductsAsync();
-            
+
             // Assert
             // Assert.NotEmpty(lowStockProducts);
             // Assert.All(lowStockProducts, p => Assert.True(p.TotalQuantity < lowStockThreshold));
@@ -248,16 +248,16 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
             // var createdId = await productService.CreateProductAsync(
             //     newProduct.CategoryId, newProduct.Name, newProduct.Description,
             //     newProduct.Price, newProduct.PortionQuantity, newProduct.TotalQuantity);
-            
+
             // Act - Read
             // var retrievedProduct = await productService.GetProductByIdAsync(createdId);
-            
+
             // Act - Update
             // retrievedProduct.Name = "Updated Smoke Test Product";
             // await productService.UpdateProductAsync(createdId, retrievedProduct.Name,
             //     retrievedProduct.Description, retrievedProduct.Price,
             //     retrievedProduct.PortionQuantity, retrievedProduct.IsAvailable);
-            
+
             // Act - Delete
             // await productService.DeleteProductAsync(createdId);
 
@@ -285,7 +285,7 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
 
             // Act
             // var summary = await reportService.GetOrderSummaryAsync(fromDate, toDate);
-            
+
             // Assert
             // Assert.NotEmpty(summary);
             // Assert.All(summary, s => Assert.True(s.OrderCount > 0));
@@ -305,7 +305,7 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
 
             // Act
             // var csvContent = await reportService.ExportOrderSummaryToCsvAsync(fromDate, toDate);
-            
+
             // Assert
             // Assert.NotEmpty(csvContent);
             // var lines = csvContent.Split(Environment.NewLine);
@@ -337,16 +337,16 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
             // Act - Step 2: Inventory is updated
             // var initialStock = (await productService.GetProductByIdAsync(productId)).TotalQuantity;
             // await inventoryService.UpdateInventoryAsync(productId, -quantity);
-            
+
             // Act - Step 3: Employee updates status
             // await orderService.UpdateOrderStatusAsync(order.OrderId, "se pregateste");
             // var updatedOrder = await orderService.GetOrderDetailsAsync(order.OrderId);
             // Assert.Equal("se pregateste", updatedOrder.Status);
-            
+
             // Act - Step 4: Order is delivered
             // await orderService.UpdateOrderStatusAsync(order.OrderId, "livrata");
             // var deliveredOrder = await orderService.GetOrderDetailsAsync(order.OrderId);
-            
+
             // Assert
             // Assert.Equal("livrata", deliveredOrder.Status);
             // Assert.NotNull(deliveredOrder.ActualDeliveryTime);
@@ -385,10 +385,10 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
 
             // Arrange
             var maliciousInput = "1' OR '1'='1"; // Classic SQL injection
-            
+
             // Act - Attempt to search with malicious input
             // var results = await productService.SearchProductsAsync(maliciousInput, null, null);
-            
+
             // Assert
             // // Should return empty or only exact matches, NOT all products
             // Assert.DoesNotContain(results, p => 
@@ -415,9 +415,9 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
             // {
             //     var products = await productService.GetProductsByCategoryAsync(category.CategoryId);
             // }
-            
+
             stopwatch.Stop();
-            
+
             // Assert
             // Assert.True(stopwatch.ElapsedMilliseconds < 1000, 
             //     $"Menu load took {stopwatch.ElapsedMilliseconds}ms, expected < 1000ms");
@@ -435,9 +435,9 @@ namespace RestaurantOrderManagement.Tests.EndToEnd
 
             // Act
             // var results = await productService.SearchProductsAsync("pasta", null, null);
-            
+
             stopwatch.Stop();
-            
+
             // Assert
             // Assert.True(stopwatch.ElapsedMilliseconds < 500,
             //     $"Search took {stopwatch.ElapsedMilliseconds}ms, expected < 500ms");
