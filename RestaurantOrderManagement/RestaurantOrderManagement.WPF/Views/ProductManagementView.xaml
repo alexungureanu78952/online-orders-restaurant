@@ -16,25 +16,25 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0"
-                Background="#2C3E50"
-                Padding="20">
+                    Background="#2C3E50"
+                    Padding="20">
             <TextBlock Text="Product & Category Management"
-                    FontSize="28"
-                    FontWeight="Bold"
-                    Foreground="White"/>
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="White"/>
             <TextBlock Text="Create, update, and manage menu items and categories"
-                    FontSize="14"
-                    Foreground="#ECF0F1"
-                    Margin="0,5,0,0"/>
+                       FontSize="14"
+                       Foreground="#ECF0F1"
+                       Margin="0,5,0,0"/>
         </StackPanel>
 
         <!-- Action Buttons -->
         <StackPanel Grid.Row="1"
-                Padding="20"
-                Background="White"
-                Margin="0,0,0,10"
-                Orientation="Horizontal"
-                Gap="10">
+                    Padding="20"
+                    Background="White"
+                    Margin="0,0,0,10"
+                    Orientation="Horizontal"
+                    Gap="10">
             <Button Content="➕ New Product"
                     Background="#27AE60"
                     Foreground="White"
@@ -54,7 +54,7 @@
 
         <!-- Main Content -->
         <Grid Grid.Row="2"
-                Margin="10">
+              Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.5*"/>
                 <ColumnDefinition Width="1*"/>
@@ -76,17 +76,17 @@
 
                     <!-- Products Header -->
                     <TextBlock Grid.Row="0"
-                            Text="Products"
-                            FontSize="16"
-                            FontWeight="Bold"
-                            Foreground="#2C3E50"
-                            Padding="15"/>
+                               Text="Products"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Foreground="#2C3E50"
+                               Padding="15"/>
 
                     <!-- Products ListBox -->
                     <ListBox Grid.Row="1"
-                            ItemsSource="{Binding AllProducts}"
-                            SelectedItem="{Binding SelectedProduct}"
-                            Background="White">
+                             ItemsSource="{Binding AllProducts}"
+                             SelectedItem="{Binding SelectedProduct}"
+                             Background="White">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border Background="White"
@@ -95,21 +95,21 @@
                                         Padding="12">
                                     <StackPanel>
                                         <TextBlock Text="{Binding Name}"
-                                                FontSize="12"
-                                                FontWeight="Bold"
-                                                Foreground="#2C3E50"/>
+                                                   FontSize="12"
+                                                   FontWeight="Bold"
+                                                   Foreground="#2C3E50"/>
                                         <TextBlock Text="{Binding Category.Name}"
-                                                FontSize="10"
-                                                Foreground="#7F8C8D"
-                                                Margin="0,3,0,0"/>
+                                                   FontSize="10"
+                                                   Foreground="#7F8C8D"
+                                                   Margin="0,3,0,0"/>
                                         <TextBlock Text="{Binding Price, StringFormat='${0:F2}'}"
-                                                FontSize="10"
-                                                Foreground="#27AE60"
-                                                Margin="0,3,0,0"/>
+                                                   FontSize="10"
+                                                   Foreground="#27AE60"
+                                                   Margin="0,3,0,0"/>
                                         <TextBlock Text="{Binding TotalQuantity, StringFormat='Stock: {0}g'}"
-                                                FontSize="9"
-                                                Foreground="#95A5A6"
-                                                Margin="0,3,0,0"/>
+                                                   FontSize="9"
+                                                   Foreground="#95A5A6"
+                                                   Margin="0,3,0,0"/>
                                     </StackPanel>
                                 </Border>
                             </DataTemplate>
@@ -133,17 +133,17 @@
 
                     <!-- Categories Header -->
                     <TextBlock Grid.Row="0"
-                            Text="Categories"
-                            FontSize="16"
-                            FontWeight="Bold"
-                            Foreground="#2C3E50"
-                            Padding="15"/>
+                               Text="Categories"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Foreground="#2C3E50"
+                               Padding="15"/>
 
                     <!-- Categories ListBox -->
                     <ListBox Grid.Row="1"
-                            ItemsSource="{Binding AllCategories}"
-                            SelectedItem="{Binding SelectedCategory}"
-                            Background="White">
+                             ItemsSource="{Binding AllCategories}"
+                             SelectedItem="{Binding SelectedCategory}"
+                             Background="White">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border Background="White"
@@ -152,14 +152,14 @@
                                         Padding="12">
                                     <StackPanel>
                                         <TextBlock Text="{Binding Name}"
-                                                FontSize="12"
-                                                FontWeight="Bold"
-                                                Foreground="#2C3E50"/>
+                                                   FontSize="12"
+                                                   FontWeight="Bold"
+                                                   Foreground="#2C3E50"/>
                                         <TextBlock Text="{Binding Description}"
-                                                FontSize="10"
-                                                Foreground="#7F8C8D"
-                                                TextTrimming="CharacterEllipsis"
-                                                Margin="0,3,0,0"/>
+                                                   FontSize="10"
+                                                   Foreground="#7F8C8D"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Margin="0,3,0,0"/>
                                         <Border Background="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#D4EDDA|#F8D7DA'}"
                                                 Padding="5,3"
                                                 CornerRadius="3"
@@ -167,8 +167,8 @@
                                                 HorizontalAlignment="Left"
                                                 Margin="0,5,0,0">
                                             <TextBlock FontSize="9"
-                                                    Foreground="#2C3E50"
-                                                    Text="{Binding IsActive, StringFormat='{0,Converter={StaticResource BoolToTextConverter}, ConverterParameter=Active|Inactive}'}"/>
+                                                       Foreground="#2C3E50"
+                                                       Text="{Binding IsActive, StringFormat='{0,Converter={StaticResource BoolToTextConverter}, ConverterParameter=Active|Inactive}'}"/>
                                         </Border>
                                     </StackPanel>
                                 </Border>
@@ -196,9 +196,9 @@
                                 Margin="0,0,0,15"
                                 Visibility="{Binding SuccessMessage, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                             <TextBlock Text="{Binding SuccessMessage}"
-                                    FontSize="12"
-                                    Foreground="#155724"
-                                    TextWrapping="Wrap"/>
+                                       FontSize="12"
+                                       Foreground="#155724"
+                                       TextWrapping="Wrap"/>
                         </Border>
 
                         <!-- Error Message -->
@@ -210,31 +210,31 @@
                                 Margin="0,0,0,15"
                                 Visibility="{Binding ErrorMessage, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                             <TextBlock Text="{Binding ErrorMessage}"
-                                    FontSize="12"
-                                    Foreground="#721C24"
-                                    TextWrapping="Wrap"/>
+                                       FontSize="12"
+                                       Foreground="#721C24"
+                                       TextWrapping="Wrap"/>
                         </Border>
 
                         <!-- Product Form -->
                         <StackPanel Visibility="{Binding ShowProductForm, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
                             <TextBlock Text="{Binding IsEditMode, StringFormat='{0,Converter={StaticResource BoolToTextConverter}, ConverterParameter=Edit Product|Create New Product}'}"
-                                    FontSize="18"
-                                    FontWeight="Bold"
-                                    Foreground="#2C3E50"
-                                    Margin="0,0,0,15"/>
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,15"/>
 
                             <!-- Category Selection -->
                             <TextBlock Text="Category *"
-                                    FontSize="12"
-                                    FontWeight="Bold"
-                                    Foreground="#2C3E50"
-                                    Margin="0,0,0,5"/>
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,5"/>
                             <ComboBox ItemsSource="{Binding AllCategories}"
-                                    SelectedItem="{Binding SelectedCategory}"
-                                    Background="White"
-                                    BorderBrush="#BDC3C7"
-                                    Padding="10"
-                                    Margin="0,0,0,15">
+                                      SelectedItem="{Binding SelectedCategory}"
+                                      Background="White"
+                                      BorderBrush="#BDC3C7"
+                                      Padding="10"
+                                      Margin="0,0,0,15">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Name}"/>
@@ -244,80 +244,80 @@
 
                             <!-- Product Name -->
                             <TextBlock Text="Product Name *"
-                                    FontSize="12"
-                                    FontWeight="Bold"
-                                    Foreground="#2C3E50"
-                                    Margin="0,0,0,5"/>
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,5"/>
                             <TextBox Text="{Binding ProductName, UpdateSourceTrigger=PropertyChanged}"
-                                    Background="White"
-                                    BorderBrush="#BDC3C7"
-                                    Padding="10"
-                                    Margin="0,0,0,15"/>
+                                     Background="White"
+                                     BorderBrush="#BDC3C7"
+                                     Padding="10"
+                                     Margin="0,0,0,15"/>
 
                             <!-- Description -->
                             <TextBlock Text="Description"
-                                    FontSize="12"
-                                    FontWeight="Bold"
-                                    Foreground="#2C3E50"
-                                    Margin="0,0,0,5"/>
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,5"/>
                             <TextBox Text="{Binding ProductDescription, UpdateSourceTrigger=PropertyChanged}"
-                                    Background="White"
-                                    BorderBrush="#BDC3C7"
-                                    Padding="10"
-                                    Height="60"
-                                    TextWrapping="Wrap"
-                                    AcceptsReturn="True"
-                                    VerticalScrollBarVisibility="Auto"
-                                    Margin="0,0,0,15"/>
+                                     Background="White"
+                                     BorderBrush="#BDC3C7"
+                                     Padding="10"
+                                     Height="60"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     Margin="0,0,0,15"/>
 
                             <!-- Price -->
                             <TextBlock Text="Price ($) *"
-                                    FontSize="12"
-                                    FontWeight="Bold"
-                                    Foreground="#2C3E50"
-                                    Margin="0,0,0,5"/>
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,5"/>
                             <TextBox Text="{Binding ProductPrice, UpdateSourceTrigger=PropertyChanged}"
-                                    Background="White"
-                                    BorderBrush="#BDC3C7"
-                                    Padding="10"
-                                    Margin="0,0,0,15"/>
+                                     Background="White"
+                                     BorderBrush="#BDC3C7"
+                                     Padding="10"
+                                     Margin="0,0,0,15"/>
 
                             <!-- Portion Quantity -->
                             <TextBlock Text="Portion Size (g) *"
-                                    FontSize="12"
-                                    FontWeight="Bold"
-                                    Foreground="#2C3E50"
-                                    Margin="0,0,0,5"/>
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,5"/>
                             <TextBox Text="{Binding ProductPortionQuantity, UpdateSourceTrigger=PropertyChanged}"
-                                    Background="White"
-                                    BorderBrush="#BDC3C7"
-                                    Padding="10"
-                                    Margin="0,0,0,15"/>
+                                     Background="White"
+                                     BorderBrush="#BDC3C7"
+                                     Padding="10"
+                                     Margin="0,0,0,15"/>
 
                             <!-- Total Quantity -->
                             <TextBlock Text="Total Stock (g)"
-                                    FontSize="12"
-                                    FontWeight="Bold"
-                                    Foreground="#2C3E50"
-                                    Margin="0,0,0,5"
-                                    Visibility="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}, ConverterParameter=''|Collapsed}"/>
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,5"
+                                       Visibility="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}, ConverterParameter=''|Collapsed}"/>
                             <TextBox Text="{Binding ProductTotalQuantity, UpdateSourceTrigger=PropertyChanged}"
-                                    Background="White"
-                                    BorderBrush="#BDC3C7"
-                                    Padding="10"
-                                    Margin="0,0,0,15"
-                                    Visibility="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}, ConverterParameter=''|Collapsed}"/>
+                                     Background="White"
+                                     BorderBrush="#BDC3C7"
+                                     Padding="10"
+                                     Margin="0,0,0,15"
+                                     Visibility="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}, ConverterParameter=''|Collapsed}"/>
 
                             <!-- Available Checkbox -->
                             <CheckBox Content="Available"
-                                    IsChecked="{Binding ProductIsAvailable}"
-                                    Margin="0,0,0,15"
-                                    Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}"/>
+                                      IsChecked="{Binding ProductIsAvailable}"
+                                      Margin="0,0,0,15"
+                                      Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}"/>
 
                             <!-- Buttons -->
                             <StackPanel Orientation="Horizontal"
-                                    Gap="10"
-                                    Margin="0,15,0,0">
+                                        Gap="10"
+                                        Margin="0,15,0,0">
                                 <Button Content="Save"
                                         Background="#27AE60"
                                         Foreground="White"
@@ -335,48 +335,48 @@
                         <!-- Category Form -->
                         <StackPanel Visibility="{Binding ShowCategoryForm, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
                             <TextBlock Text="{Binding IsEditMode, StringFormat='{0,Converter={StaticResource BoolToTextConverter}, ConverterParameter=Edit Category|Create New Category}'}"
-                                    FontSize="18"
-                                    FontWeight="Bold"
-                                    Foreground="#2C3E50"
-                                    Margin="0,0,0,15"/>
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,15"/>
 
                             <!-- Category Name -->
                             <TextBlock Text="Category Name *"
-                                    FontSize="12"
-                                    FontWeight="Bold"
-                                    Foreground="#2C3E50"
-                                    Margin="0,0,0,5"/>
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,5"/>
                             <TextBox Text="{Binding CategoryName, UpdateSourceTrigger=PropertyChanged}"
-                                    Background="White"
-                                    BorderBrush="#BDC3C7"
-                                    Padding="10"
-                                    Margin="0,0,0,15"/>
+                                     Background="White"
+                                     BorderBrush="#BDC3C7"
+                                     Padding="10"
+                                     Margin="0,0,0,15"/>
 
                             <!-- Description -->
                             <TextBlock Text="Description"
-                                    FontSize="12"
-                                    FontWeight="Bold"
-                                    Foreground="#2C3E50"
-                                    Margin="0,0,0,5"/>
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,5"/>
                             <TextBox Text="{Binding CategoryDescription, UpdateSourceTrigger=PropertyChanged}"
-                                    Background="White"
-                                    BorderBrush="#BDC3C7"
-                                    Padding="10"
-                                    Height="60"
-                                    TextWrapping="Wrap"
-                                    AcceptsReturn="True"
-                                    VerticalScrollBarVisibility="Auto"
-                                    Margin="0,0,0,15"/>
+                                     Background="White"
+                                     BorderBrush="#BDC3C7"
+                                     Padding="10"
+                                     Height="60"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     Margin="0,0,0,15"/>
 
                             <!-- Active Checkbox -->
                             <CheckBox Content="Active"
-                                    IsChecked="{Binding CategoryIsActive}"
-                                    Margin="0,0,0,15"/>
+                                      IsChecked="{Binding CategoryIsActive}"
+                                      Margin="0,0,0,15"/>
 
                             <!-- Buttons -->
                             <StackPanel Orientation="Horizontal"
-                                    Gap="10"
-                                    Margin="0,15,0,0">
+                                        Gap="10"
+                                        Margin="0,15,0,0">
                                 <Button Content="Save"
                                         Background="#3498DB"
                                         Foreground="White"
@@ -396,70 +396,70 @@
                             <!-- Product Details -->
                             <StackPanel Visibility="{Binding SelectedProduct, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                                 <TextBlock Text="Product Details"
-                                        FontSize="18"
-                                        FontWeight="Bold"
-                                        Foreground="#2C3E50"
-                                        Margin="0,0,0,15"/>
+                                           FontSize="18"
+                                           FontWeight="Bold"
+                                           Foreground="#2C3E50"
+                                           Margin="0,0,0,15"/>
 
                                 <TextBlock Text="{Binding SelectedProduct.Name}"
-                                        FontSize="14"
-                                        FontWeight="Bold"
-                                        Foreground="#2C3E50"
-                                        Margin="0,0,0,10"/>
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           Foreground="#2C3E50"
+                                           Margin="0,0,0,10"/>
 
                                 <StackPanel Orientation="Horizontal"
-                                        Gap="10"
-                                        Margin="0,0,0,10">
+                                            Gap="10"
+                                            Margin="0,0,0,10">
                                     <TextBlock Text="Category:"
-                                            FontSize="12"
-                                            FontWeight="Bold"/>
+                                               FontSize="12"
+                                               FontWeight="Bold"/>
                                     <TextBlock Text="{Binding SelectedProduct.Category.Name}"
-                                            FontSize="12"/>
+                                               FontSize="12"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                        Gap="10"
-                                        Margin="0,0,0,10">
+                                            Gap="10"
+                                            Margin="0,0,0,10">
                                     <TextBlock Text="Price:"
-                                            FontSize="12"
-                                            FontWeight="Bold"/>
+                                               FontSize="12"
+                                               FontWeight="Bold"/>
                                     <TextBlock Text="{Binding SelectedProduct.Price, StringFormat='${0:F2}'}"
-                                            FontSize="12"/>
+                                               FontSize="12"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                        Gap="10"
-                                        Margin="0,0,0,10">
+                                            Gap="10"
+                                            Margin="0,0,0,10">
                                     <TextBlock Text="Portion:"
-                                            FontSize="12"
-                                            FontWeight="Bold"/>
+                                               FontSize="12"
+                                               FontWeight="Bold"/>
                                     <TextBlock Text="{Binding SelectedProduct.PortionQuantity, StringFormat='{0}g'}"
-                                            FontSize="12"/>
+                                               FontSize="12"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                        Gap="10"
-                                        Margin="0,0,0,10">
+                                            Gap="10"
+                                            Margin="0,0,0,10">
                                     <TextBlock Text="Stock:"
-                                            FontSize="12"
-                                            FontWeight="Bold"/>
+                                               FontSize="12"
+                                               FontWeight="Bold"/>
                                     <TextBlock Text="{Binding SelectedProduct.TotalQuantity, StringFormat='{0}g'}"
-                                            FontSize="12"/>
+                                               FontSize="12"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                        Gap="10"
-                                        Margin="0,0,0,15">
+                                            Gap="10"
+                                            Margin="0,0,0,15">
                                     <TextBlock Text="Status:"
-                                            FontSize="12"
-                                            FontWeight="Bold"/>
+                                               FontSize="12"
+                                               FontWeight="Bold"/>
                                     <TextBlock Text="{Binding SelectedProduct.IsAvailable, StringFormat='{0,Converter={StaticResource BoolToTextConverter}, ConverterParameter=Available|Unavailable}'}"
-                                            FontSize="12"/>
+                                               FontSize="12"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                        Gap="10"
-                                        Margin="0,15,0,0">
+                                            Gap="10"
+                                            Margin="0,15,0,0">
                                     <Button Content="✏️ Edit"
                                             Background="#3498DB"
                                             Foreground="White"
@@ -476,36 +476,36 @@
                             <!-- Category Details -->
                             <StackPanel Visibility="{Binding SelectedCategory, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                                 <TextBlock Text="Category Details"
-                                        FontSize="18"
-                                        FontWeight="Bold"
-                                        Foreground="#2C3E50"
-                                        Margin="0,0,0,15"/>
+                                           FontSize="18"
+                                           FontWeight="Bold"
+                                           Foreground="#2C3E50"
+                                           Margin="0,0,0,15"/>
 
                                 <TextBlock Text="{Binding SelectedCategory.Name}"
-                                        FontSize="14"
-                                        FontWeight="Bold"
-                                        Foreground="#2C3E50"
-                                        Margin="0,0,0,10"/>
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           Foreground="#2C3E50"
+                                           Margin="0,0,0,10"/>
 
                                 <TextBlock Text="{Binding SelectedCategory.Description}"
-                                        FontSize="12"
-                                        Foreground="#7F8C8D"
-                                        TextWrapping="Wrap"
-                                        Margin="0,0,0,10"/>
+                                           FontSize="12"
+                                           Foreground="#7F8C8D"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,10"/>
 
                                 <StackPanel Orientation="Horizontal"
-                                        Gap="10"
-                                        Margin="0,0,0,15">
+                                            Gap="10"
+                                            Margin="0,0,0,15">
                                     <TextBlock Text="Status:"
-                                            FontSize="12"
-                                            FontWeight="Bold"/>
+                                               FontSize="12"
+                                               FontWeight="Bold"/>
                                     <TextBlock Text="{Binding SelectedCategory.IsActive, StringFormat='{0,Converter={StaticResource BoolToTextConverter}, ConverterParameter=Active|Inactive}'}"
-                                            FontSize="12"/>
+                                               FontSize="12"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                        Gap="10"
-                                        Margin="0,15,0,0">
+                                            Gap="10"
+                                            Margin="0,15,0,0">
                                     <Button Content="✏️ Edit"
                                             Background="#3498DB"
                                             Foreground="White"
@@ -521,12 +521,12 @@
 
                             <!-- Empty State -->
                             <TextBlock Text="Select a product or category to view details"
-                                    FontSize="14"
-                                    Foreground="#95A5A6"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Visibility="{Binding SelectedProduct, Converter={StaticResource ObjectToVisibilityConverter}, ConverterParameter=Collapsed|''}"
-                                    Margin="20"/>
+                                       FontSize="14"
+                                       Foreground="#95A5A6"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding SelectedProduct, Converter={StaticResource ObjectToVisibilityConverter}, ConverterParameter=Collapsed|''}"
+                                       Margin="20"/>
                         </StackPanel>
 
                     </StackPanel>
@@ -539,11 +539,11 @@
                 Background="#00000050"
                 Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
             <StackPanel VerticalAlignment="Center"
-                    HorizontalAlignment="Center">
+                        HorizontalAlignment="Center">
                 <TextBlock Text="Loading..."
-                        FontSize="16"
-                        Foreground="White"
-                        HorizontalAlignment="Center"/>
+                           FontSize="16"
+                           Foreground="White"
+                           HorizontalAlignment="Center"/>
             </StackPanel>
         </Border>
 

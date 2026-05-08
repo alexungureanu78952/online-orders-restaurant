@@ -16,23 +16,23 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0"
-                Background="#2C3E50"
-                Padding="20">
+                    Background="#2C3E50"
+                    Padding="20">
             <TextBlock Text="Business Reports"
-                    FontSize="28"
-                    FontWeight="Bold"
-                    Foreground="White"/>
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="White"/>
             <TextBlock Text="Generate and export reports for orders, revenue, and inventory"
-                    FontSize="14"
-                    Foreground="#ECF0F1"
-                    Margin="0,5,0,0"/>
+                       FontSize="14"
+                       Foreground="#ECF0F1"
+                       Margin="0,5,0,0"/>
         </StackPanel>
 
         <!-- Date Range & Actions -->
         <StackPanel Grid.Row="1"
-                Padding="20"
-                Background="White"
-                Margin="0,0,0,10">
+                    Padding="20"
+                    Background="White"
+                    Margin="0,0,0,10">
             <Grid Margin="0,0,0,15">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -44,35 +44,35 @@
 
                 <!-- From Date -->
                 <TextBlock Text="From Date:"
-                        FontSize="12"
-                        FontWeight="Bold"
-                        VerticalAlignment="Center"
-                        Grid.Column="0"
-                        Margin="0,0,10,0"/>
+                           FontSize="12"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           Grid.Column="0"
+                           Margin="0,0,10,0"/>
                 <DatePicker SelectedDate="{Binding ReportFromDate, UpdateSourceTrigger=PropertyChanged}"
-                        Background="White"
-                        BorderBrush="#BDC3C7"
-                        Padding="8"
-                        Grid.Column="1"/>
+                            Background="White"
+                            BorderBrush="#BDC3C7"
+                            Padding="8"
+                            Grid.Column="1"/>
 
                 <!-- To Date -->
                 <TextBlock Text="To Date:"
-                        FontSize="12"
-                        FontWeight="Bold"
-                        VerticalAlignment="Center"
-                        Grid.Column="2"
-                        Margin="20,0,10,0"/>
+                           FontSize="12"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"
+                           Grid.Column="2"
+                           Margin="20,0,10,0"/>
                 <DatePicker SelectedDate="{Binding ReportToDate, UpdateSourceTrigger=PropertyChanged}"
-                        Background="White"
-                        BorderBrush="#BDC3C7"
-                        Padding="8"
-                        Grid.Column="3"/>
+                            Background="White"
+                            BorderBrush="#BDC3C7"
+                            Padding="8"
+                            Grid.Column="3"/>
             </Grid>
 
             <!-- Report Generation Buttons -->
             <StackPanel Orientation="Horizontal"
-                    Gap="10"
-                    Margin="0,0,0,15">
+                        Gap="10"
+                        Margin="0,0,0,15">
                 <Button Content="📊 Order Summary"
                         Background="#3498DB"
                         Foreground="White"
@@ -108,8 +108,8 @@
                     Margin="0,0,0,10"
                     Visibility="{Binding SuccessMessage, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                 <TextBlock Text="{Binding SuccessMessage}"
-                        FontSize="12"
-                        Foreground="#155724"/>
+                           FontSize="12"
+                           Foreground="#155724"/>
             </Border>
 
             <Border Background="#F8D7DA"
@@ -119,23 +119,23 @@
                     Padding="12"
                     Visibility="{Binding ErrorMessage, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                 <TextBlock Text="{Binding ErrorMessage}"
-                        FontSize="12"
-                        Foreground="#721C24"
-                        TextWrapping="Wrap"/>
+                           FontSize="12"
+                           Foreground="#721C24"
+                           TextWrapping="Wrap"/>
             </Border>
         </StackPanel>
 
         <!-- Reports TabControl -->
         <TabControl Grid.Row="2"
-                SelectedIndex="{Binding SelectedReportTab}"
-                Margin="10"
-                Background="White"
-                BorderBrush="#E0E0E0"
-                BorderThickness="1">
+                    SelectedIndex="{Binding SelectedReportTab}"
+                    Margin="10"
+                    Background="White"
+                    BorderBrush="#E0E0E0"
+                    BorderThickness="1">
 
             <!-- Tab 1: Order Summary -->
             <TabItem Header="Order Summary"
-                    Padding="15,10">
+                     Padding="15,10">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -144,33 +144,33 @@
 
                     <!-- Summary Stats -->
                     <StackPanel Grid.Row="0"
-                            Orientation="Horizontal"
-                            Gap="20"
-                            Margin="0,0,0,15"
-                            Padding="15"
-                            Background="#ECF0F1"
-                            CornerRadius="4">
+                                Orientation="Horizontal"
+                                Gap="20"
+                                Margin="0,0,0,15"
+                                Padding="15"
+                                Background="#ECF0F1"
+                                CornerRadius="4">
                         <StackPanel>
                             <TextBlock Text="Total Orders"
-                                    FontSize="12"
-                                    Foreground="#7F8C8D"
-                                    FontWeight="Bold"/>
+                                       FontSize="12"
+                                       Foreground="#7F8C8D"
+                                       FontWeight="Bold"/>
                             <TextBlock Text="{Binding TotalOrdersCount, StringFormat='{0:N0}'}"
-                                    FontSize="18"
-                                    Foreground="#2C3E50"
-                                    FontWeight="Bold"
-                                    Margin="0,5,0,0"/>
+                                       FontSize="18"
+                                       Foreground="#2C3E50"
+                                       FontWeight="Bold"
+                                       Margin="0,5,0,0"/>
                         </StackPanel>
                         <StackPanel>
                             <TextBlock Text="Average Order Value"
-                                    FontSize="12"
-                                    Foreground="#7F8C8D"
-                                    FontWeight="Bold"/>
+                                       FontSize="12"
+                                       Foreground="#7F8C8D"
+                                       FontWeight="Bold"/>
                             <TextBlock Text="{Binding TotalOrdersAvgValue, StringFormat='${0:F2}'}"
-                                    FontSize="18"
-                                    Foreground="#2C3E50"
-                                    FontWeight="Bold"
-                                    Margin="0,5,0,0"/>
+                                       FontSize="18"
+                                       Foreground="#2C3E50"
+                                       FontWeight="Bold"
+                                       Margin="0,5,0,0"/>
                         </StackPanel>
                         <StackPanel HorizontalAlignment="Right">
                             <Button Content="📥 Export to CSV"
@@ -184,29 +184,29 @@
 
                     <!-- Order Summary Table -->
                     <DataGrid Grid.Row="1"
-                            ItemsSource="{Binding OrderSummaryData}"
-                            AutoGenerateColumns="False"
-                            IsReadOnly="True"
-                            CanUserAddRows="False"
-                            Background="White"
-                            RowBackground="White"
-                            AlternatingRowBackground="#F9F9F9">
+                              ItemsSource="{Binding OrderSummaryData}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              Background="White"
+                              RowBackground="White"
+                              AlternatingRowBackground="#F9F9F9">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Status"
-                                    Binding="{Binding Status}"
-                                    Width="150"/>
+                                                Binding="{Binding Status}"
+                                                Width="150"/>
                             <DataGridTextColumn Header="Order Count"
-                                    Binding="{Binding OrderCount, StringFormat='N0'}"
-                                    Width="120"/>
+                                                Binding="{Binding OrderCount, StringFormat='N0'}"
+                                                Width="120"/>
                             <DataGridTextColumn Header="Avg Value"
-                                    Binding="{Binding AvgOrderValue, StringFormat='${0:F2}'}"
-                                    Width="120"/>
+                                                Binding="{Binding AvgOrderValue, StringFormat='${0:F2}'}"
+                                                Width="120"/>
                             <DataGridTextColumn Header="First Order"
-                                    Binding="{Binding FirstOrder, StringFormat='yyyy-MM-dd'}"
-                                    Width="150"/>
+                                                Binding="{Binding FirstOrder, StringFormat='yyyy-MM-dd'}"
+                                                Width="150"/>
                             <DataGridTextColumn Header="Last Order"
-                                    Binding="{Binding LastOrder, StringFormat='yyyy-MM-dd'}"
-                                    Width="150"/>
+                                                Binding="{Binding LastOrder, StringFormat='yyyy-MM-dd'}"
+                                                Width="150"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -214,7 +214,7 @@
 
             <!-- Tab 2: Revenue Summary -->
             <TabItem Header="Revenue Report"
-                    Padding="15,10">
+                     Padding="15,10">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -223,44 +223,44 @@
 
                     <!-- Revenue Stats -->
                     <StackPanel Grid.Row="0"
-                            Orientation="Horizontal"
-                            Gap="20"
-                            Margin="0,0,0,15"
-                            Padding="15"
-                            Background="#ECF0F1"
-                            CornerRadius="4">
+                                Orientation="Horizontal"
+                                Gap="20"
+                                Margin="0,0,0,15"
+                                Padding="15"
+                                Background="#ECF0F1"
+                                CornerRadius="4">
                         <StackPanel>
                             <TextBlock Text="Total Revenue"
-                                    FontSize="12"
-                                    Foreground="#7F8C8D"
-                                    FontWeight="Bold"/>
+                                       FontSize="12"
+                                       Foreground="#7F8C8D"
+                                       FontWeight="Bold"/>
                             <TextBlock Text="{Binding TotalRevenue, StringFormat='${0:F2}'}"
-                                    FontSize="18"
-                                    Foreground="#27AE60"
-                                    FontWeight="Bold"
-                                    Margin="0,5,0,0"/>
+                                       FontSize="18"
+                                       Foreground="#27AE60"
+                                       FontWeight="Bold"
+                                       Margin="0,5,0,0"/>
                         </StackPanel>
                         <StackPanel>
                             <TextBlock Text="Total Shipping"
-                                    FontSize="12"
-                                    Foreground="#7F8C8D"
-                                    FontWeight="Bold"/>
+                                       FontSize="12"
+                                       Foreground="#7F8C8D"
+                                       FontWeight="Bold"/>
                             <TextBlock Text="{Binding TotalShippingFee, StringFormat='${0:F2}'}"
-                                    FontSize="18"
-                                    Foreground="#2C3E50"
-                                    FontWeight="Bold"
-                                    Margin="0,5,0,0"/>
+                                       FontSize="18"
+                                       Foreground="#2C3E50"
+                                       FontWeight="Bold"
+                                       Margin="0,5,0,0"/>
                         </StackPanel>
                         <StackPanel>
                             <TextBlock Text="Total Discounts"
-                                    FontSize="12"
-                                    Foreground="#7F8C8D"
-                                    FontWeight="Bold"/>
+                                       FontSize="12"
+                                       Foreground="#7F8C8D"
+                                       FontWeight="Bold"/>
                             <TextBlock Text="{Binding TotalDiscount, StringFormat='${0:F2}'}"
-                                    FontSize="18"
-                                    Foreground="#E74C3C"
-                                    FontWeight="Bold"
-                                    Margin="0,5,0,0"/>
+                                       FontSize="18"
+                                       Foreground="#E74C3C"
+                                       FontWeight="Bold"
+                                       Margin="0,5,0,0"/>
                         </StackPanel>
                         <StackPanel HorizontalAlignment="Right">
                             <Button Content="📥 Export to CSV"
@@ -274,35 +274,35 @@
 
                     <!-- Revenue Summary Table -->
                     <DataGrid Grid.Row="1"
-                            ItemsSource="{Binding RevenueSummaryData}"
-                            AutoGenerateColumns="False"
-                            IsReadOnly="True"
-                            CanUserAddRows="False"
-                            Background="White"
-                            RowBackground="White"
-                            AlternatingRowBackground="#F9F9F9">
+                              ItemsSource="{Binding RevenueSummaryData}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              Background="White"
+                              RowBackground="White"
+                              AlternatingRowBackground="#F9F9F9">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Status"
-                                    Binding="{Binding Status}"
-                                    Width="120"/>
+                                                Binding="{Binding Status}"
+                                                Width="120"/>
                             <DataGridTextColumn Header="Orders"
-                                    Binding="{Binding OrderCount, StringFormat='N0'}"
-                                    Width="80"/>
+                                                Binding="{Binding OrderCount, StringFormat='N0'}"
+                                                Width="80"/>
                             <DataGridTextColumn Header="Subtotal"
-                                    Binding="{Binding TotalSubtotal, StringFormat='${0:F2}'}"
-                                    Width="100"/>
+                                                Binding="{Binding TotalSubtotal, StringFormat='${0:F2}'}"
+                                                Width="100"/>
                             <DataGridTextColumn Header="Shipping"
-                                    Binding="{Binding TotalShipping, StringFormat='${0:F2}'}"
-                                    Width="100"/>
+                                                Binding="{Binding TotalShipping, StringFormat='${0:F2}'}"
+                                                Width="100"/>
                             <DataGridTextColumn Header="Discount"
-                                    Binding="{Binding TotalDiscount, StringFormat='${0:F2}'}"
-                                    Width="100"/>
+                                                Binding="{Binding TotalDiscount, StringFormat='${0:F2}'}"
+                                                Width="100"/>
                             <DataGridTextColumn Header="Total Revenue"
-                                    Binding="{Binding TotalRevenue, StringFormat='${0:F2}'}"
-                                    Width="120"/>
+                                                Binding="{Binding TotalRevenue, StringFormat='${0:F2}'}"
+                                                Width="120"/>
                             <DataGridTextColumn Header="Avg Order"
-                                    Binding="{Binding AvgOrderTotal, StringFormat='${0:F2}'}"
-                                    Width="100"/>
+                                                Binding="{Binding AvgOrderTotal, StringFormat='${0:F2}'}"
+                                                Width="100"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -310,7 +310,7 @@
 
             <!-- Tab 3: Inventory Summary -->
             <TabItem Header="Inventory Status"
-                    Padding="15,10">
+                     Padding="15,10">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -319,13 +319,13 @@
 
                     <!-- Inventory Actions -->
                     <StackPanel Grid.Row="0"
-                            Orientation="Horizontal"
-                            Gap="10"
-                            Margin="0,0,0,15"
-                            Padding="15"
-                            Background="#ECF0F1"
-                            CornerRadius="4"
-                            HorizontalAlignment="Right">
+                                Orientation="Horizontal"
+                                Gap="10"
+                                Margin="0,0,0,15"
+                                Padding="15"
+                                Background="#ECF0F1"
+                                CornerRadius="4"
+                                HorizontalAlignment="Right">
                         <Button Content="📥 Export to CSV"
                                 Background="#E67E22"
                                 Foreground="White"
@@ -336,35 +336,35 @@
 
                     <!-- Inventory Table -->
                     <DataGrid Grid.Row="1"
-                            ItemsSource="{Binding InventorySummaryData}"
-                            AutoGenerateColumns="False"
-                            IsReadOnly="True"
-                            CanUserAddRows="False"
-                            Background="White"
-                            RowBackground="White"
-                            AlternatingRowBackground="#F9F9F9">
+                              ItemsSource="{Binding InventorySummaryData}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              Background="White"
+                              RowBackground="White"
+                              AlternatingRowBackground="#F9F9F9">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Category"
-                                    Binding="{Binding CategoryName}"
-                                    Width="150"/>
+                                                Binding="{Binding CategoryName}"
+                                                Width="150"/>
                             <DataGridTextColumn Header="Products"
-                                    Binding="{Binding ProductCount, StringFormat='N0'}"
-                                    Width="80"/>
+                                                Binding="{Binding ProductCount, StringFormat='N0'}"
+                                                Width="80"/>
                             <DataGridTextColumn Header="Total Stock"
-                                    Binding="{Binding TotalStock, StringFormat='{0:N0}g'}"
-                                    Width="100"/>
+                                                Binding="{Binding TotalStock, StringFormat='{0:N0}g'}"
+                                                Width="100"/>
                             <DataGridTextColumn Header="Avg Stock"
-                                    Binding="{Binding AvgStockPerProduct, StringFormat='{0:N0}g'}"
-                                    Width="100"/>
+                                                Binding="{Binding AvgStockPerProduct, StringFormat='{0:N0}g'}"
+                                                Width="100"/>
                             <DataGridTextColumn Header="Min"
-                                    Binding="{Binding MinStock, StringFormat='{0:N0}g'}"
-                                    Width="80"/>
+                                                Binding="{Binding MinStock, StringFormat='{0:N0}g'}"
+                                                Width="80"/>
                             <DataGridTextColumn Header="Max"
-                                    Binding="{Binding MaxStock, StringFormat='{0:N0}g'}"
-                                    Width="80"/>
+                                                Binding="{Binding MaxStock, StringFormat='{0:N0}g'}"
+                                                Width="80"/>
                             <DataGridTextColumn Header="Low Stock"
-                                    Binding="{Binding LowStockCount, StringFormat='N0'}"
-                                    Width="80"/>
+                                                Binding="{Binding LowStockCount, StringFormat='N0'}"
+                                                Width="80"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -372,7 +372,7 @@
 
             <!-- Tab 4: Order Details -->
             <TabItem Header="Order Details"
-                    Padding="15,10">
+                     Padding="15,10">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -381,13 +381,13 @@
 
                     <!-- Order Details Actions -->
                     <StackPanel Grid.Row="0"
-                            Orientation="Horizontal"
-                            Gap="10"
-                            Margin="0,0,0,15"
-                            Padding="15"
-                            Background="#ECF0F1"
-                            CornerRadius="4"
-                            HorizontalAlignment="Right">
+                                Orientation="Horizontal"
+                                Gap="10"
+                                Margin="0,0,0,15"
+                                Padding="15"
+                                Background="#ECF0F1"
+                                CornerRadius="4"
+                                HorizontalAlignment="Right">
                         <Button Content="📥 Export to CSV"
                                 Background="#9B59B6"
                                 Foreground="White"
@@ -398,44 +398,44 @@
 
                     <!-- Order Details Table -->
                     <DataGrid Grid.Row="1"
-                            ItemsSource="{Binding OrderDetailsData}"
-                            AutoGenerateColumns="False"
-                            IsReadOnly="True"
-                            CanUserAddRows="False"
-                            Background="White"
-                            RowBackground="White"
-                            AlternatingRowBackground="#F9F9F9">
+                              ItemsSource="{Binding OrderDetailsData}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              Background="White"
+                              RowBackground="White"
+                              AlternatingRowBackground="#F9F9F9">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Order Code"
-                                    Binding="{Binding OrderCode}"
-                                    Width="100"/>
+                                                Binding="{Binding OrderCode}"
+                                                Width="100"/>
                             <DataGridTextColumn Header="Customer"
-                                    Binding="{Binding CustomerName}"
-                                    Width="150"/>
+                                                Binding="{Binding CustomerName}"
+                                                Width="150"/>
                             <DataGridTextColumn Header="Email"
-                                    Binding="{Binding Email}"
-                                    Width="180"/>
+                                                Binding="{Binding Email}"
+                                                Width="180"/>
                             <DataGridTextColumn Header="Date"
-                                    Binding="{Binding CreatedDate, StringFormat='yyyy-MM-dd HH:mm'}"
-                                    Width="150"/>
+                                                Binding="{Binding CreatedDate, StringFormat='yyyy-MM-dd HH:mm'}"
+                                                Width="150"/>
                             <DataGridTextColumn Header="Status"
-                                    Binding="{Binding Status}"
-                                    Width="120"/>
+                                                Binding="{Binding Status}"
+                                                Width="120"/>
                             <DataGridTextColumn Header="Subtotal"
-                                    Binding="{Binding SubTotal, StringFormat='${0:F2}'}"
-                                    Width="80"/>
+                                                Binding="{Binding SubTotal, StringFormat='${0:F2}'}"
+                                                Width="80"/>
                             <DataGridTextColumn Header="Shipping"
-                                    Binding="{Binding ShippingFee, StringFormat='${0:F2}'}"
-                                    Width="80"/>
+                                                Binding="{Binding ShippingFee, StringFormat='${0:F2}'}"
+                                                Width="80"/>
                             <DataGridTextColumn Header="Discount"
-                                    Binding="{Binding DiscountAmount, StringFormat='${0:F2}'}"
-                                    Width="80"/>
+                                                Binding="{Binding DiscountAmount, StringFormat='${0:F2}'}"
+                                                Width="80"/>
                             <DataGridTextColumn Header="Total"
-                                    Binding="{Binding Total, StringFormat='${0:F2}'}"
-                                    Width="80"/>
+                                                Binding="{Binding Total, StringFormat='${0:F2}'}"
+                                                Width="80"/>
                             <DataGridTextColumn Header="Items"
-                                    Binding="{Binding ItemCount, StringFormat='N0'}"
-                                    Width="60"/>
+                                                Binding="{Binding ItemCount, StringFormat='N0'}"
+                                                Width="60"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -447,11 +447,11 @@
                 Background="#00000050"
                 Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
             <StackPanel VerticalAlignment="Center"
-                    HorizontalAlignment="Center">
+                        HorizontalAlignment="Center">
                 <TextBlock Text="Generating report..."
-                        FontSize="16"
-                        Foreground="White"
-                        HorizontalAlignment="Center"/>
+                           FontSize="16"
+                           Foreground="White"
+                           HorizontalAlignment="Center"/>
             </StackPanel>
         </Border>
 

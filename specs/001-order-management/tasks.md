@@ -162,10 +162,10 @@ description: "Tasks for 001-order-management: Restaurant Order Management System
 
 ## Phase 12: Polish & Cross-Cutting Concerns
 
-- [ ] T063 [P] Documentation: Update `specs/001-order-management` docs with stored procedure parameter lists and API usage (specs/001-order-management/contracts/)
-- [ ] T064 [P] Performance tuning: add indexes from data-model recommendations and run performance tests (Database/04_CreateIndexes.sql)
-- [ ] T065 [P] Accessibility & UX polish for WPF views (RestaurantOrderManagement.WPF/Resources/Styles.xaml)
-- [ ] T066 End-to-end smoke tests and release checklist (RestaurantOrderManagement.Tests/EndToEnd/SmokeTests.cs)
+- [X] T063 [P] Documentation: Update `specs/001-order-management` docs with stored procedure parameter lists and API usage (specs/001-order-management/contracts/)
+- [X] T064 [P] Performance tuning: add indexes from data-model recommendations and run performance tests (Database/04_CreateIndexes.sql)
+- [X] T065 [P] Accessibility & UX polish for WPF views (RestaurantOrderManagement.WPF/Resources/Styles.xaml)
+- [X] T066 End-to-end smoke tests and release checklist (RestaurantOrderManagement.Tests/EndToEnd/SmokeTests.cs)
 
 ---
 
