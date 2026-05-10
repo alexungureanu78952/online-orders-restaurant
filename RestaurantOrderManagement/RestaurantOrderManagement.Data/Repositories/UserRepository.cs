@@ -26,9 +26,15 @@ namespace RestaurantOrderManagement.Data.Repositories
         public virtual async Task<int> CreateUserAsync(string email, string passwordHash, string firstName, string lastName,
             string phoneNumber = null, string deliveryAddress = null, string role = "Client")
         {
-            var result = await _context.Database.ExecuteScalarAsync(
-                "EXEC dbo.sp_CreateUser @Email = {0}, @PasswordHash = {1}, @FirstName = {2}, @LastName = {3}, @PhoneNumber = {4}, @DeliveryAddress = {5}, @Role = {6}",
-                email, passwordHash, firstName, lastName, phoneNumber, deliveryAddress, role);
+            var result = await ExecuteScalarStoredProcedureAsync(
+                "dbo.sp_CreateUser",
+                ("@Email", email),
+                ("@PasswordHash", passwordHash),
+                ("@FirstName", firstName),
+                ("@LastName", lastName),
+                ("@PhoneNumber", phoneNumber),
+                ("@DeliveryAddress", deliveryAddress),
+                ("@Role", role));
             return result != null ? Convert.ToInt32(result) : 0;
         }
 
@@ -37,7 +43,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// </summary>
         public virtual async Task<bool> UpdateLastLoginDateAsync(int userId)
         {
-            var result = await _context.Database.ExecuteAsync(
+            var result = await _context.Database.ExecuteSqlRawAsync(
                 "EXEC dbo.sp_UpdateLastLoginDate @UserId = {0}",
                 userId);
             return result > 0;

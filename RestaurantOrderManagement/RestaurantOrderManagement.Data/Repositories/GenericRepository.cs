@@ -1,3 +1,4 @@
+using System.Data;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using RestaurantOrderManagement.Data.Context;
@@ -55,6 +56,37 @@ namespace RestaurantOrderManagement.Data.Repositories
         public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();
+        }
+
+        protected async Task<object?> ExecuteScalarStoredProcedureAsync(string storedProcedure, params (string Name, object? Value)[] parameters)
+        {
+            var connection = _context.Database.GetDbConnection();
+            var shouldClose = connection.State != ConnectionState.Open;
+
+            if (shouldClose)
+                await connection.OpenAsync();
+
+            try
+            {
+                using var command = connection.CreateCommand();
+                command.CommandText = storedProcedure;
+                command.CommandType = CommandType.StoredProcedure;
+
+                foreach (var (name, value) in parameters)
+                {
+                    var parameter = command.CreateParameter();
+                    parameter.ParameterName = name;
+                    parameter.Value = value ?? DBNull.Value;
+                    command.Parameters.Add(parameter);
+                }
+
+                return await command.ExecuteScalarAsync();
+            }
+            finally
+            {
+                if (shouldClose)
+                    await connection.CloseAsync();
+            }
         }
     }
 }

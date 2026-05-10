@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RestaurantOrderManagement.Services;
 using RestaurantOrderManagement.Services.DTOs;
+using RestaurantOrderManagement.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

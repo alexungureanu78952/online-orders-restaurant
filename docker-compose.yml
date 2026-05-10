@@ -1,102 +1,38 @@
-version: '3.8'
-
-# Docker Compose Configuration for Restaurant Order Management System
-# Phase 12: Complete containerization with best practices
-# Services: SQL Server database + .NET application services layer
-
 services:
-
   # ===================================================
   # SQL Server Database Service
   # ===================================================
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: restaurant-db
+    # REZOLVARE EROARE 0x80070005: Rulăm ca root pentru a avea drepturi pe volume
+    user: root
     environment:
       ACCEPT_EULA: 'Y'
-      SA_PASSWORD: ${DATABASE_PASSWORD:-YourStrongPassword123!}
+      SA_PASSWORD: "YourStrongPassword123!" # Parola default (trebuie să fie complexă)
       MSSQL_PID: Developer
-      MSSQL_DATA_DIR: /var/opt/mssql/data
-      MSSQL_LOG_DIR: /var/opt/mssql/log
-      MSSQL_BACKUP_DIR: /var/opt/mssql/backup
     ports:
-      - "${DATABASE_PORT:-1433}:1433"
+      - "1433:1433"
     volumes:
-      # Data persistence
+      # Data persistence folosind Named Volumes (gestionate de Docker)
       - restaurant_data:/var/opt/mssql/data
       - restaurant_logs:/var/opt/mssql/log
       - restaurant_backup:/var/opt/mssql/backup
-      # Database initialization scripts
+
+      # Mapare scripturi de inițializare (asigură-te că folderul ./Database există lângă acest fișier)
       - ./Database/02_CreateTables.sql:/scripts/02_CreateTables.sql:ro
       - ./Database/03_CreateStoredProcedures.sql:/scripts/03_CreateStoredProcedures.sql:ro
       - ./Database/04_CreateIndexes.sql:/scripts/04_CreateIndexes.sql:ro
     healthcheck:
-      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${DATABASE_PASSWORD:-YourStrongPassword123!}", "-Q", "SELECT 1" ]
-      interval: 10s
-      timeout: 5s
+      # Am schimbat calea către sqlcmd aici
+      test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "127.0.0.1", "-U", "sa", "-P", "YourStrongPassword123!", "-C", "-Q", "SELECT 1" ]
+      interval: 20s
+      timeout: 10s
       retries: 5
-      start_period: 40s
+      start_period: 60s
     networks:
       - restaurant-network
     restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    labels:
-      - "com.example.description=Restaurant Order Management - SQL Server Database"
-      - "com.example.version=2019"
-
-  # ===================================================
-  # Application Services Layer
-  # ===================================================
-  app-services:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: restaurant-app-services
-    depends_on:
-      sqlserver:
-        condition: service_healthy
-    environment:
-      # Database connection
-      DATABASE_SERVER: sqlserver
-      DATABASE_PORT: 1433
-      DATABASE_NAME: RestaurantOrderManagement
-      DATABASE_USERNAME: ${DATABASE_USERNAME:-sa}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-YourStrongPassword123!}
-
-      # Application settings
-      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
-      DOTNET_EnableDiagnostics: "0"
-      DOTNET_GCHeapCount: 4
-      DOTNET_GCHeapAffinitizeMask: 15
-
-      # Connection pool settings
-      ConnectionStringRetries: 5
-      ConnectionStringTimeout: 30
-    volumes:
-      # Logs persistence
-      - restaurant_app_logs:/app/logs
-      # Configuration files
-      - ./appsettings.json:/app/config/appsettings.json:ro
-      - ./RestaurantConfig.xml:/app/config/RestaurantConfig.xml:ro
-    ports:
-      # Expose service ports if needed for API/testing
-      - "5000:5000"
-      - "5001:5001"
-    networks:
-      - restaurant-network
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"
-    labels:
-      - "com.example.description=Restaurant Order Management - Application Services"
-      - "com.example.version=1.0.0"
 
 # ===================================================
 # Networks
@@ -104,40 +40,11 @@ services:
 networks:
   restaurant-network:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.28.0.0/16
 
 # ===================================================
-# Volumes for Data Persistence
+# Volumes
 # ===================================================
 volumes:
-  # SQL Server data persistence
   restaurant_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${DATA_PATH:-./docker-volumes/data}
-
   restaurant_logs:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${DATA_PATH:-./docker-volumes/logs}
-
   restaurant_backup:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${DATA_PATH:-./docker-volumes/backup}
-
-  # Application logs
-  restaurant_app_logs:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${DATA_PATH:-./docker-volumes/app-logs}

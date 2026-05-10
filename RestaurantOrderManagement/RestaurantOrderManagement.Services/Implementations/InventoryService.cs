@@ -9,10 +9,10 @@ namespace RestaurantOrderManagement.Services.Implementations
     /// </summary>
     public class InventoryService : IInventoryService
     {
-        private readonly IProductRepository _productRepository;
+        private readonly ProductRepository _productRepository;
         private readonly IConfigurationService _configurationService;
 
-        public InventoryService(IProductRepository productRepository, IConfigurationService configurationService)
+        public InventoryService(ProductRepository productRepository, IConfigurationService configurationService)
         {
             _productRepository = productRepository;
             _configurationService = configurationService;

@@ -428,10 +428,6 @@
                 Value="12"/>
         <Setter Property="Margin"
                 Value="8"/>
-        <Setter Property="BorderThickness"
-                Value="1"/>
-        <Setter Property="BorderBrush"
-                Value="#C3E6CB"/>
         <Setter Property="FontSize"
                 Value="13"/>
         <Setter Property="TextWrapping"
@@ -450,10 +446,6 @@
                 Value="12"/>
         <Setter Property="Margin"
                 Value="8"/>
-        <Setter Property="BorderThickness"
-                Value="1"/>
-        <Setter Property="BorderBrush"
-                Value="#F5C6CB"/>
         <Setter Property="FontSize"
                 Value="13"/>
         <Setter Property="TextWrapping"
@@ -472,10 +464,6 @@
                 Value="12"/>
         <Setter Property="Margin"
                 Value="8"/>
-        <Setter Property="BorderThickness"
-                Value="1"/>
-        <Setter Property="BorderBrush"
-                Value="#FFEEBA"/>
         <Setter Property="FontSize"
                 Value="13"/>
         <Setter Property="TextWrapping"
@@ -494,10 +482,6 @@
                 Value="12"/>
         <Setter Property="Margin"
                 Value="8"/>
-        <Setter Property="BorderThickness"
-                Value="1"/>
-        <Setter Property="BorderBrush"
-                Value="#BEE5EB"/>
         <Setter Property="FontSize"
                 Value="13"/>
         <Setter Property="TextWrapping"

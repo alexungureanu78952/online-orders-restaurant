@@ -31,7 +31,7 @@ namespace RestaurantOrderManagement.Services.Implementations
         /// </summary>
         public async Task<IEnumerable<CategoryDTO>> GetCategoriesAsync()
         {
-            var categories = await _productRepository.GetAllAsync(); // Gets from context
+            var categories = await _productRepository.GetCategoriesAsync();
 
             // Map to DTOs without IDs
             return categories.Select(c => new CategoryDTO
@@ -83,8 +83,8 @@ namespace RestaurantOrderManagement.Services.Implementations
         {
             try
             {
-                var categories = await _productRepository.GetAllAsync();
-                return categories.Where(c => !c.IsActive == false).OrderBy(c => c.Name).ToList();
+                var categories = await _productRepository.GetAllCategoriesAsync();
+                return categories.OrderBy(c => c.Name).ToList();
             }
             catch (Exception ex)
             {

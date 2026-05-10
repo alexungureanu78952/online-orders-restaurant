@@ -1,0 +1,51 @@
+# Build output
+bin/
+obj/
+**/bin/
+**/obj/
+publish/
+artifacts/
+
+# Visual Studio / Rider / VS Code local state
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Logs and diagnostics
+*.log
+*.binlog
+TestResults/
+coverage/
+coverage.*/
+*.coverage
+*.coveragexml
+*.trx
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# Docker/local database volume data
+docker-volumes/
+
+# OS metadata
+Thumbs.db
+Desktop.ini
+.DS_Store

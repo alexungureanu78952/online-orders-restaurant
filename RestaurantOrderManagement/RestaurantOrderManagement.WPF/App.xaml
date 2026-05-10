@@ -1,7 +1,61 @@
 <Application x:Class="RestaurantOrderManagement.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="MainWindow.xaml">
+             xmlns:converters="clr-namespace:RestaurantOrderManagement.Converters"
+             xmlns:vm="clr-namespace:RestaurantOrderManagement.ViewModels"
+             xmlns:wpfVm="clr-namespace:RestaurantOrderManagement.WPF.ViewModels"
+             xmlns:views="clr-namespace:RestaurantOrderManagement.Views"
+             xmlns:wpfViews="clr-namespace:RestaurantOrderManagement.WPF.Views">
     <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+            <converters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/>
+            <converters:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter"/>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+            <converters:BoolToTextConverter x:Key="BoolToTextConverter"/>
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+            <converters:StringEqualsConverter x:Key="StringEqualsConverter"/>
+
+            <DataTemplate DataType="{x:Type vm:MenuBrowseViewModel}">
+                <views:MenuBrowseView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:SearchViewModel}">
+                <views:SearchView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:RegistrationViewModel}">
+                <views:RegistrationView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type wpfVm:OrderCartViewModel}">
+                <wpfViews:OrderCartView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type wpfVm:OrderHistoryViewModel}">
+                <wpfViews:OrderHistoryView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type wpfVm:OrderManagementViewModel}">
+                <wpfViews:OrderManagementView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type wpfVm:ProductManagementViewModel}">
+                <wpfViews:ProductManagementView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type wpfVm:InventoryViewModel}">
+                <wpfViews:InventoryView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type wpfVm:ReportsViewModel}">
+                <wpfViews:ReportsView/>
+            </DataTemplate>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

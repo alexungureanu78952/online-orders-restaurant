@@ -17,8 +17,7 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0"
-                Background="#2C3E50"
-                Padding="20">
+                Background="#2C3E50">
             <TextBlock Text="Restaurant Menu"
                     FontSize="28"
                     FontWeight="Bold"
@@ -31,7 +30,6 @@
 
         <!-- Category Selection and Search -->
         <Grid Grid.Row="1"
-                Padding="20"
                 Background="White"
                 Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
@@ -102,7 +100,6 @@
                             <StackPanel VerticalAlignment="Stretch">
                                 <!-- Product Image -->
                                 <Rectangle Height="140"
-                                        Fill="#ECF0F1"
                                         Margin="0,0,0,10"
                                         VerticalAlignment="Top">
                                     <!-- In real app, bind to first ImageUrl from ImageUrls collection -->
@@ -113,7 +110,7 @@
                                 </Rectangle>
 
                                 <!-- Product Info -->
-                                <StackPanel Padding="15,0,15,10"
+                                <StackPanel
                                         VerticalAlignment="Stretch">
                                     <!-- Product Code (not ID) -->
                                     <TextBlock Text="{Binding DisplayCode}"
@@ -137,7 +134,7 @@
                                             Margin="0,0,0,5"/>
 
                                     <!-- Portion Size -->
-                                    <TextBlock Text="{Binding PortionQuantity, StringFormat='Portion: {0}g'}"
+                                    <TextBlock Text="{Binding PortionQuantity, StringFormat='{}Portion: {0}g'}"
                                                FontSize="10"
                                             Foreground="#95A5A6"
                                             Margin="0,0,0,5"/>

@@ -26,7 +26,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         public async Task<bool> UpdateConfigurationAsync(decimal? minOrderForFreeShipping, decimal? shippingFee,
             decimal? largeOrderDiscountThreshold, decimal? largeOrderDiscountPercent, int? lowStockThreshold)
         {
-            var result = await _context.Database.ExecuteAsync(
+            var result = await _context.Database.ExecuteSqlRawAsync(
                 "EXEC dbo.sp_UpdateConfiguration @MinOrderForFreeShipping = {0}, @ShippingFee = {1}, @LargeOrderDiscountThreshold = {2}, @LargeOrderDiscountPercent = {3}, @LowStockThreshold = {4}",
                 minOrderForFreeShipping, shippingFee, largeOrderDiscountThreshold, largeOrderDiscountPercent, lowStockThreshold);
             return result > 0;

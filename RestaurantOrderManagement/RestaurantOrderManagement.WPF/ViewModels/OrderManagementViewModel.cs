@@ -67,16 +67,17 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 if (StatusFilter == "active")
                 {
                     // Active orders: not delivered and not cancelled
-                    orders = await _orderService.GetAllOrdersAsync(status: null, limit: 500);
+                    orders = await _orderService.GetAllOrdersAsync(limit: 500);
                     orders = orders.Where(o => o.Status != "livrata" && o.Status != "anulata");
                 }
                 else if (StatusFilter == "all")
                 {
-                    orders = await _orderService.GetAllOrdersAsync(status: null, limit: 500);
+                    orders = await _orderService.GetAllOrdersAsync(limit: 500);
                 }
                 else
                 {
-                    orders = await _orderService.GetAllOrdersAsync(status: StatusFilter, limit: 500);
+                    orders = await _orderService.GetAllOrdersAsync(limit: 500);
+                    orders = orders.Where(o => o.Status == StatusFilter);
                 }
 
                 AllOrders.Clear();

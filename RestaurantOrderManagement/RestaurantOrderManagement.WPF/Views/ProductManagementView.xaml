@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="800"
              d:DesignWidth="1400"
@@ -16,9 +17,8 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0"
-                    Background="#2C3E50"
-                    Padding="20">
-            <TextBlock Text="Product & Category Management"
+                    Background="#2C3E50">
+            <TextBlock Text="Product &amp; Category Management"
                        FontSize="28"
                        FontWeight="Bold"
                        Foreground="White"/>
@@ -30,11 +30,9 @@
 
         <!-- Action Buttons -->
         <StackPanel Grid.Row="1"
-                    Padding="20"
                     Background="White"
                     Margin="0,0,0,10"
-                    Orientation="Horizontal"
-                    Gap="10">
+                    Orientation="Horizontal">
             <Button Content="➕ New Product"
                     Background="#27AE60"
                     Foreground="White"
@@ -168,7 +166,7 @@
                                                 Margin="0,5,0,0">
                                             <TextBlock FontSize="9"
                                                        Foreground="#2C3E50"
-                                                       Text="{Binding IsActive, StringFormat='{0,Converter={StaticResource BoolToTextConverter}, ConverterParameter=Active|Inactive}'}"/>
+                                                       Text="{Binding IsActive, Converter={StaticResource BoolToTextConverter}, ConverterParameter=Active|Inactive}"/>
                                         </Border>
                                     </StackPanel>
                                 </Border>
@@ -185,7 +183,7 @@
                     BorderThickness="1"
                     CornerRadius="4">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel Padding="20">
+                    <StackPanel>
 
                         <!-- Success Message -->
                         <Border Background="#D4EDDA"
@@ -217,7 +215,7 @@
 
                         <!-- Product Form -->
                         <StackPanel Visibility="{Binding ShowProductForm, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
-                            <TextBlock Text="{Binding IsEditMode, StringFormat='{0,Converter={StaticResource BoolToTextConverter}, ConverterParameter=Edit Product|Create New Product}'}"
+                            <TextBlock Text="{Binding IsEditMode, Converter={StaticResource BoolToTextConverter}, ConverterParameter=Edit Product|Create New Product}"
                                        FontSize="18"
                                        FontWeight="Bold"
                                        Foreground="#2C3E50"
@@ -300,13 +298,13 @@
                                        FontWeight="Bold"
                                        Foreground="#2C3E50"
                                        Margin="0,0,0,5"
-                                       Visibility="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}, ConverterParameter=''|Collapsed}"/>
+                                       Visibility="{Binding IsEditMode, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                             <TextBox Text="{Binding ProductTotalQuantity, UpdateSourceTrigger=PropertyChanged}"
                                      Background="White"
                                      BorderBrush="#BDC3C7"
                                      Padding="10"
                                      Margin="0,0,0,15"
-                                     Visibility="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}, ConverterParameter=''|Collapsed}"/>
+                                     Visibility="{Binding IsEditMode, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
 
                             <!-- Available Checkbox -->
                             <CheckBox Content="Available"
@@ -316,7 +314,6 @@
 
                             <!-- Buttons -->
                             <StackPanel Orientation="Horizontal"
-                                        Gap="10"
                                         Margin="0,15,0,0">
                                 <Button Content="Save"
                                         Background="#27AE60"
@@ -334,7 +331,7 @@
 
                         <!-- Category Form -->
                         <StackPanel Visibility="{Binding ShowCategoryForm, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
-                            <TextBlock Text="{Binding IsEditMode, StringFormat='{0,Converter={StaticResource BoolToTextConverter}, ConverterParameter=Edit Category|Create New Category}'}"
+                            <TextBlock Text="{Binding IsEditMode, Converter={StaticResource BoolToTextConverter}, ConverterParameter=Edit Category|Create New Category}"
                                        FontSize="18"
                                        FontWeight="Bold"
                                        Foreground="#2C3E50"
@@ -375,7 +372,6 @@
 
                             <!-- Buttons -->
                             <StackPanel Orientation="Horizontal"
-                                        Gap="10"
                                         Margin="0,15,0,0">
                                 <Button Content="Save"
                                         Background="#3498DB"
@@ -392,7 +388,7 @@
                         </StackPanel>
 
                         <!-- Details Panel (no form) -->
-                        <StackPanel Visibility="{Binding ShowProductForm, Converter={StaticResource InverseBoolConverter}, ConverterParameter=''|Collapsed}">
+                        <StackPanel Visibility="{Binding ShowProductForm, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                             <!-- Product Details -->
                             <StackPanel Visibility="{Binding SelectedProduct, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                                 <TextBlock Text="Product Details"
@@ -408,7 +404,6 @@
                                            Margin="0,0,0,10"/>
 
                                 <StackPanel Orientation="Horizontal"
-                                            Gap="10"
                                             Margin="0,0,0,10">
                                     <TextBlock Text="Category:"
                                                FontSize="12"
@@ -418,7 +413,6 @@
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                            Gap="10"
                                             Margin="0,0,0,10">
                                     <TextBlock Text="Price:"
                                                FontSize="12"
@@ -428,37 +422,33 @@
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                            Gap="10"
                                             Margin="0,0,0,10">
                                     <TextBlock Text="Portion:"
                                                FontSize="12"
                                                FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding SelectedProduct.PortionQuantity, StringFormat='{0}g'}"
+                                    <TextBlock Text="{Binding SelectedProduct.PortionQuantity, StringFormat='{}{0}g'}"
                                                FontSize="12"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                            Gap="10"
                                             Margin="0,0,0,10">
                                     <TextBlock Text="Stock:"
                                                FontSize="12"
                                                FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding SelectedProduct.TotalQuantity, StringFormat='{0}g'}"
+                                    <TextBlock Text="{Binding SelectedProduct.TotalQuantity, StringFormat='{}{0}g'}"
                                                FontSize="12"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                            Gap="10"
                                             Margin="0,0,0,15">
                                     <TextBlock Text="Status:"
                                                FontSize="12"
                                                FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding SelectedProduct.IsAvailable, StringFormat='{0,Converter={StaticResource BoolToTextConverter}, ConverterParameter=Available|Unavailable}'}"
+                                    <TextBlock Text="{Binding SelectedProduct.IsAvailable, Converter={StaticResource BoolToTextConverter}, ConverterParameter=Available|Unavailable}"
                                                FontSize="12"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                            Gap="10"
                                             Margin="0,15,0,0">
                                     <Button Content="✏️ Edit"
                                             Background="#3498DB"
@@ -494,17 +484,15 @@
                                            Margin="0,0,0,10"/>
 
                                 <StackPanel Orientation="Horizontal"
-                                            Gap="10"
                                             Margin="0,0,0,15">
                                     <TextBlock Text="Status:"
                                                FontSize="12"
                                                FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding SelectedCategory.IsActive, StringFormat='{0,Converter={StaticResource BoolToTextConverter}, ConverterParameter=Active|Inactive}'}"
+                                    <TextBlock Text="{Binding SelectedCategory.IsActive, Converter={StaticResource BoolToTextConverter}, ConverterParameter=Active|Inactive}"
                                                FontSize="12"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal"
-                                            Gap="10"
                                             Margin="0,15,0,0">
                                     <Button Content="✏️ Edit"
                                             Background="#3498DB"
@@ -525,7 +513,7 @@
                                        Foreground="#95A5A6"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
-                                       Visibility="{Binding SelectedProduct, Converter={StaticResource ObjectToVisibilityConverter}, ConverterParameter=Collapsed|''}"
+                                       Visibility="{Binding SelectedProduct, Converter={StaticResource ObjectToVisibilityConverter}}"
                                        Margin="20"/>
                         </StackPanel>
 

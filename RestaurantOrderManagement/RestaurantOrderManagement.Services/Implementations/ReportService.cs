@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -28,13 +29,10 @@ namespace RestaurantOrderManagement.Services.Implementations
         {
             try
             {
-                var results = await _context.Database
-                    .SqlQuery<OrderSummaryDto>(
-                        "EXEC dbo.sp_GetOrderSummary @FromDate = {0}, @ToDate = {1}",
-                        fromDate, toDate)
-                    .ToListAsync();
-
-                return results;
+                return await QueryStoredProcedureAsync<OrderSummaryDto>(
+                    "dbo.sp_GetOrderSummary",
+                    ("@FromDate", fromDate),
+                    ("@ToDate", toDate));
             }
             catch (Exception ex)
             {
@@ -49,13 +47,10 @@ namespace RestaurantOrderManagement.Services.Implementations
         {
             try
             {
-                var results = await _context.Database
-                    .SqlQuery<RevenueSummaryDto>(
-                        "EXEC dbo.sp_GetRevenueSummary @FromDate = {0}, @ToDate = {1}",
-                        fromDate, toDate)
-                    .ToListAsync();
-
-                return results;
+                return await QueryStoredProcedureAsync<RevenueSummaryDto>(
+                    "dbo.sp_GetRevenueSummary",
+                    ("@FromDate", fromDate),
+                    ("@ToDate", toDate));
             }
             catch (Exception ex)
             {
@@ -70,11 +65,7 @@ namespace RestaurantOrderManagement.Services.Implementations
         {
             try
             {
-                var results = await _context.Database
-                    .SqlQuery<InventorySummaryDto>("EXEC dbo.sp_GetInventorySummary")
-                    .ToListAsync();
-
-                return results;
+                return await QueryStoredProcedureAsync<InventorySummaryDto>("dbo.sp_GetInventorySummary");
             }
             catch (Exception ex)
             {
@@ -89,13 +80,10 @@ namespace RestaurantOrderManagement.Services.Implementations
         {
             try
             {
-                var results = await _context.Database
-                    .SqlQuery<OrderDetailDto>(
-                        "EXEC dbo.sp_GetOrdersByDateRange @FromDate = {0}, @ToDate = {1}",
-                        fromDate, toDate)
-                    .ToListAsync();
-
-                return results;
+                return await QueryStoredProcedureAsync<OrderDetailDto>(
+                    "dbo.sp_GetOrdersByDateRange",
+                    ("@FromDate", fromDate),
+                    ("@ToDate", toDate));
             }
             catch (Exception ex)
             {
@@ -133,6 +121,61 @@ namespace RestaurantOrderManagement.Services.Implementations
             {
                 throw new InvalidOperationException("Failed to get order count", ex);
             }
+        }
+
+        private async Task<List<T>> QueryStoredProcedureAsync<T>(string storedProcedure, params (string Name, object? Value)[] parameters)
+            where T : new()
+        {
+            var results = new List<T>();
+            var connection = _context.Database.GetDbConnection();
+            var shouldClose = connection.State != ConnectionState.Open;
+
+            if (shouldClose)
+                await connection.OpenAsync();
+
+            try
+            {
+                using var command = connection.CreateCommand();
+                command.CommandText = storedProcedure;
+                command.CommandType = CommandType.StoredProcedure;
+
+                foreach (var (name, value) in parameters)
+                {
+                    var parameter = command.CreateParameter();
+                    parameter.ParameterName = name;
+                    parameter.Value = value ?? DBNull.Value;
+                    command.Parameters.Add(parameter);
+                }
+
+                using var reader = await command.ExecuteReaderAsync();
+                var properties = typeof(T).GetProperties()
+                    .Where(p => p.CanWrite)
+                    .ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase);
+
+                while (await reader.ReadAsync())
+                {
+                    var item = new T();
+
+                    for (var i = 0; i < reader.FieldCount; i++)
+                    {
+                        if (!properties.TryGetValue(reader.GetName(i), out var property) || reader.IsDBNull(i))
+                            continue;
+
+                        var targetType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                        var value = reader.GetValue(i);
+                        property.SetValue(item, Convert.ChangeType(value, targetType));
+                    }
+
+                    results.Add(item);
+                }
+            }
+            finally
+            {
+                if (shouldClose)
+                    await connection.CloseAsync();
+            }
+
+            return results;
         }
     }
 }

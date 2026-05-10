@@ -110,7 +110,7 @@ namespace RestaurantOrderManagement.Data.Repositories
         /// </summary>
         public virtual async Task<bool> UpdateOrderStatusAsync(int orderId, string newStatus)
         {
-            var result = await _context.Database.ExecuteAsync(
+            var result = await _context.Database.ExecuteSqlRawAsync(
                 "EXEC dbo.sp_UpdateOrderStatus @OrderId = {0}, @NewStatus = {1}",
                 orderId, newStatus);
             return result > 0;

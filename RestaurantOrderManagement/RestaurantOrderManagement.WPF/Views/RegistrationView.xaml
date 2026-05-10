@@ -16,8 +16,7 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0"
-                Background="#2C3E50"
-                Padding="20">
+                Background="#2C3E50">
             <TextBlock Text="Create Account"
                     FontSize="28"
                     FontWeight="Bold"
@@ -31,7 +30,7 @@
         <!-- Registration Form -->
         <ScrollViewer Grid.Row="1"
                 VerticalScrollBarVisibility="Auto">
-            <StackPanel Padding="30"
+            <StackPanel
                     Background="White"
                     Margin="10,10,10,0">
 
@@ -197,7 +196,6 @@
         <!-- Footer with Buttons -->
         <Grid Grid.Row="2"
                 Background="White"
-                Padding="30,20"
                 Margin="10,0,10,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -225,7 +223,7 @@
                     Padding="15,12"
                     FontWeight="Bold"
                     FontSize="12">
-                <TextBlock Text="{Binding IsLoading, StringFormat='{0:Register}'}"
+                <TextBlock Text="Register"
                         Foreground="White"/>
             </Button>
         </Grid>
