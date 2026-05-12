@@ -9,7 +9,7 @@ namespace RestaurantOrderManagement.Services.Interfaces
     /// </summary>
     public class OrderSummaryDto
     {
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         public int OrderCount { get; set; }
         public decimal AvgOrderValue { get; set; }
         public DateTime FirstOrder { get; set; }
@@ -18,7 +18,7 @@ namespace RestaurantOrderManagement.Services.Interfaces
 
     public class RevenueSummaryDto
     {
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         public int OrderCount { get; set; }
         public decimal TotalSubtotal { get; set; }
         public decimal TotalShipping { get; set; }
@@ -30,7 +30,7 @@ namespace RestaurantOrderManagement.Services.Interfaces
     public class InventorySummaryDto
     {
         public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
         public int ProductCount { get; set; }
         public int TotalStock { get; set; }
         public int AvgStockPerProduct { get; set; }
@@ -42,11 +42,11 @@ namespace RestaurantOrderManagement.Services.Interfaces
     public class OrderDetailDto
     {
         public int OrderId { get; set; }
-        public string OrderCode { get; set; }
-        public string CustomerName { get; set; }
-        public string Email { get; set; }
+        public string OrderCode { get; set; } = string.Empty;
+        public string CustomerName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         public decimal SubTotal { get; set; }
         public decimal ShippingFee { get; set; }
         public decimal DiscountAmount { get; set; }

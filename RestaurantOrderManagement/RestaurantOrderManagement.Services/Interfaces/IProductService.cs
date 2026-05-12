@@ -14,12 +14,15 @@ namespace RestaurantOrderManagement.Services.Interfaces
     {
         // Read operations - return DTOs
         Task<IEnumerable<CategoryDTO>> GetCategoriesAsync();
+        Task<IEnumerable<RestaurantMenuGroupDTO>> GetRestaurantMenuAsync(string? categoryName = null, string? keyword = null);
+        Task<IEnumerable<RestaurantMenuGroupDTO>> SearchRestaurantMenuAsync(string? keyword = null, string? includeAllergens = null, string? excludeAllergens = null);
         Task<IEnumerable<ProductDTO>> GetProductsByCategoryAsync(string categoryName);
-        Task<IEnumerable<ProductDTO>> SearchProductsAsync(string keyword, string includeAllergens = null, string excludeAllergens = null);
+        Task<IEnumerable<ProductDTO>> SearchProductsAsync(string keyword, string? includeAllergens = null, string? excludeAllergens = null);
 
         // CRUD operations - return entities for employee management
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
         Task<IEnumerable<Product>> GetAllProductsAsync(bool includeDeleted = false);
+        Task<IEnumerable<Menu>> GetAllMenusAsync(bool includeDeleted = false);
         Task<Product> GetProductByIdAsync(int productId);
         Task<Category> GetCategoryByIdAsync(int categoryId);
 
@@ -29,6 +32,8 @@ namespace RestaurantOrderManagement.Services.Interfaces
 
         // Update
         Task<bool> UpdateProductAsync(int productId, string name, string description, decimal price, int portionQuantity, bool isAvailable);
+        Task<bool> UpdateProductImageAsync(int productId, string imageUrl);
+        Task<bool> UpdateMenuImageAsync(int menuId, string imageUrl);
         Task<bool> UpdateCategoryAsync(int categoryId, string name, string description, bool isActive);
 
         // Delete (soft delete)

@@ -54,8 +54,9 @@
         <Grid Grid.Row="2"
               Margin="10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="1.35*"/>
                 <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1.1*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
@@ -176,8 +177,60 @@
                 </Grid>
             </Border>
 
-            <!-- Detail and Edit Panel -->
+            <!-- Menus List -->
             <Border Grid.Column="2"
+                    Background="White"
+                    BorderBrush="#E0E0E0"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Margin="0,0,10,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="Menus"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Foreground="#2C3E50"
+                               Padding="15"/>
+
+                    <ListBox Grid.Row="1"
+                             ItemsSource="{Binding AllMenus}"
+                             SelectedItem="{Binding SelectedMenu}"
+                             Background="White">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White"
+                                        BorderBrush="#E0E0E0"
+                                        BorderThickness="0,0,0,1"
+                                        Padding="12">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="12"
+                                                   FontWeight="Bold"
+                                                   Foreground="#2C3E50"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding Category.Name}"
+                                                   FontSize="10"
+                                                   Foreground="#7F8C8D"
+                                                   Margin="0,3,0,0"/>
+                                        <TextBlock Text="{Binding BundleDiscountPercent, StringFormat='Discount: {0:F0}%'}"
+                                                   FontSize="9"
+                                                   Foreground="#27AE60"
+                                                   Margin="0,3,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <!-- Detail and Edit Panel -->
+            <Border Grid.Column="3"
                     Background="White"
                     BorderBrush="#E0E0E0"
                     BorderThickness="1"
@@ -267,6 +320,34 @@
                                      AcceptsReturn="True"
                                      VerticalScrollBarVisibility="Auto"
                                      Margin="0,0,0,15"/>
+
+                            <!-- Product Image URL -->
+                            <TextBlock Text="Presentation Image URL"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding ProductImageUrl, UpdateSourceTrigger=PropertyChanged}"
+                                     Background="White"
+                                     BorderBrush="#BDC3C7"
+                                     Padding="10"
+                                     Height="52"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     Margin="0,0,0,15"/>
+                            <Border Height="120"
+                                    Background="#FFF3DF"
+                                    BorderBrush="#E0E0E0"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Margin="0,0,0,15"
+                                    Visibility="{Binding ProductImageUrl, Converter={StaticResource ObjectToVisibilityConverter}}">
+                                <Image Source="{Binding ProductImageUrl}"
+                                       Stretch="Uniform"
+                                       RenderOptions.BitmapScalingMode="HighQuality"
+                                       Margin="8"/>
+                            </Border>
 
                             <!-- Price -->
                             <TextBlock Text="Price ($) *"
@@ -387,6 +468,64 @@
                             </StackPanel>
                         </StackPanel>
 
+                        <!-- Menu Image Form -->
+                        <StackPanel Visibility="{Binding ShowMenuImageForm, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+                            <TextBlock Text="Edit Menu Presentation Image"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,15"/>
+
+                            <TextBlock Text="{Binding SelectedMenu.Name}"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,8"/>
+
+                            <TextBlock Text="Menu Image URL"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       Foreground="#2C3E50"
+                                       Margin="0,0,0,5"/>
+                            <TextBox Text="{Binding MenuImageUrl, UpdateSourceTrigger=PropertyChanged}"
+                                     Background="White"
+                                     BorderBrush="#BDC3C7"
+                                     Padding="10"
+                                     Height="70"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     Margin="0,0,0,15"/>
+
+                            <Border Height="140"
+                                    Background="#FFF3DF"
+                                    BorderBrush="#E0E0E0"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Margin="0,0,0,15"
+                                    Visibility="{Binding MenuImageUrl, Converter={StaticResource ObjectToVisibilityConverter}}">
+                                <Image Source="{Binding MenuImageUrl}"
+                                       Stretch="Uniform"
+                                       RenderOptions.BitmapScalingMode="HighQuality"
+                                       Margin="8"/>
+                            </Border>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,15,0,0">
+                                <Button Content="Save"
+                                        Background="#27AE60"
+                                        Foreground="White"
+                                        Padding="15,8"
+                                        Command="{Binding SaveMenuImageCommand}"
+                                        IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}"/>
+                                <Button Content="Cancel"
+                                        Background="#95A5A6"
+                                        Foreground="White"
+                                        Padding="15,8"
+                                        Click="CancelMenuImageForm_Click"/>
+                            </StackPanel>
+                        </StackPanel>
+
                         <!-- Details Panel (no form) -->
                         <StackPanel Visibility="{Binding ShowProductForm, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                             <!-- Product Details -->
@@ -448,6 +587,30 @@
                                                FontSize="12"/>
                                 </StackPanel>
 
+                                <TextBlock Text="Presentation Image URL:"
+                                           FontSize="12"
+                                           FontWeight="Bold"
+                                           Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding SelectedProductImageUrl, Mode=OneWay}"
+                                         IsReadOnly="True"
+                                         Background="#F8F9FA"
+                                         BorderBrush="#E0E0E0"
+                                         TextWrapping="Wrap"
+                                         Padding="8"
+                                         Margin="0,0,0,10"/>
+                                <Border Height="120"
+                                        Background="#FFF3DF"
+                                        BorderBrush="#E0E0E0"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Margin="0,0,0,15"
+                                        Visibility="{Binding HasSelectedProductImage, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <Image Source="{Binding SelectedProductImageUrl}"
+                                           Stretch="Uniform"
+                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                           Margin="8"/>
+                                </Border>
+
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,15,0,0">
                                     <Button Content="✏️ Edit"
@@ -461,6 +624,76 @@
                                             Padding="12,8"
                                             Command="{Binding DeleteSelectedProductCommand}"/>
                                 </StackPanel>
+                            </StackPanel>
+
+                            <!-- Menu Details -->
+                            <StackPanel Visibility="{Binding SelectedMenu, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
+                                <TextBlock Text="Menu Details"
+                                           FontSize="18"
+                                           FontWeight="Bold"
+                                           Foreground="#2C3E50"
+                                           Margin="0,0,0,15"/>
+
+                                <TextBlock Text="{Binding SelectedMenu.Name}"
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           Foreground="#2C3E50"
+                                           Margin="0,0,0,10"/>
+
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0,0,0,10">
+                                    <TextBlock Text="Category:"
+                                               FontSize="12"
+                                               FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding SelectedMenu.Category.Name}"
+                                               FontSize="12"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="0,0,0,10">
+                                    <TextBlock Text="Bundle discount:"
+                                               FontSize="12"
+                                               FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding SelectedMenu.BundleDiscountPercent, StringFormat='{}{0:F0}%'}"
+                                               FontSize="12"/>
+                                </StackPanel>
+
+                                <TextBlock Text="{Binding SelectedMenu.Description}"
+                                           FontSize="12"
+                                           Foreground="#7F8C8D"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,10"/>
+
+                                <TextBlock Text="Presentation Image URL:"
+                                           FontSize="12"
+                                           FontWeight="Bold"
+                                           Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding SelectedMenuImageUrl, Mode=OneWay}"
+                                         IsReadOnly="True"
+                                         Background="#F8F9FA"
+                                         BorderBrush="#E0E0E0"
+                                         TextWrapping="Wrap"
+                                         Padding="8"
+                                         Margin="0,0,0,10"/>
+                                <Border Height="140"
+                                        Background="#FFF3DF"
+                                        BorderBrush="#E0E0E0"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Margin="0,0,0,15"
+                                        Visibility="{Binding HasSelectedMenuImage, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <Image Source="{Binding SelectedMenuImageUrl}"
+                                           Stretch="Uniform"
+                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                           Margin="8"/>
+                                </Border>
+
+                                <Button Content="Edit Menu Image"
+                                        Background="#3498DB"
+                                        Foreground="White"
+                                        Padding="12,8"
+                                        HorizontalAlignment="Left"
+                                        Command="{Binding EditSelectedMenuImageCommand}"/>
                             </StackPanel>
 
                             <!-- Category Details -->

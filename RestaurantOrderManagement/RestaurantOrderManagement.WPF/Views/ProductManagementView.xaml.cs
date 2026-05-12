@@ -28,5 +28,13 @@ namespace RestaurantOrderManagement.WPF.Views
                 vm.ShowCategoryForm = false;
             }
         }
+
+        private void CancelMenuImageForm_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (DataContext is ProductManagementViewModel vm)
+            {
+                vm.ShowMenuImageForm = false;
+            }
+        }
     }
 }

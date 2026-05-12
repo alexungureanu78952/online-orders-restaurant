@@ -19,6 +19,17 @@ namespace RestaurantOrderManagement.Services.Interfaces
         Task<Order> CreateOrderAsync(int userId, List<(int ProductId, int Quantity)> items, string deliveryAddress);
 
         /// <summary>
+        /// Create new order from product and bundled-menu cart items.
+        /// </summary>
+        Task<Order> CreateOrderAsync(int userId, List<OrderRequestItem> items, string deliveryAddress);
+
+        /// <summary>
+        /// Calculate order pricing from the current subtotal using the same discount and shipping rules
+        /// used when the order is persisted.
+        /// </summary>
+        Task<OrderPricingQuote> CalculatePricingAsync(int userId, decimal subTotal);
+
+        /// <summary>
         /// Get all orders for a specific user, sorted by date descending
         /// </summary>
         /// <param name="userId">User ID to retrieve orders for</param>
@@ -49,7 +60,7 @@ namespace RestaurantOrderManagement.Services.Interfaces
         Task<bool> UpdateOrderStatusAsync(int orderId, string newStatus);
 
         /// <summary>
-        /// Cancel active order (client operation - restores inventory)
+        /// Cancel active order (client operation). Inventory is changed only when an order is delivered.
         /// </summary>
         /// <param name="orderId">Order to cancel</param>
         /// <returns>True if successful, false if already delivered/cancelled</returns>
@@ -67,5 +78,41 @@ namespace RestaurantOrderManagement.Services.Interfaces
         /// </summary>
         /// <returns>List of all orders not yet delivered or cancelled</returns>
         Task<List<Order>> GetAllActiveOrdersAsync();
+    }
+
+    public class OrderRequestItem
+    {
+        public string ItemType { get; set; } = "Preparat";
+        public int? ProductId { get; set; }
+        public int? MenuId { get; set; }
+        public int Quantity { get; set; }
+
+        public static OrderRequestItem Product(int productId, int quantity)
+        {
+            return new OrderRequestItem
+            {
+                ItemType = "Preparat",
+                ProductId = productId,
+                Quantity = quantity
+            };
+        }
+
+        public static OrderRequestItem Menu(int menuId, int quantity)
+        {
+            return new OrderRequestItem
+            {
+                ItemType = "Meniu",
+                MenuId = menuId,
+                Quantity = quantity
+            };
+        }
+    }
+
+    public class OrderPricingQuote
+    {
+        public decimal SubTotal { get; set; }
+        public decimal ShippingFee { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal TotalCost { get; set; }
     }
 }

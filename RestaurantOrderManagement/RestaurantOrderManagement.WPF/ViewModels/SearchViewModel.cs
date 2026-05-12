@@ -3,17 +3,12 @@ using CommunityToolkit.Mvvm.Input;
 using RestaurantOrderManagement.Services.DTOs;
 using RestaurantOrderManagement.Services.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace RestaurantOrderManagement.ViewModels
 {
-    /// <summary>
-    /// ViewModel for advanced search and filtering
-    /// Supports keyword search, allergen include/exclude filters, and category grouping
-    /// </summary>
     public partial class SearchViewModel : BaseViewModel
     {
         private readonly IProductService _productService;
@@ -28,7 +23,7 @@ namespace RestaurantOrderManagement.ViewModels
         private string excludeAllergens = string.Empty;
 
         [ObservableProperty]
-        private ObservableCollection<ProductGroupDTO> groupedResults = new();
+        private ObservableCollection<RestaurantMenuGroupDTO> groupedResults = new();
 
         [ObservableProperty]
         private bool isLoading = false;
@@ -44,9 +39,6 @@ namespace RestaurantOrderManagement.ViewModels
             _productService = productService;
         }
 
-        /// <summary>
-        /// Execute search with filters
-        /// </summary>
         [RelayCommand]
         public async Task PerformSearchAsync()
         {
@@ -64,37 +56,27 @@ namespace RestaurantOrderManagement.ViewModels
                 ErrorMessage = string.Empty;
                 GroupedResults.Clear();
 
-                // Call service with parameters (convert empty strings to null)
                 var keyword = string.IsNullOrWhiteSpace(SearchQuery) ? null : SearchQuery.Trim();
                 var includeAllergensParam = string.IsNullOrWhiteSpace(IncludeAllergens) ? null : IncludeAllergens.Trim();
                 var excludeAllergensParam = string.IsNullOrWhiteSpace(ExcludeAllergens) ? null : ExcludeAllergens.Trim();
 
-                var results = await _productService.SearchProductsAsync(keyword, includeAllergensParam, excludeAllergensParam);
+                var results = (await _productService.SearchRestaurantMenuAsync(keyword, includeAllergensParam, excludeAllergensParam))
+                    .ToList();
 
-                if (results == null || !results.Any())
+                var resultCount = results.Sum(group => group.ItemCount);
+                if (resultCount == 0)
                 {
-                    ErrorMessage = "No products found matching your criteria";
+                    ErrorMessage = "No menu items found matching your criteria";
                     ResultCount = 0;
                     return;
                 }
 
-                // Group by category
-                var grouped = results
-                    .GroupBy(p => p.CategoryName)
-                    .OrderBy(g => g.Key)
-                    .Select(g => new ProductGroupDTO
-                    {
-                        CategoryName = g.Key,
-                        Products = new ObservableCollection<ProductDTO>(g.OrderBy(p => p.Name))
-                    })
-                    .ToList();
-
-                foreach (var group in grouped)
+                foreach (var group in results.OrderBy(group => group.CategoryName))
                 {
                     GroupedResults.Add(group);
                 }
 
-                ResultCount = results.Count();
+                ResultCount = resultCount;
             }
             catch (Exception ex)
             {
@@ -108,9 +90,6 @@ namespace RestaurantOrderManagement.ViewModels
             }
         }
 
-        /// <summary>
-        /// Clear all filters and results
-        /// </summary>
         [RelayCommand]
         public void ClearFilters()
         {
@@ -122,10 +101,6 @@ namespace RestaurantOrderManagement.ViewModels
             ResultCount = 0;
         }
 
-        /// <summary>
-        /// Add allergen to include filter
-        /// Format: comma-separated allergen names or IDs
-        /// </summary>
         [RelayCommand]
         public void AddIncludeAllergen(string allergenId)
         {
@@ -142,9 +117,6 @@ namespace RestaurantOrderManagement.ViewModels
             }
         }
 
-        /// <summary>
-        /// Add allergen to exclude filter
-        /// </summary>
         [RelayCommand]
         public void AddExcludeAllergen(string allergenId)
         {
@@ -161,9 +133,6 @@ namespace RestaurantOrderManagement.ViewModels
             }
         }
 
-        /// <summary>
-        /// Remove allergen from include filter
-        /// </summary>
         [RelayCommand]
         public void RemoveIncludeAllergen(string allergenId)
         {
@@ -176,9 +145,6 @@ namespace RestaurantOrderManagement.ViewModels
             }
         }
 
-        /// <summary>
-        /// Remove allergen from exclude filter
-        /// </summary>
         [RelayCommand]
         public void RemoveExcludeAllergen(string allergenId)
         {
@@ -192,12 +158,4 @@ namespace RestaurantOrderManagement.ViewModels
         }
     }
 
-    /// <summary>
-    /// DTO for grouping products by category in search results
-    /// </summary>
-    public class ProductGroupDTO
-    {
-        public string CategoryName { get; set; }
-        public ObservableCollection<ProductDTO> Products { get; set; } = new ObservableCollection<ProductDTO>();
-    }
 }

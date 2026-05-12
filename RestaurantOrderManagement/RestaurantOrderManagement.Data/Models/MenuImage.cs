@@ -4,10 +4,10 @@ namespace RestaurantOrderManagement.Data.Models
     {
         public int MenuImageId { get; set; }
         public int MenuId { get; set; }
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
         public int DisplayOrder { get; set; } = 1;
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        public Menu Menu { get; set; }
+        public Menu Menu { get; set; } = null!;
     }
 }

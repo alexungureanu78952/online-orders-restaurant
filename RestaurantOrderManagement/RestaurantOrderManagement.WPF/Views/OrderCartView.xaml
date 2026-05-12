@@ -29,7 +29,7 @@
                         Margin="0,0,0,15"
                         Visibility="{Binding SuccessMessage, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                     <StackPanel>
-                        <TextBlock Text="✓ Order Created Successfully!"
+                        <TextBlock Text="Order Created Successfully!"
                                 FontSize="14"
                                 Foreground="#155724"
                                 FontWeight="Bold"/>
@@ -77,7 +77,7 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="80"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Product"
+                        <TextBlock Text="Item"
                                 FontSize="12"
                                 Foreground="White"
                                 FontWeight="Bold"
@@ -129,10 +129,14 @@
                                                 FontSize="13"
                                                 FontWeight="Bold"
                                                 Foreground="#2C3E50"/>
+                                        <TextBlock Text="{Binding ItemType}"
+                                                FontSize="11"
+                                                Foreground="#7F8C8D"
+                                                Margin="0,3,0,0"/>
                                     </StackPanel>
 
                                     <!-- Unit Price -->
-                                    <TextBlock Text="{Binding UnitPrice, StringFormat='{}{0:C} }'}"
+                                    <TextBlock Text="{Binding UnitPriceText}"
                                             FontSize="12"
                                             Foreground="#34495E"
                                             Grid.Column="1"
@@ -148,7 +152,7 @@
                                             VerticalAlignment="Center"/>
 
                                     <!-- Item Total -->
-                                    <TextBlock Text="{Binding ItemTotal, StringFormat='{}{0:C} }'}"
+                                    <TextBlock Text="{Binding ItemTotalText}"
                                             FontSize="12"
                                             FontWeight="Bold"
                                             Foreground="#2C3E50"
@@ -157,15 +161,15 @@
                                             VerticalAlignment="Center"/>
 
                                     <!-- Remove Button -->
-                                    <Button Content="✕"
+                                    <Button Content="Remove"
                                             Background="#E74C3C"
                                             Foreground="White"
                                             Grid.Column="4"
-                                            FontSize="14"
-                                            Padding="5,3"
+                                            FontSize="11"
+                                            Padding="8,4"
                                             HorizontalAlignment="Center"
                                             Command="{Binding DataContext.RemoveFromCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding ProductId}"/>
+                                            CommandParameter="{Binding OrderKey}"/>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -198,7 +202,7 @@
                                     Foreground="#7F8C8D"
                                     Grid.Row="0"
                                     Grid.Column="0"/>
-                            <TextBlock Text="{Binding SubTotal, StringFormat='{}{0:C} }'}"
+                            <TextBlock Text="{Binding SubTotalText}"
                                     FontSize="12"
                                     Foreground="#34495E"
                                     Grid.Row="0"
@@ -212,7 +216,7 @@
                                     Grid.Row="1"
                                     Grid.Column="0"
                                     Margin="0,8,0,0"/>
-                            <TextBlock Text="{Binding ShippingFee, StringFormat='{}{0:C} }'}"
+                            <TextBlock Text="{Binding ShippingFeeText}"
                                     FontSize="12"
                                     Foreground="#34495E"
                                     Grid.Row="1"
@@ -227,7 +231,7 @@
                                     Grid.Row="2"
                                     Grid.Column="0"
                                     Margin="0,8,0,0"/>
-                            <TextBlock Text="{Binding DiscountAmount, StringFormat='-{0:C}'}"
+                            <TextBlock Text="{Binding DiscountAmountText}"
                                     FontSize="12"
                                     Foreground="#27AE60"
                                     Grid.Row="2"
@@ -250,7 +254,7 @@
                                     Foreground="#2C3E50"
                                     Grid.Row="5"
                                     Grid.Column="0"/>
-                            <TextBlock Text="{Binding TotalCost, StringFormat='{}{0:C} }'}"
+                            <TextBlock Text="{Binding TotalCostText}"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="#27AE60"

@@ -3,24 +3,24 @@ using CommunityToolkit.Mvvm.Input;
 using RestaurantOrderManagement.Data.Models;
 using RestaurantOrderManagement.Services.Interfaces;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace RestaurantOrderManagement.WPF.ViewModels
 {
-    /// <summary>
-    /// MVVM ViewModel for product and category management
-    /// Allows employees to create, update, and delete products and categories
-    /// Supports both product and category CRUD operations
-    /// </summary>
     public partial class ProductManagementViewModel : ObservableObject
     {
         private readonly IProductService _productService;
-
-        // Products
         [ObservableProperty]
         private ObservableCollection<Product> allProducts = new();
 
         [ObservableProperty]
-        private Product selectedProduct;
+        private Product? selectedProduct;
+
+        [ObservableProperty]
+        private ObservableCollection<Menu> allMenus = new();
+
+        [ObservableProperty]
+        private Menu? selectedMenu;
 
         [ObservableProperty]
         private string productName = string.Empty;
@@ -35,17 +35,22 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         private int productPortionQuantity = 500;
 
         [ObservableProperty]
-        private int productTotalQuantity = 0;
+        private int productTotalQuantity = 5000;
 
         [ObservableProperty]
         private bool productIsAvailable = true;
 
-        // Categories
+        [ObservableProperty]
+        private string productImageUrl = string.Empty;
+
+        [ObservableProperty]
+        private string menuImageUrl = string.Empty;
+
         [ObservableProperty]
         private ObservableCollection<Category> allCategories = new();
 
         [ObservableProperty]
-        private Category selectedCategory;
+        private Category? selectedCategory;
 
         [ObservableProperty]
         private string categoryName = string.Empty;
@@ -56,7 +61,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         [ObservableProperty]
         private bool categoryIsActive = true;
 
-        // UI State
         [ObservableProperty]
         private bool isLoading;
 
@@ -73,6 +77,9 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         private bool showCategoryForm = false;
 
         [ObservableProperty]
+        private bool showMenuImageForm = false;
+
+        [ObservableProperty]
         private bool isEditMode = false;
 
         public ProductManagementViewModel(IProductService productService)
@@ -80,24 +87,66 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             _productService = productService;
         }
 
+        public event EventHandler? CatalogChanged;
+
+        public string SelectedProductImageUrl => GetPrimaryProductImageUrl(SelectedProduct);
+        public string SelectedMenuImageUrl => GetPrimaryMenuImageUrl(SelectedMenu);
+        public bool HasSelectedProductImage => !string.IsNullOrWhiteSpace(SelectedProductImageUrl);
+        public bool HasSelectedMenuImage => !string.IsNullOrWhiteSpace(SelectedMenuImageUrl);
+
+        partial void OnSelectedProductChanged(Product? value)
+        {
+            if (value != null)
+            {
+                SelectedMenu = null;
+                ShowMenuImageForm = false;
+            }
+
+            OnPropertyChanged(nameof(SelectedProductImageUrl));
+            OnPropertyChanged(nameof(HasSelectedProductImage));
+        }
+
+        partial void OnSelectedMenuChanged(Menu? value)
+        {
+            if (value != null)
+            {
+                SelectedProduct = null;
+                ShowProductForm = false;
+                ShowCategoryForm = false;
+            }
+
+            OnPropertyChanged(nameof(SelectedMenuImageUrl));
+            OnPropertyChanged(nameof(HasSelectedMenuImage));
+        }
+
         #region Product CRUD Operations
 
-        /// <summary>
-        /// Load all products and categories
-        /// </summary>
         [RelayCommand]
         public async Task LoadProductsAndCategoriesAsync()
+        {
+            await LoadProductsAndCategoriesAsync(clearMessages: true);
+        }
+
+        private async Task LoadProductsAndCategoriesAsync(bool clearMessages)
         {
             try
             {
                 IsLoading = true;
-                ClearMessages();
+                if (clearMessages)
+                    ClearMessages();
 
                 var products = await _productService.GetAllProductsAsync(includeDeleted: false);
                 AllProducts.Clear();
                 foreach (var product in products)
                 {
                     AllProducts.Add(product);
+                }
+
+                var menus = await _productService.GetAllMenusAsync(includeDeleted: false);
+                AllMenus.Clear();
+                foreach (var menu in menus)
+                {
+                    AllMenus.Add(menu);
                 }
 
                 var categories = await _productService.GetAllCategoriesAsync();
@@ -117,20 +166,16 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Show product creation form
-        /// </summary>
         [RelayCommand]
         public void ShowProductCreateForm()
         {
             IsEditMode = false;
             ClearProductForm();
             ShowProductForm = true;
+            ShowCategoryForm = false;
+            ShowMenuImageForm = false;
         }
 
-        /// <summary>
-        /// Edit selected product
-        /// </summary>
         [RelayCommand]
         public void EditSelectedProduct()
         {
@@ -142,18 +187,18 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
             IsEditMode = true;
             ProductName = SelectedProduct.Name;
-            ProductDescription = SelectedProduct.Description;
+            ProductDescription = SelectedProduct.Description ?? string.Empty;
             ProductPrice = SelectedProduct.Price;
             ProductPortionQuantity = SelectedProduct.PortionQuantity;
             ProductTotalQuantity = SelectedProduct.TotalQuantity;
             ProductIsAvailable = SelectedProduct.IsAvailable;
+            ProductImageUrl = GetPrimaryProductImageUrl(SelectedProduct);
             SelectedCategory = SelectedProduct.Category;
             ShowProductForm = true;
+            ShowCategoryForm = false;
+            ShowMenuImageForm = false;
         }
 
-        /// <summary>
-        /// Save product (create or update)
-        /// </summary>
         [RelayCommand]
         public async Task SaveProductAsync()
         {
@@ -167,7 +212,12 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
                 if (IsEditMode)
                 {
-                    // Update existing product
+                    if (SelectedProduct == null)
+                    {
+                        ErrorMessage = "Please select a product to update";
+                        return;
+                    }
+
                     bool success = await _productService.UpdateProductAsync(
                         SelectedProduct.ProductId,
                         ProductName.Trim(),
@@ -178,14 +228,21 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
                     if (success)
                     {
+                        success = await _productService.UpdateProductImageAsync(
+                            SelectedProduct.ProductId,
+                            ProductImageUrl?.Trim() ?? string.Empty);
+                    }
+
+                    if (success)
+                    {
                         SuccessMessage = $"Product '{ProductName}' updated successfully";
-                        await LoadProductsAndCategoriesAsync();
+                        await LoadProductsAndCategoriesAsync(clearMessages: false);
                         ShowProductForm = false;
+                        NotifyCatalogChanged();
                     }
                 }
                 else
                 {
-                    // Create new product
                     if (SelectedCategory == null)
                     {
                         ErrorMessage = "Please select a category";
@@ -202,9 +259,15 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
                     if (productId > 0)
                     {
+                        if (!string.IsNullOrWhiteSpace(ProductImageUrl))
+                        {
+                            await _productService.UpdateProductImageAsync(productId, ProductImageUrl.Trim());
+                        }
+
                         SuccessMessage = $"Product '{ProductName}' created successfully (ID: {productId})";
-                        await LoadProductsAndCategoriesAsync();
+                        await LoadProductsAndCategoriesAsync(clearMessages: false);
                         ShowProductForm = false;
+                        NotifyCatalogChanged();
                     }
                 }
             }
@@ -218,9 +281,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Delete selected product
-        /// </summary>
         [RelayCommand]
         public async Task DeleteSelectedProductAsync()
         {
@@ -239,7 +299,8 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 if (success)
                 {
                     SuccessMessage = $"Product '{SelectedProduct.Name}' deleted successfully";
-                    await LoadProductsAndCategoriesAsync();
+                    await LoadProductsAndCategoriesAsync(clearMessages: false);
+                    NotifyCatalogChanged();
                 }
             }
             catch (Exception ex)
@@ -256,20 +317,16 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
         #region Category CRUD Operations
 
-        /// <summary>
-        /// Show category creation form
-        /// </summary>
         [RelayCommand]
         public void ShowCategoryCreateForm()
         {
             IsEditMode = false;
             ClearCategoryForm();
             ShowCategoryForm = true;
+            ShowProductForm = false;
+            ShowMenuImageForm = false;
         }
 
-        /// <summary>
-        /// Edit selected category
-        /// </summary>
         [RelayCommand]
         public void EditSelectedCategory()
         {
@@ -281,14 +338,13 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
             IsEditMode = true;
             CategoryName = SelectedCategory.Name;
-            CategoryDescription = SelectedCategory.Description;
+            CategoryDescription = SelectedCategory.Description ?? string.Empty;
             CategoryIsActive = SelectedCategory.IsActive;
             ShowCategoryForm = true;
+            ShowProductForm = false;
+            ShowMenuImageForm = false;
         }
 
-        /// <summary>
-        /// Save category (create or update)
-        /// </summary>
         [RelayCommand]
         public async Task SaveCategoryAsync()
         {
@@ -302,7 +358,12 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
                 if (IsEditMode)
                 {
-                    // Update existing category
+                    if (SelectedCategory == null)
+                    {
+                        ErrorMessage = "Please select a category to update";
+                        return;
+                    }
+
                     bool success = await _productService.UpdateCategoryAsync(
                         SelectedCategory.CategoryId,
                         CategoryName.Trim(),
@@ -312,13 +373,13 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                     if (success)
                     {
                         SuccessMessage = $"Category '{CategoryName}' updated successfully";
-                        await LoadProductsAndCategoriesAsync();
+                        await LoadProductsAndCategoriesAsync(clearMessages: false);
                         ShowCategoryForm = false;
+                        NotifyCatalogChanged();
                     }
                 }
                 else
                 {
-                    // Create new category
                     int categoryId = await _productService.CreateCategoryAsync(
                         CategoryName.Trim(),
                         CategoryDescription?.Trim() ?? string.Empty);
@@ -326,8 +387,9 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                     if (categoryId > 0)
                     {
                         SuccessMessage = $"Category '{CategoryName}' created successfully (ID: {categoryId})";
-                        await LoadProductsAndCategoriesAsync();
+                        await LoadProductsAndCategoriesAsync(clearMessages: false);
                         ShowCategoryForm = false;
+                        NotifyCatalogChanged();
                     }
                 }
             }
@@ -341,9 +403,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Delete selected category
-        /// </summary>
         [RelayCommand]
         public async Task DeleteSelectedCategoryAsync()
         {
@@ -362,7 +421,8 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 if (success)
                 {
                     SuccessMessage = $"Category '{SelectedCategory.Name}' deleted successfully";
-                    await LoadProductsAndCategoriesAsync();
+                    await LoadProductsAndCategoriesAsync(clearMessages: false);
+                    NotifyCatalogChanged();
                 }
             }
             catch (Exception ex)
@@ -377,11 +437,61 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
         #endregion
 
+        #region Menu Image Operations
+
+        [RelayCommand]
+        public void EditSelectedMenuImage()
+        {
+            if (SelectedMenu == null)
+            {
+                ErrorMessage = "Please select a menu to edit its image";
+                return;
+            }
+
+            ClearMessages();
+            MenuImageUrl = GetPrimaryMenuImageUrl(SelectedMenu);
+            ShowMenuImageForm = true;
+            ShowProductForm = false;
+            ShowCategoryForm = false;
+        }
+
+        [RelayCommand]
+        public async Task SaveMenuImageAsync()
+        {
+            if (SelectedMenu == null)
+            {
+                ErrorMessage = "Please select a menu";
+                return;
+            }
+
+            if (!ValidateOptionalImageUrl("Menu image URL", MenuImageUrl))
+                return;
+
+            try
+            {
+                IsLoading = true;
+                ClearMessages();
+
+                await _productService.UpdateMenuImageAsync(SelectedMenu.MenuId, MenuImageUrl?.Trim() ?? string.Empty);
+                SuccessMessage = $"Menu image for '{SelectedMenu.Name}' updated successfully";
+                ShowMenuImageForm = false;
+                await LoadProductsAndCategoriesAsync(clearMessages: false);
+                NotifyCatalogChanged();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error saving menu image: {ex.Message}";
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        #endregion
+
         #region Validation & Helpers
 
-        /// <summary>
-        /// Validate product form inputs
-        /// </summary>
         private bool ValidateProductForm()
         {
             if (string.IsNullOrWhiteSpace(ProductName))
@@ -414,12 +524,9 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 return false;
             }
 
-            return true;
+            return ValidateOptionalImageUrl("Product image URL", ProductImageUrl);
         }
 
-        /// <summary>
-        /// Validate category form inputs
-        /// </summary>
         private bool ValidateCategoryForm()
         {
             if (string.IsNullOrWhiteSpace(CategoryName))
@@ -431,23 +538,18 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             return true;
         }
 
-        /// <summary>
-        /// Clear product form
-        /// </summary>
         private void ClearProductForm()
         {
             ProductName = string.Empty;
             ProductDescription = string.Empty;
             ProductPrice = 0;
             ProductPortionQuantity = 500;
-            ProductTotalQuantity = 0;
+            ProductTotalQuantity = 5000;
             ProductIsAvailable = true;
+            ProductImageUrl = string.Empty;
             SelectedCategory = null;
         }
 
-        /// <summary>
-        /// Clear category form
-        /// </summary>
         private void ClearCategoryForm()
         {
             CategoryName = string.Empty;
@@ -455,18 +557,50 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             CategoryIsActive = true;
         }
 
-        /// <summary>
-        /// Clear all messages
-        /// </summary>
         private void ClearMessages()
         {
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
         }
 
-        /// <summary>
-        /// Get stock status display string
-        /// </summary>
+        private void NotifyCatalogChanged()
+        {
+            CatalogChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private static string GetPrimaryProductImageUrl(Product? product)
+        {
+            return product?.ProductImages?
+                .OrderBy(image => image.DisplayOrder)
+                .ThenBy(image => image.ProductImageId)
+                .FirstOrDefault()
+                ?.ImageUrl ?? string.Empty;
+        }
+
+        private static string GetPrimaryMenuImageUrl(Menu? menu)
+        {
+            return menu?.MenuImages?
+                .OrderBy(image => image.DisplayOrder)
+                .ThenBy(image => image.MenuImageId)
+                .FirstOrDefault()
+                ?.ImageUrl ?? string.Empty;
+        }
+
+        private bool ValidateOptionalImageUrl(string label, string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return true;
+
+            if (!Uri.TryCreate(value.Trim(), UriKind.Absolute, out var uri) ||
+                (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            {
+                ErrorMessage = $"{label} must be a valid http or https URL";
+                return false;
+            }
+
+            return true;
+        }
+
         public string GetStockStatusDisplay(int quantity)
         {
             if (quantity == 0)
@@ -478,18 +612,15 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             return "Adequate";
         }
 
-        /// <summary>
-        /// Get status display color (hex)
-        /// </summary>
         public string GetStockStatusColor(int quantity)
         {
             if (quantity == 0)
-                return "#E74C3C"; // Red
+                return "#E74C3C";
             if (quantity < 100)
-                return "#C0392B"; // Dark red
+                return "#C0392B";
             if (quantity < 500)
-                return "#E67E22"; // Orange
-            return "#27AE60"; // Green
+                return "#E67E22";
+            return "#27AE60";
         }
 
         #endregion

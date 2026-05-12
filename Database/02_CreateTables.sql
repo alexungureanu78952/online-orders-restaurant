@@ -245,17 +245,27 @@ GO
 CREATE TABLE dbo.OrderItem (
     OrderItemId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     OrderId INT NOT NULL,
-    ProductId INT NOT NULL,
+    ProductId INT NULL,
+    MenuId INT NULL,
+    ItemType NVARCHAR(20) NOT NULL DEFAULT 'Preparat',
+    ItemName NVARCHAR(150) NOT NULL DEFAULT '',
     Quantity INT NOT NULL,
     UnitPrice DECIMAL(10,2) NOT NULL,
     ItemTotal DECIMAL(10,2) NOT NULL,
     CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
     CONSTRAINT FK_OrderItem_Order FOREIGN KEY (OrderId) REFERENCES dbo.[Order](OrderId) ON DELETE CASCADE,
-    CONSTRAINT FK_OrderItem_Product FOREIGN KEY (ProductId) REFERENCES dbo.Product(ProductId)
+    CONSTRAINT FK_OrderItem_Product FOREIGN KEY (ProductId) REFERENCES dbo.Product(ProductId),
+    CONSTRAINT FK_OrderItem_Menu FOREIGN KEY (MenuId) REFERENCES dbo.Menu(MenuId),
+    CONSTRAINT CK_OrderItem_Target CHECK (
+        (ProductId IS NOT NULL AND MenuId IS NULL AND ItemType = 'Preparat')
+        OR
+        (ProductId IS NULL AND MenuId IS NOT NULL AND ItemType = 'Meniu')
+    )
 );
 
 CREATE INDEX IX_OrderItem_OrderId ON dbo.OrderItem(OrderId);
 CREATE INDEX IX_OrderItem_ProductId ON dbo.OrderItem(ProductId);
+CREATE INDEX IX_OrderItem_MenuId ON dbo.OrderItem(MenuId);
 GO
 
 -- =====================================================

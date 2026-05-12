@@ -4,11 +4,7 @@ using RestaurantOrderManagement.Data.Models;
 
 namespace RestaurantOrderManagement.Services.Implementations
 {
-    /// <summary>
-    /// Service for order management operations
-    /// Handles order creation with discount/fee calculation, status updates, and retrieval
-    /// Uses parameterized stored procedures for all database operations
-    /// </summary>
+
     public class OrderService : IOrderService
     {
         private readonly OrderRepository _orderRepository;
@@ -25,95 +21,73 @@ namespace RestaurantOrderManagement.Services.Implementations
             _configService = configService;
         }
 
-        /// <summary>
-        /// Create new order with automatic discount/fee calculation
-        /// Flow:
-        /// 1. Validate user and items
-        /// 2. Verify product availability and inventory
-        /// 3. Calculate SubTotal from product prices
-        /// 4. Apply discounts (large order, frequent customer)
-        /// 5. Calculate shipping fee (free above threshold, otherwise fixed fee)
-        /// 6. Create order via sp_CreateOrder
-        /// 7. Create OrderItem records for each cart item
-        /// </summary>
         public async Task<Order> CreateOrderAsync(int userId, List<(int ProductId, int Quantity)> items, string deliveryAddress)
         {
-            // Validation
+            return await CreateOrderAsync(
+                userId,
+                items.Select(item => OrderRequestItem.Product(item.ProductId, item.Quantity)).ToList(),
+                deliveryAddress);
+        }
+
+        public async Task<Order> CreateOrderAsync(int userId, List<OrderRequestItem> items, string deliveryAddress)
+        {
             if (items == null || items.Count == 0)
                 throw new ArgumentException("Order must contain at least one item");
 
             if (string.IsNullOrWhiteSpace(deliveryAddress))
                 throw new ArgumentException("Delivery address is required for order creation");
 
-            // Verify user exists
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new InvalidOperationException("User not found");
 
-            // Fetch all products in the order to verify availability and get pricing
-            var productIds = items.Select(i => i.ProductId).Distinct().ToList();
-            var products = new Dictionary<int, Product>();
-            foreach (var productId in productIds)
+            var orderItems = new List<OrderItem>();
+            foreach (var item in items)
             {
-                var product = await _productRepository.GetByIdAsync(productId);
-                if (product == null)
-                    throw new InvalidOperationException($"Product {productId} not found");
-                if (!product.IsAvailable)
-                    throw new InvalidOperationException($"Product {product.Name} is not available");
-                products[productId] = product;
+                if (item.Quantity <= 0)
+                    throw new ArgumentException("Each order item quantity must be greater than 0");
+
+                orderItems.Add(await BuildOrderItemAsync(item));
             }
 
-            // Calculate SubTotal
-            decimal subTotal = 0;
-            foreach (var (productId, quantity) in items)
-            {
-                var product = products[productId];
-                subTotal += product.Price * quantity;
-            }
+            decimal subTotal = orderItems.Sum(item => item.ItemTotal);
 
-            // Calculate discount amount based on business rules
-            decimal discountAmount = await CalculateDiscountAsync(userId, subTotal);
+            var pricing = await CalculatePricingAsync(userId, subTotal);
 
-            // Calculate shipping fee
-            decimal shippingFee = await CalculateShippingFeeAsync(subTotal);
 
-            // Create order via stored procedure
-            var (orderId, orderCode) = await _orderRepository.CreateOrderAsync(userId, subTotal, shippingFee,
-                discountAmount, deliveryAddress, null);
+            var (orderId, orderCode) = await _orderRepository.CreateOrderAsync(userId, pricing.SubTotal, pricing.ShippingFee,
+                pricing.DiscountAmount, deliveryAddress, null);
 
-            // Create OrderItems for each cart item
-            foreach (var (productId, quantity) in items)
-            {
-                var product = products[productId];
-                var orderItem = new OrderItem
-                {
-                    OrderId = orderId,
-                    ProductId = productId,
-                    Quantity = quantity,
-                    UnitPrice = product.Price,
-                    ItemTotal = product.Price * quantity,
-                    CreatedDate = DateTime.UtcNow
-                };
-                // In a real implementation, would add to context and save
-                // For now, assuming the stored procedure handles this
-            }
+            await _orderRepository.AddOrderItemsAsync(orderId, orderItems);
 
-            // Retrieve and return created order
-            return await _orderRepository.GetOrderDetailsAsync(orderId);
+            var createdOrder = await _orderRepository.GetOrderDetailsAsync(orderId);
+            return createdOrder ?? throw new InvalidOperationException($"Order {orderCode} was created but could not be loaded");
         }
 
-        /// <summary>
-        /// Get all orders for a specific user
-        /// </summary>
+        public async Task<OrderPricingQuote> CalculatePricingAsync(int userId, decimal subTotal)
+        {
+            if (subTotal < 0)
+                throw new ArgumentException("Subtotal cannot be negative");
+
+            var discountAmount = await CalculateDiscountAsync(userId, subTotal);
+            var shippingFee = await CalculateShippingFeeAsync(subTotal);
+            var totalCost = Math.Max(0, subTotal + shippingFee - discountAmount);
+
+            return new OrderPricingQuote
+            {
+                SubTotal = Math.Round(subTotal, 2),
+                ShippingFee = Math.Round(shippingFee, 2),
+                DiscountAmount = Math.Round(discountAmount, 2),
+                TotalCost = Math.Round(totalCost, 2)
+            };
+        }
+
         public async Task<List<Order>> GetUserOrdersAsync(int userId, int limit = 50)
         {
             var orders = await _orderRepository.GetUserOrdersAsync(userId, limit);
             return orders.ToList();
         }
 
-        /// <summary>
-        /// Get active orders for user (status not 'livrata' or 'anulata')
-        /// </summary>
         public async Task<List<Order>> GetUserActiveOrdersAsync(int userId)
         {
             var allOrders = await GetUserOrdersAsync(userId);
@@ -122,9 +96,7 @@ namespace RestaurantOrderManagement.Services.Implementations
                 .ToList();
         }
 
-        /// <summary>
-        /// Get order details with line items
-        /// </summary>
+
         public async Task<Order> GetOrderDetailAsync(int orderId)
         {
             var order = await _orderRepository.GetOrderDetailsAsync(orderId);
@@ -133,22 +105,17 @@ namespace RestaurantOrderManagement.Services.Implementations
             return order;
         }
 
-        /// <summary>
-        /// Update order status (employee operation)
-        /// Status values: 'inregistrata', 'se pregateste', 'a plecat la client', 'livrata', 'anulata'
-        /// </summary>
         public async Task<bool> UpdateOrderStatusAsync(int orderId, string newStatus)
         {
             var validStatuses = new[] { "inregistrata", "se pregateste", "a plecat la client", "livrata", "anulata" };
             if (!validStatuses.Contains(newStatus))
                 throw new ArgumentException($"Invalid order status: {newStatus}");
 
-            // Verify order exists
             var order = await GetOrderDetailAsync(orderId);
             if (order == null)
                 return false;
 
-            // Prevent status changes on completed/cancelled orders
+            
             if (order.Status == "livrata" || order.Status == "anulata")
                 return false;
 
@@ -156,49 +123,36 @@ namespace RestaurantOrderManagement.Services.Implementations
             if (!updated)
                 return false;
 
-            if (newStatus == "anulata")
+            if (newStatus == "livrata")
             {
-                foreach (var item in order.OrderItems ?? Enumerable.Empty<OrderItem>())
-                {
-                    var restored = await _productRepository.UpdateInventoryAsync(item.ProductId, item.Quantity);
-                    if (!restored)
-                        throw new InvalidOperationException($"Failed to restore inventory for product {item.ProductId}");
-                }
+                await ApplyDeliveredInventoryAsync(order);
             }
 
             return true;
         }
 
-        /// <summary>
-        /// Cancel active order (restores inventory, sets status to 'anulata')
-        /// Only works if order status is not already 'livrata' or 'anulata'
-        /// </summary>
+
         public async Task<bool> CancelOrderAsync(int orderId)
         {
             var order = await GetOrderDetailAsync(orderId);
             if (order == null)
                 return false;
 
-            // Can only cancel active orders
+            
             if (order.Status == "livrata" || order.Status == "anulata")
                 return false;
 
-            // Set status to cancelled
+           
             return await UpdateOrderStatusAsync(orderId, "anulata");
         }
 
-        /// <summary>
-        /// Get all orders (employee view)
-        /// </summary>
+        
         public async Task<List<Order>> GetAllOrdersAsync(int limit = 100)
         {
             var orders = await _orderRepository.GetAllOrdersAsync(null, null, null, limit);
             return orders.ToList();
         }
 
-        /// <summary>
-        /// Get all active orders (employee view)
-        /// </summary>
         public async Task<List<Order>> GetAllActiveOrdersAsync()
         {
             var allOrders = await GetAllOrdersAsync();
@@ -207,33 +161,39 @@ namespace RestaurantOrderManagement.Services.Implementations
                 .ToList();
         }
 
-        /// <summary>
-        /// Calculate discount amount based on business rules:
-        /// - Large order discount if SubTotal > threshold
-        /// - Frequent customer discount (TODO: implement when user order history available)
-        /// </summary>
+
         private async Task<decimal> CalculateDiscountAsync(int userId, decimal subTotal)
         {
             decimal discountAmount = 0;
 
-            // Apply large order discount
+            
             var (largeOrderThreshold, largeOrderPercent) = await _configService.GetLargeOrderDiscountAsync();
-            if (subTotal >= largeOrderThreshold)
+            if (largeOrderThreshold > 0 && largeOrderPercent > 0 && subTotal >= largeOrderThreshold)
             {
-                discountAmount += (subTotal * largeOrderPercent) / 100;
+                discountAmount += Math.Round((subTotal * largeOrderPercent) / 100, 2);
             }
 
-            // TODO: Apply frequent customer discount
-            // Requires checking user order history within time window
+            var (frequentOrderThreshold, frequentOrderWindow, frequentOrderPercent) =
+                await _configService.GetFrequentOrderDiscountAsync();
+            if (userId > 0 &&
+                frequentOrderThreshold > 0 &&
+                frequentOrderWindow > 0 &&
+                frequentOrderPercent > 0)
+            {
+                var cutoffDate = DateTime.UtcNow.AddDays(-frequentOrderWindow);
+                var recentOrderCount = (await _orderRepository.GetUserOrdersAsync(userId, 1000))
+                    .Count(order => order.Status != "anulata" && order.OrderDate >= cutoffDate);
 
-            return discountAmount;
+                if (recentOrderCount > frequentOrderThreshold)
+                {
+                    discountAmount += Math.Round((subTotal * frequentOrderPercent) / 100, 2);
+                }
+            }
+
+            return Math.Min(discountAmount, subTotal);
         }
 
-        /// <summary>
-        /// Calculate shipping fee based on configuration:
-        /// - Free shipping if SubTotal (before discount) >= MinOrderForFreeShipping
-        /// - Otherwise, fixed ShippingFee from configuration
-        /// </summary>
+        
         private async Task<decimal> CalculateShippingFeeAsync(decimal subTotal)
         {
             var minForFreeShipping = await _configService.GetMinOrderForFreeShippingAsync();
@@ -243,6 +203,122 @@ namespace RestaurantOrderManagement.Services.Implementations
 
             var shippingFee = await _configService.GetShippingFeeAsync();
             return shippingFee;
+        }
+
+        private async Task<OrderItem> BuildOrderItemAsync(OrderRequestItem item)
+        {
+            if (IsMenuItem(item))
+                return await BuildMenuOrderItemAsync(item);
+
+            if (item.ProductId is not int productId)
+                throw new ArgumentException("Product order item is missing a product reference");
+
+            var product = await _productRepository.GetProductByIdAsync(productId);
+            if (product == null)
+                throw new InvalidOperationException($"Product {productId} not found");
+
+            EnsureProductCanBeOrdered(product, item.Quantity);
+
+            return new OrderItem
+            {
+                ProductId = product.ProductId,
+                ItemType = "Preparat",
+                ItemName = product.Name,
+                Quantity = item.Quantity,
+                UnitPrice = product.Price,
+                ItemTotal = product.Price * item.Quantity,
+                CreatedDate = DateTime.UtcNow
+            };
+        }
+
+        private async Task<OrderItem> BuildMenuOrderItemAsync(OrderRequestItem item)
+        {
+            if (item.MenuId is not int menuId)
+                throw new ArgumentException("Menu order item is missing a menu reference");
+
+            var menu = await _productRepository.GetMenuByIdAsync(menuId);
+            if (menu == null)
+                throw new InvalidOperationException($"Menu {menuId} not found");
+            if (!menu.IsAvailable)
+                throw new InvalidOperationException($"Menu {menu.Name} is not available");
+            if (menu.MenuProducts == null || menu.MenuProducts.Count == 0)
+                throw new InvalidOperationException($"Menu {menu.Name} has no products");
+
+            foreach (var component in menu.MenuProducts)
+            {
+                EnsureProductCanBeOrdered(component.Product, item.Quantity * component.Quantity);
+            }
+
+            var unitPrice = await CalculateMenuPriceAsync(menu);
+            return new OrderItem
+            {
+                MenuId = menu.MenuId,
+                ItemType = "Meniu",
+                ItemName = menu.Name,
+                Quantity = item.Quantity,
+                UnitPrice = unitPrice,
+                ItemTotal = unitPrice * item.Quantity,
+                CreatedDate = DateTime.UtcNow
+            };
+        }
+
+        private async Task<decimal> CalculateMenuPriceAsync(Menu menu)
+        {
+            var config = await _configService.GetConfigurationAsync();
+            var discountPercent = menu.BundleDiscountPercent > 0
+                ? menu.BundleDiscountPercent
+                : config.MenuBundleDiscountPercent;
+            var subtotal = menu.MenuProducts.Sum(component => component.Product.Price * component.Quantity);
+
+            return Math.Round(subtotal * (1 - discountPercent / 100), 2);
+        }
+
+        private static void EnsureProductCanBeOrdered(Product product, int requestedPieces)
+        {
+            if (product == null)
+                throw new InvalidOperationException("A menu component product was not found");
+            if (!product.IsAvailable || product.IsDeleted || product.TotalQuantity <= 0)
+                throw new InvalidOperationException($"Product {product.Name} is not available");
+
+            var requiredQuantity = product.PortionQuantity * requestedPieces;
+            if (product.TotalQuantity < requiredQuantity)
+                throw new InvalidOperationException($"Insufficient inventory for {product.Name}");
+        }
+
+        private async Task ApplyDeliveredInventoryAsync(Order order)
+        {
+            foreach (var item in order.OrderItems ?? Enumerable.Empty<OrderItem>())
+            {
+                if (item.ProductId is int productId)
+                {
+                    var product = item.Product ?? await _productRepository.GetProductByIdAsync(productId);
+                    if (product == null)
+                        throw new InvalidOperationException($"Product {productId} not found");
+
+                    var quantityChange = -(product.PortionQuantity * item.Quantity);
+                    await _productRepository.UpdateInventoryAsync(productId, quantityChange);
+                    continue;
+                }
+
+                if (item.MenuId is int menuId)
+                {
+                    var menu = item.Menu ?? await _productRepository.GetMenuByIdAsync(menuId);
+                    if (menu == null)
+                        throw new InvalidOperationException($"Menu {menuId} not found");
+
+                    foreach (var component in menu.MenuProducts)
+                    {
+                        var quantityChange = -(component.Product.PortionQuantity * component.Quantity * item.Quantity);
+                        await _productRepository.UpdateInventoryAsync(component.ProductId, quantityChange);
+                    }
+                }
+            }
+        }
+
+        private static bool IsMenuItem(OrderRequestItem item)
+        {
+            return string.Equals(item.ItemType, "Meniu", StringComparison.OrdinalIgnoreCase) ||
+                   item.MenuId.HasValue;
         }
     }
 }

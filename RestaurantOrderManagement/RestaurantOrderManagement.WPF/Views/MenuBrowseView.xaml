@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="600"
         d:DesignWidth="900"
-             Background="#F5F5F5">
+             Background="#FFF3DF">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -16,199 +16,305 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0"
-                Background="#2C3E50">
-            <TextBlock Text="Restaurant Menu"
-                    FontSize="28"
-                    FontWeight="Bold"
-                    Foreground="White"/>
-            <TextBlock Text="Browse our delicious offerings"
-                    FontSize="14"
-                    Foreground="#ECF0F1"
-                    Margin="0,5,0,0"/>
-        </StackPanel>
+        <Border Grid.Row="0"
+                Background="#D62300"
+                Padding="18,12">
+            <StackPanel>
+                <TextBlock Text="Restaurant Menu"
+                        FontSize="28"
+                        FontWeight="Bold"
+                        Foreground="#FFF3DF"/>
+                <TextBlock Text="Browse our delicious offerings"
+                        FontSize="14"
+                        Foreground="#FFE6C7"
+                        Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
 
         <!-- Category Selection and Search -->
         <Grid Grid.Row="1"
-                Background="White"
-                Margin="0,0,0,10">
+                Background="#FFFDF7"
+                Margin="18,12,18,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Categories ComboBox -->
             <StackPanel Grid.Column="0"
                     Margin="0,0,20,0">
                 <TextBlock Text="Category"
                         FontSize="12"
                         FontWeight="Bold"
+                        Foreground="#502314"
                         Margin="0,0,0,5"/>
                 <ComboBox x:Name="CategoryComboBox"
                           ItemsSource="{Binding Categories}"
                           SelectedItem="{Binding SelectedCategory}"
                           DisplayMemberPath="Name"
+                          Style="{StaticResource AccessibleComboBoxStyle}"
                           Padding="10,8"
                           SelectionChanged="OnCategorySelectionChanged"/>
             </StackPanel>
 
-            <!-- Search Box (placeholder for future implementation) -->
             <StackPanel Grid.Column="1"
                     Margin="0,0,20,0">
                 <TextBlock Text="Search"
                         FontSize="12"
                         FontWeight="Bold"
+                        Foreground="#502314"
                         Margin="0,0,0,5"/>
                 <TextBox Padding="10,8"
-                        Foreground="#7F8C8D"
-                        ToolTip="Enter product name or keyword..."/>
+                        Style="{StaticResource AccessibleTextBoxStyle}"
+                        Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                        Foreground="#8A4B2A"
+                        ToolTip="Search dishes, menus, components or allergens..."/>
             </StackPanel>
 
-            <!-- Refresh Button -->
             <Button Grid.Column="2"
+                    Command="{Binding ApplyFiltersCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Background="#D62300"
+                    Foreground="#FFF3DF"
+                    Padding="16,8"
+                    FontWeight="Bold"
+                    VerticalAlignment="Bottom">
+                Search
+            </Button>
+
+            <Button Grid.Column="3"
                     Command="{Binding RefreshCommand}"
-                    Background="#3498DB"
-                    Foreground="White"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Background="#502314"
+                    Foreground="#FFF3DF"
                     Padding="15,8"
                     FontWeight="Bold"
                     VerticalAlignment="Bottom">
-                Refresh Menu
+                Refresh
             </Button>
         </Grid>
 
-        <!-- Products List -->
+        <!-- Restaurant Menu List -->
         <ScrollViewer Grid.Row="2"
                 VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding ProductsByCategory}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal"
-                                Margin="20,10"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+            <Grid>
+                <TextBlock Text="No dishes or menus match the current filters."
+                           Foreground="#8A4B2A"
+                           FontSize="15"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           Margin="20,60"
+                           Visibility="{Binding ResultCount, Converter={StaticResource ZeroToVisibilityConverter}}"/>
+
+            <ItemsControl ItemsSource="{Binding MenuGroups}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <!-- Product Card -->
-                        <Border Width="250"
-                                Height="320"
-                                Margin="10"
-                                Background="White"
-                                CornerRadius="8"
-                                BorderBrush="#E0E0E0"
-                                BorderThickness="1">
-                            <StackPanel VerticalAlignment="Stretch">
-                                <!-- Product Image -->
-                                <Rectangle Height="140"
-                                        Margin="0,0,0,10"
-                                        VerticalAlignment="Top">
-                                    <!-- In real app, bind to first ImageUrl from ImageUrls collection -->
-                                    <Rectangle.Fill>
-                                        <ImageBrush Stretch="UniformToFill"
-                                                ImageSource="https://via.placeholder.com/250x140?text=No+Image"/>
-                                    </Rectangle.Fill>
-                                </Rectangle>
+                        <StackPanel Margin="18,8,18,18">
+                            <DockPanel Margin="2,0,2,8">
+                                <TextBlock Text="{Binding ItemCount, StringFormat='{}{0} items'}"
+                                           DockPanel.Dock="Right"
+                                           FontSize="12"
+                                           Foreground="#8A4B2A"
+                                           VerticalAlignment="Bottom"/>
+                                <TextBlock Text="{Binding CategoryName}"
+                                           FontSize="22"
+                                           FontWeight="Black"
+                                           Foreground="#502314"/>
+                            </DockPanel>
 
-                                <!-- Product Info -->
-                                <StackPanel
-                                        VerticalAlignment="Stretch">
-                                    <!-- Product Code (not ID) -->
-                                    <TextBlock Text="{Binding DisplayCode}"
-                                            FontSize="10"
-                                            Foreground="#7F8C8D"/>
+                            <ItemsControl ItemsSource="{Binding Items}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="310"
+                                                MinHeight="430"
+                                                Margin="0,0,14,16"
+                                                Background="#FFFDF7"
+                                                CornerRadius="18"
+                                                BorderBrush="#F1C27D"
+                                                BorderThickness="1">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
 
-                                    <!-- Product Name -->
-                                    <TextBlock Text="{Binding Name}"
-                                            FontSize="14"
-                                            FontWeight="Bold"
-                                               TextWrapping="Wrap"
-                                            Margin="0,3,0,5"/>
-
-                                    <!-- Description -->
-                                    <TextBlock Text="{Binding Description}"
-                                            FontSize="11"
-                                               Foreground="#7F8C8D"
-                                            TextWrapping="Wrap"
-                                               TextTrimming="CharacterEllipsis"
-                                            MaxHeight="40"
-                                            Margin="0,0,0,5"/>
-
-                                    <!-- Portion Size -->
-                                    <TextBlock Text="{Binding PortionQuantity, StringFormat='{}Portion: {0}g'}"
-                                               FontSize="10"
-                                            Foreground="#95A5A6"
-                                            Margin="0,0,0,5"/>
-
-                                    <!-- Allergens -->
-                                    <ItemsControl ItemsSource="{Binding Allergens}"
-                                            Margin="0,0,0,5">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel Orientation="Horizontal"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Background="#FFE6E6"
-                                                        BorderBrush="#E74C3C"
-                                                        BorderThickness="1"
-                                                        CornerRadius="3"
-                                                        Padding="5,2"
-                                                        Margin="2">
-                                                    <TextBlock Text="{Binding Name}"
-                                                            FontSize="9"
-                                                            Foreground="#C0392B"/>
+                                                <Border Grid.Row="0"
+                                                        Height="138"
+                                                        Background="#FFE6C7"
+                                                        CornerRadius="18,18,0,0">
+                                                    <Grid>
+                                                        <TextBlock Text="No image"
+                                                                   Foreground="#8A4B2A"
+                                                                   FontWeight="Bold"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"
+                                                                   Visibility="{Binding HasImages, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                        <Image Source="{Binding PrimaryImageUrl}"
+                                                               Stretch="Uniform"
+                                                               RenderOptions.BitmapScalingMode="HighQuality"
+                                                               Margin="10"
+                                                               Visibility="{Binding HasImages, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                    </Grid>
                                                 </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
 
-                                    <!-- Price and Availability -->
-                                    <Grid Margin="0,5,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Row="1"
+                                                            Margin="14,12">
+                                                    <DockPanel Margin="0,0,0,8">
+                                                        <Border DockPanel.Dock="Left"
+                                                                Background="#FFAA00"
+                                                                CornerRadius="10"
+                                                                Padding="8,3">
+                                                            <TextBlock Text="{Binding ItemType}"
+                                                                       FontSize="10"
+                                                                       FontWeight="Black"
+                                                                       Foreground="#502314"/>
+                                                        </Border>
+                                                        <TextBlock Text="{Binding AvailabilityText}"
+                                                                   DockPanel.Dock="Right"
+                                                                   FontSize="11"
+                                                                   FontWeight="Black"
+                                                                   Foreground="#198754"
+                                                                   HorizontalAlignment="Right"
+                                                                   Visibility="{Binding IsAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                        <TextBlock Text="{Binding AvailabilityText}"
+                                                                   DockPanel.Dock="Right"
+                                                                   FontSize="11"
+                                                                   FontWeight="Black"
+                                                                   Foreground="#D62300"
+                                                                   HorizontalAlignment="Right"
+                                                                   Visibility="{Binding IsAvailable, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                    </DockPanel>
 
-                                        <TextBlock Grid.Column="0"
-                                                Text="{Binding Price, StringFormat='${0:F2}'}"
-                                                   FontSize="16"
-                                                FontWeight="Bold"
-                                                Foreground="#27AE60"/>
+                                                    <TextBlock Text="{Binding Name}"
+                                                               FontSize="17"
+                                                               FontWeight="Black"
+                                                               Foreground="#502314"
+                                                               TextWrapping="Wrap"
+                                                               MaxHeight="48"/>
 
-                                        <TextBlock Grid.Column="1"
-                                                Text="Available"
-                                                FontSize="10"
-                                                   Foreground="#27AE60"
-                                                FontWeight="Bold"
-                                                   Visibility="{Binding IsAvailable, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                    <TextBlock Text="{Binding Description}"
+                                                               FontSize="12"
+                                                               Foreground="#8A4B2A"
+                                                               TextWrapping="Wrap"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               MaxHeight="42"
+                                                               Margin="0,5,0,8"/>
 
-                                        <TextBlock Grid.Column="1"
-                                                Text="Out of Stock"
-                                                FontSize="10"
-                                                   Foreground="#E74C3C"
-                                                FontWeight="Bold"
-                                                   Visibility="{Binding IsAvailable, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                    </Grid>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
+                                                    <TextBlock Text="{Binding PortionDisplay}"
+                                                               FontSize="12"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="#502314"
+                                                               TextWrapping="Wrap"
+                                                               Margin="0,0,0,8"/>
+
+                                                    <ItemsControl ItemsSource="{Binding Components}"
+                                                                  Visibility="{Binding HasComponents, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                                  Margin="0,0,0,8">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Grid Margin="0,1">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*"/>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <TextBlock Text="{Binding ProductName}"
+                                                                               FontSize="11"
+                                                                               Foreground="#502314"
+                                                                               TextTrimming="CharacterEllipsis"/>
+                                                                    <TextBlock Grid.Column="1"
+                                                                               Text="{Binding QuantityDisplay}"
+                                                                               FontSize="11"
+                                                                               FontWeight="SemiBold"
+                                                                               Foreground="#8A4B2A"/>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+
+                                                    <ItemsControl ItemsSource="{Binding Allergens}"
+                                                                  Visibility="{Binding HasAllergens, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                                  Margin="0,0,0,8">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel Orientation="Horizontal"/>
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Border Background="#FFE6C7"
+                                                                        BorderBrush="#D62300"
+                                                                        BorderThickness="1"
+                                                                        CornerRadius="9"
+                                                                        Padding="6,2"
+                                                                        Margin="0,0,4,4">
+                                                                    <TextBlock Text="{Binding Name}"
+                                                                               FontSize="9"
+                                                                               FontWeight="Bold"
+                                                                               Foreground="#D62300"/>
+                                                                </Border>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+
+                                                    <Grid Margin="0,4,0,0">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="{Binding PriceText}"
+                                                                   FontSize="19"
+                                                                   FontWeight="Black"
+                                                                   Foreground="#D62300"
+                                                                   VerticalAlignment="Center"/>
+                                                        <Button Grid.Column="1"
+                                                                Content="Add"
+                                                                Command="{Binding DataContext.AddMenuItemToCartCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                CommandParameter="{Binding}"
+                                                                Style="{StaticResource PrimaryButtonStyle}"
+                                                                Background="#D62300"
+                                                                Foreground="#FFF3DF"
+                                                                FontWeight="Black"
+                                                                MinWidth="76"
+                                                                Padding="12,7"
+                                                                IsEnabled="{Binding IsAvailable}"
+                                                                Visibility="{Binding DataContext.CanAddItems, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+            </Grid>
         </ScrollViewer>
 
         <!-- Status Bar -->
         <StatusBar Grid.Row="3"
-                Background="#ECF0F1"
+                Background="#FFE6C7"
                 Height="30">
             <StatusBarItem>
                 <TextBlock Text="{Binding ErrorMessage, FallbackValue='Ready'}"
                         Foreground="#E74C3C"
                         FontWeight="Bold"/>
             </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Text="{Binding CartStatusMessage}"
+                        Foreground="#502314"
+                        FontWeight="Bold"/>
+            </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock Text="{Binding ProductsByCategory.Count, StringFormat='Total: {0} products'}"
+                <TextBlock Text="{Binding ResultCount, StringFormat='Total: {0} menu items'}"
                         Foreground="#7F8C8D"/>
             </StatusBarItem>
         </StatusBar>

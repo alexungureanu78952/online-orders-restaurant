@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RestaurantOrderManagement.Data.Models;
 using RestaurantOrderManagement.Services;
+using RestaurantOrderManagement.Services.DTOs;
 using RestaurantOrderManagement.Services.Interfaces;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -14,6 +15,8 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         private readonly IOrderService _orderService;
         private readonly IProductService _productService;
         private readonly IConfigurationService _configService;
+        private readonly SemaphoreSlim _pricingLock = new(1, 1);
+        private int _pricingVersion;
         private int _currentUserId;
 
         [ObservableProperty]
@@ -55,6 +58,10 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         public bool HasSuccessMessage => !string.IsNullOrWhiteSpace(SuccessMessage);
         public bool IsNotLoading => !IsLoading;
         public bool CanCheckout => !IsLoading && !IsCartEmpty && !string.IsNullOrWhiteSpace(DeliveryAddress);
+        public string SubTotalText => FormatLei(SubTotal);
+        public string ShippingFeeText => FormatLei(ShippingFee);
+        public string DiscountAmountText => DiscountAmount > 0 ? $"-{FormatLei(DiscountAmount)}" : FormatLei(0);
+        public string TotalCostText => FormatLei(TotalCost);
 
         public OrderCartViewModel(IOrderService orderService, IProductService productService, IConfigurationService configService)
         {
@@ -93,6 +100,26 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         {
             OnPropertyChanged(nameof(IsNotLoading));
             OnPropertyChanged(nameof(CanCheckout));
+        }
+
+        partial void OnSubTotalChanged(decimal value)
+        {
+            OnPropertyChanged(nameof(SubTotalText));
+        }
+
+        partial void OnShippingFeeChanged(decimal value)
+        {
+            OnPropertyChanged(nameof(ShippingFeeText));
+        }
+
+        partial void OnDiscountAmountChanged(decimal value)
+        {
+            OnPropertyChanged(nameof(DiscountAmountText));
+        }
+
+        partial void OnTotalCostChanged(decimal value)
+        {
+            OnPropertyChanged(nameof(TotalCostText));
         }
 
         private void HookCartCollection(ObservableCollection<CartItemViewModel> collection)
@@ -165,7 +192,8 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
             ClearMessages();
 
-            var existingItem = CartItems.FirstOrDefault(c => c.ProductId == productId);
+            var orderKey = $"P:{productId}";
+            var existingItem = CartItems.FirstOrDefault(c => c.OrderKey == orderKey);
             if (existingItem != null)
             {
                 existingItem.Quantity += quantity;
@@ -174,7 +202,9 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
             CartItems.Add(new CartItemViewModel
             {
+                OrderKey = orderKey,
                 ProductId = productId,
+                ItemType = "Preparat",
                 ProductName = $"Product {productId}",
                 UnitPrice = 0,
                 Quantity = quantity
@@ -182,9 +212,48 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         }
 
         [RelayCommand]
-        public void RemoveFromCart(int productId)
+        public void AddMenuItem(RestaurantMenuItemDTO item)
         {
-            var item = CartItems.FirstOrDefault(c => c.ProductId == productId);
+            if (item == null)
+                return;
+
+            if (!item.IsAvailable)
+            {
+                ErrorMessage = $"{item.Name} is unavailable.";
+                return;
+            }
+
+            if (!TryParseOrderKey(item.OrderKey, out var itemType, out var itemId))
+            {
+                ErrorMessage = "This menu item cannot be added to the cart.";
+                return;
+            }
+
+            ClearMessages();
+
+            var existingItem = CartItems.FirstOrDefault(c => c.OrderKey == item.OrderKey);
+            if (existingItem != null)
+            {
+                existingItem.Quantity += 1;
+                return;
+            }
+
+            CartItems.Add(new CartItemViewModel
+            {
+                OrderKey = item.OrderKey,
+                ProductId = itemType == "P" ? itemId : 0,
+                MenuId = itemType == "M" ? itemId : 0,
+                ItemType = item.ItemType,
+                ProductName = item.Name,
+                UnitPrice = item.Price,
+                Quantity = 1
+            });
+        }
+
+        [RelayCommand]
+        public void RemoveFromCart(string orderKey)
+        {
+            var item = CartItems.FirstOrDefault(c => c.OrderKey == orderKey);
             if (item != null)
             {
                 CartItems.Remove(item);
@@ -194,16 +263,16 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         [RelayCommand]
         public void UpdateQuantity(object parameter)
         {
-            if (parameter is not (int productId, int newQuantity))
+            if (parameter is not (string orderKey, int newQuantity))
                 return;
 
             if (newQuantity <= 0)
             {
-                RemoveFromCart(productId);
+                RemoveFromCart(orderKey);
                 return;
             }
 
-            var item = CartItems.FirstOrDefault(c => c.ProductId == productId);
+            var item = CartItems.FirstOrDefault(c => c.OrderKey == orderKey);
             if (item != null)
             {
                 item.Quantity = newQuantity;
@@ -221,6 +290,8 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         [RelayCommand]
         public async Task SubmitOrderAsync()
         {
+            var lockTaken = false;
+
             try
             {
                 ClearMessages();
@@ -238,7 +309,10 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                     return;
                 }
 
-                var items = CartItems.Select(c => (ProductId: c.ProductId, Quantity: c.Quantity)).ToList();
+                var items = CartItems.Select(c => c.ToOrderRequestItem()).ToList();
+                await _pricingLock.WaitAsync();
+                lockTaken = true;
+
                 var order = await _orderService.CreateOrderAsync(_currentUserId, items, DeliveryAddress);
 
                 OrderCode = order.OrderCode;
@@ -262,6 +336,9 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
             finally
             {
+                if (lockTaken)
+                    _pricingLock.Release();
+
                 IsLoading = false;
             }
         }
@@ -269,9 +346,48 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         private void RecalculateTotals()
         {
             SubTotal = CartItems.Sum(c => c.UnitPrice * c.Quantity);
-            ShippingFee = 0;
-            DiscountAmount = 0;
-            TotalCost = SubTotal + ShippingFee - DiscountAmount;
+
+            var version = Interlocked.Increment(ref _pricingVersion);
+            if (SubTotal <= 0)
+            {
+                ShippingFee = 0;
+                DiscountAmount = 0;
+                TotalCost = 0;
+                return;
+            }
+
+            _ = ApplyConfiguredTotalsAsync(version, SubTotal);
+        }
+
+        private async Task ApplyConfiguredTotalsAsync(int version, decimal quotedSubtotal)
+        {
+            await _pricingLock.WaitAsync();
+            try
+            {
+                if (version != _pricingVersion)
+                    return;
+
+                var quote = await _orderService.CalculatePricingAsync(_currentUserId, quotedSubtotal);
+                if (version != _pricingVersion || SubTotal != quotedSubtotal)
+                    return;
+
+                ShippingFee = quote.ShippingFee;
+                DiscountAmount = quote.DiscountAmount;
+                TotalCost = quote.TotalCost;
+            }
+            catch
+            {
+                if (version != _pricingVersion)
+                    return;
+
+                ShippingFee = 0;
+                DiscountAmount = 0;
+                TotalCost = SubTotal;
+            }
+            finally
+            {
+                _pricingLock.Release();
+            }
         }
 
         private void ClearMessages()
@@ -279,12 +395,39 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
         }
+
+        private static bool TryParseOrderKey(string orderKey, out string itemType, out int itemId)
+        {
+            itemType = string.Empty;
+            itemId = 0;
+
+            var parts = (orderKey ?? string.Empty).Split(':');
+            if (parts.Length != 2 || !int.TryParse(parts[1], out itemId))
+                return false;
+
+            itemType = parts[0].ToUpperInvariant();
+            return itemType is "P" or "M" && itemId > 0;
+        }
+
+        private static string FormatLei(decimal amount)
+        {
+            return $"{amount:F2} lei";
+        }
     }
 
     public partial class CartItemViewModel : ObservableObject
     {
         [ObservableProperty]
+        private string orderKey = string.Empty;
+
+        [ObservableProperty]
         private int productId;
+
+        [ObservableProperty]
+        private int menuId;
+
+        [ObservableProperty]
+        private string itemType = "Preparat";
 
         [ObservableProperty]
         private string productName = string.Empty;
@@ -296,15 +439,33 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         private int quantity;
 
         public decimal ItemTotal => UnitPrice * Quantity;
+        public string UnitPriceText => FormatLei(UnitPrice);
+        public string ItemTotalText => FormatLei(ItemTotal);
 
         partial void OnQuantityChanged(int value)
         {
             OnPropertyChanged(nameof(ItemTotal));
+            OnPropertyChanged(nameof(ItemTotalText));
         }
 
         partial void OnUnitPriceChanged(decimal value)
         {
             OnPropertyChanged(nameof(ItemTotal));
+            OnPropertyChanged(nameof(UnitPriceText));
+            OnPropertyChanged(nameof(ItemTotalText));
+        }
+
+        public OrderRequestItem ToOrderRequestItem()
+        {
+            if (MenuId > 0)
+                return OrderRequestItem.Menu(MenuId, Quantity);
+
+            return OrderRequestItem.Product(ProductId, Quantity);
+        }
+
+        private static string FormatLei(decimal amount)
+        {
+            return $"{amount:F2} lei";
         }
     }
 }

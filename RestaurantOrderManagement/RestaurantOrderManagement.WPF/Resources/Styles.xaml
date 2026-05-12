@@ -6,29 +6,18 @@
          Phase 12 Polish: Improved contrast, focus indicators, and keyboard navigation
          ===================================================== -->
 
-    <!-- COLOR PALETTE - High Contrast for Accessibility -->
-    <Color x:Key="PrimaryHeaderColor">#2C3E50</Color>
-    <!-- Dark Blue - Headers -->
-    <Color x:Key="PrimaryBgColor">#ECF0F1</Color>
-    <!-- Light Gray - Backgrounds -->
-    <Color x:Key="SuccessColor">#27AE60</Color>
-    <!-- Green - Success states -->
-    <Color x:Key="ErrorColor">#E74C3C</Color>
-    <!-- Red - Errors -->
-    <Color x:Key="WarningColor">#E67E22</Color>
-    <!-- Orange - Warnings -->
-    <Color x:Key="InfoColor">#3498DB</Color>
-    <!-- Blue - Information -->
-    <Color x:Key="TextPrimaryColor">#2C3E50</Color>
-    <!-- Dark text on light -->
-    <Color x:Key="TextSecondaryColor">#7F8C8D</Color>
-    <!-- Gray text -->
-    <Color x:Key="BorderColor">#BDC3C7</Color>
-    <!-- Light border -->
-    <Color x:Key="DisabledColor">#95A5A6</Color>
-    <!-- Disabled state -->
-    <Color x:Key="FocusColor">#E74C3C</Color>
-    <!-- Focus indicator (high contrast red) -->
+    <!-- COLOR PALETTE - warm fast-food ordering app direction -->
+    <Color x:Key="PrimaryHeaderColor">#D62300</Color>
+    <Color x:Key="PrimaryBgColor">#FFF3DF</Color>
+    <Color x:Key="SuccessColor">#D62300</Color>
+    <Color x:Key="ErrorColor">#D62300</Color>
+    <Color x:Key="WarningColor">#FFAA00</Color>
+    <Color x:Key="InfoColor">#502314</Color>
+    <Color x:Key="TextPrimaryColor">#502314</Color>
+    <Color x:Key="TextSecondaryColor">#8A4B2A</Color>
+    <Color x:Key="BorderColor">#F1C27D</Color>
+    <Color x:Key="DisabledColor">#B48A72</Color>
+    <Color x:Key="FocusColor">#FFAA00</Color>
 
     <!-- BRUSHES -->
     <SolidColorBrush x:Key="PrimaryHeaderBrush"
@@ -41,6 +30,8 @@
             Color="{StaticResource ErrorColor}"/>
     <SolidColorBrush x:Key="WarningBrush"
             Color="{StaticResource WarningColor}"/>
+    <SolidColorBrush x:Key="InfoBrush"
+            Color="{StaticResource InfoColor}"/>
     <SolidColorBrush x:Key="TextPrimaryBrush"
             Color="{StaticResource TextPrimaryColor}"/>
     <SolidColorBrush x:Key="TextSecondaryBrush"
@@ -52,17 +43,75 @@
     <SolidColorBrush x:Key="FocusBrush"
             Color="{StaticResource FocusColor}"/>
 
+    <Style TargetType="Button">
+        <Setter Property="Background"
+                Value="{StaticResource SuccessBrush}"/>
+        <Setter Property="Foreground"
+                Value="#FFF3DF"/>
+        <Setter Property="Padding"
+                Value="14,8"/>
+        <Setter Property="Margin"
+                Value="4"/>
+        <Setter Property="FontWeight"
+                Value="Bold"/>
+        <Setter Property="BorderThickness"
+                Value="0"/>
+        <Setter Property="MinHeight"
+                Value="34"/>
+        <Setter Property="Cursor"
+                Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonChrome"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="17">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="True"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                Value="True">
+                            <Setter TargetName="ButtonChrome"
+                                    Property="Opacity"
+                                    Value="0.9"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed"
+                                Value="True">
+                            <Setter TargetName="ButtonChrome"
+                                    Property="Opacity"
+                                    Value="0.78"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled"
+                                Value="False">
+                            <Setter Property="Background"
+                                    Value="{StaticResource DisabledBrush}"/>
+                            <Setter Property="Foreground"
+                                    Value="#FFF3DF"/>
+                            <Setter TargetName="ButtonChrome"
+                                    Property="Opacity"
+                                    Value="0.75"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- =====================================================
          BUTTON STYLES - Accessibility & Visibility
          ===================================================== -->
 
-    <!-- Primary Action Button (Green) -->
+    <!-- Primary Action Button -->
     <Style x:Key="PrimaryButtonStyle"
             TargetType="Button">
         <Setter Property="Background"
                 Value="{StaticResource SuccessBrush}"/>
         <Setter Property="Foreground"
-                Value="White"/>
+                Value="#FFF3DF"/>
         <Setter Property="Padding"
                 Value="12,8,12,8"/>
         <Setter Property="Margin"
@@ -72,7 +121,7 @@
         <Setter Property="FontWeight"
                 Value="Bold"/>
         <Setter Property="BorderThickness"
-                Value="2"/>
+                Value="0"/>
         <Setter Property="BorderBrush"
                 Value="{StaticResource SuccessBrush}"/>
         <Setter Property="MinHeight"
@@ -87,7 +136,7 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="4">
+                            CornerRadius="20">
                         <ContentPresenter HorizontalAlignment="Center"
                                 VerticalAlignment="Center"/>
                     </Border>
@@ -95,12 +144,12 @@
                         <Trigger Property="IsMouseOver"
                                 Value="True">
                             <Setter Property="Background"
-                                    Value="#229954"/>
+                                    Value="#B81F00"/>
                         </Trigger>
                         <Trigger Property="IsPressed"
                                 Value="True">
                             <Setter Property="Background"
-                                    Value="#1E8449"/>
+                                    Value="#8F1A00"/>
                             <Setter Property="Opacity"
                                     Value="0.9"/>
                         </Trigger>
@@ -131,9 +180,9 @@
     <Style x:Key="SecondaryButtonStyle"
             TargetType="Button">
         <Setter Property="Background"
-                Value="{StaticResource InfoColor}"/>
+                Value="{StaticResource InfoBrush}"/>
         <Setter Property="Foreground"
-                Value="White"/>
+                Value="#FFF3DF"/>
         <Setter Property="Padding"
                 Value="12,8,12,8"/>
         <Setter Property="Margin"
@@ -143,9 +192,9 @@
         <Setter Property="FontWeight"
                 Value="Bold"/>
         <Setter Property="BorderThickness"
-                Value="2"/>
+                Value="0"/>
         <Setter Property="BorderBrush"
-                Value="{StaticResource InfoColor}"/>
+                Value="{StaticResource InfoBrush}"/>
         <Setter Property="MinHeight"
                 Value="36"/>
         <Setter Property="MinWidth"
@@ -158,7 +207,7 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="4">
+                            CornerRadius="20">
                         <ContentPresenter HorizontalAlignment="Center"
                                 VerticalAlignment="Center"/>
                     </Border>
@@ -166,12 +215,12 @@
                         <Trigger Property="IsMouseOver"
                                 Value="True">
                             <Setter Property="Background"
-                                    Value="#2980B9"/>
+                                    Value="#3B1A0F"/>
                         </Trigger>
                         <Trigger Property="IsPressed"
                                 Value="True">
                             <Setter Property="Background"
-                                    Value="#1F618D"/>
+                                    Value="#2B120A"/>
                             <Setter Property="Opacity"
                                     Value="0.9"/>
                         </Trigger>
@@ -203,7 +252,7 @@
         <Setter Property="Background"
                 Value="{StaticResource ErrorBrush}"/>
         <Setter Property="Foreground"
-                Value="White"/>
+                Value="#FFF3DF"/>
         <Setter Property="Padding"
                 Value="12,8,12,8"/>
         <Setter Property="Margin"
@@ -213,7 +262,7 @@
         <Setter Property="FontWeight"
                 Value="Bold"/>
         <Setter Property="BorderThickness"
-                Value="2"/>
+                Value="0"/>
         <Setter Property="BorderBrush"
                 Value="{StaticResource ErrorBrush}"/>
         <Setter Property="MinHeight"
@@ -228,7 +277,7 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="4">
+                            CornerRadius="20">
                         <ContentPresenter HorizontalAlignment="Center"
                                 VerticalAlignment="Center"/>
                     </Border>
@@ -236,12 +285,12 @@
                         <Trigger Property="IsMouseOver"
                                 Value="True">
                             <Setter Property="Background"
-                                    Value="#C0392B"/>
+                                    Value="#B81F00"/>
                         </Trigger>
                         <Trigger Property="IsPressed"
                                 Value="True">
                             <Setter Property="Background"
-                                    Value="#A93226"/>
+                                    Value="#8F1A00"/>
                             <Setter Property="Opacity"
                                     Value="0.9"/>
                         </Trigger>
@@ -274,7 +323,7 @@
     <Style x:Key="AccessibleTextBoxStyle"
             TargetType="TextBox">
         <Setter Property="Background"
-                Value="White"/>
+                Value="#FFFDF7"/>
         <Setter Property="Foreground"
                 Value="{StaticResource TextPrimaryBrush}"/>
         <Setter Property="Padding"
@@ -297,7 +346,7 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="3">
+                            CornerRadius="12">
                         <ScrollViewer x:Name="PART_ContentHost"/>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -309,7 +358,7 @@
                             <Setter Property="BorderThickness"
                                     Value="3"/>
                             <Setter Property="Background"
-                                    Value="#FFFACD"/>
+                                    Value="#FFF3DF"/>
                         </Trigger>
                         <Trigger Property="IsEnabled"
                                 Value="False">
@@ -330,7 +379,7 @@
     <Style x:Key="AccessibleComboBoxStyle"
             TargetType="ComboBox">
         <Setter Property="Background"
-                Value="White"/>
+                Value="#FFFDF7"/>
         <Setter Property="Foreground"
                 Value="{StaticResource TextPrimaryBrush}"/>
         <Setter Property="Padding"
@@ -389,7 +438,7 @@
     <Style x:Key="HeaderStyle"
             TargetType="TextBlock">
         <Setter Property="Foreground"
-                Value="White"/>
+                Value="#FFF3DF"/>
         <Setter Property="Background"
                 Value="{StaticResource PrimaryHeaderBrush}"/>
         <Setter Property="FontSize"

@@ -6,7 +6,7 @@ namespace RestaurantOrderManagement.Data.Models
         public int ProductId { get; set; }
         public int AllergenId { get; set; }
 
-        public Product Product { get; set; }
-        public Allergen Allergen { get; set; }
+        public Product Product { get; set; } = null!;
+        public Allergen Allergen { get; set; } = null!;
     }
 }

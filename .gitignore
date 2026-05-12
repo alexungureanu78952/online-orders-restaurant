@@ -5,6 +5,7 @@ obj/
 **/obj/
 publish/
 artifacts/
+**/.build/
 
 # Visual Studio / Rider / VS Code local state
 .vs/

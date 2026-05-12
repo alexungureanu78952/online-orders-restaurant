@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="750"
         d:DesignWidth="500"
-             Background="#F5F5F5">
+             Background="#FFF3DF">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -15,23 +15,26 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0"
-                Background="#2C3E50">
-            <TextBlock Text="Create Account"
-                    FontSize="28"
-                    FontWeight="Bold"
-                    Foreground="White"/>
-            <TextBlock Text="Join us and start ordering"
-                    FontSize="14"
-                    Foreground="#ECF0F1"
-                    Margin="0,5,0,0"/>
-        </StackPanel>
+        <Border Grid.Row="0"
+                Background="#D62300"
+                Padding="18,12">
+            <StackPanel>
+                <TextBlock Text="Create Account"
+                        FontSize="28"
+                        FontWeight="Bold"
+                        Foreground="#FFF3DF"/>
+                <TextBlock Text="Join us and start ordering"
+                        FontSize="14"
+                        Foreground="#FFE6C7"
+                        Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
 
         <!-- Registration Form -->
         <ScrollViewer Grid.Row="1"
                 VerticalScrollBarVisibility="Auto">
             <StackPanel
-                    Background="White"
+                    Background="#FFFDF7"
                     Margin="10,10,10,0">
 
                 <!-- Success Message -->
@@ -69,14 +72,15 @@
                         FontSize="12"
                         FontWeight="Bold"
                         Margin="0,0,0,5"
-                        Foreground="#2C3E50"/>
+                        Foreground="#502314"/>
                 <TextBox x:Name="EmailBox"
                          Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource AccessibleTextBoxStyle}"
                          Padding="12,10"
                          FontSize="11"
                          Margin="0,0,0,15"
                          Background="White"
-                         BorderBrush="#BDC3C7"
+                         BorderBrush="#F1C27D"
                          BorderThickness="1"
                          ToolTip="Enter your email address"/>
 
@@ -93,12 +97,13 @@
                                 FontSize="12"
                                 FontWeight="Bold"
                                 Margin="0,0,0,5"
-                                Foreground="#2C3E50"/>
+                                Foreground="#502314"/>
                         <TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource AccessibleTextBoxStyle}"
                                  Padding="12,10"
                                  FontSize="11"
                                  Background="White"
-                                 BorderBrush="#BDC3C7"
+                                 BorderBrush="#F1C27D"
                                  BorderThickness="1"/>
                     </StackPanel>
 
@@ -108,12 +113,13 @@
                                 FontSize="12"
                                 FontWeight="Bold"
                                 Margin="0,0,0,5"
-                                Foreground="#2C3E50"/>
+                                Foreground="#502314"/>
                         <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource AccessibleTextBoxStyle}"
                                  Padding="12,10"
                                  FontSize="11"
                                  Background="White"
-                                 BorderBrush="#BDC3C7"
+                                 BorderBrush="#F1C27D"
                                  BorderThickness="1"/>
                     </StackPanel>
                 </Grid>
@@ -123,14 +129,15 @@
                         FontSize="12"
                         FontWeight="Bold"
                         Margin="0,0,0,5"
-                        Foreground="#2C3E50"/>
+                        Foreground="#502314"/>
                 <TextBox x:Name="PasswordBox"
                          Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource AccessibleTextBoxStyle}"
                          Padding="12,10"
                          FontSize="11"
                          Margin="0,0,0,15"
                          Background="White"
-                         BorderBrush="#BDC3C7"
+                         BorderBrush="#F1C27D"
                          BorderThickness="1"
                          ToolTip="At least 6 characters"/>
 
@@ -139,14 +146,15 @@
                         FontSize="12"
                         FontWeight="Bold"
                         Margin="0,0,0,5"
-                        Foreground="#2C3E50"/>
+                        Foreground="#502314"/>
                 <TextBox x:Name="ConfirmPasswordBox"
                          Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource AccessibleTextBoxStyle}"
                          Padding="12,10"
                          FontSize="11"
                          Margin="0,0,0,15"
                          Background="White"
-                         BorderBrush="#BDC3C7"
+                         BorderBrush="#F1C27D"
                          BorderThickness="1"
                          ToolTip="Must match password"/>
 
@@ -155,13 +163,14 @@
                         FontSize="12"
                         FontWeight="Bold"
                         Margin="0,0,0,5"
-                        Foreground="#2C3E50"/>
+                        Foreground="#502314"/>
                 <TextBox Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource AccessibleTextBoxStyle}"
                          Padding="12,10"
                          FontSize="11"
                          Margin="0,0,0,15"
                          Background="White"
-                         BorderBrush="#BDC3C7"
+                         BorderBrush="#F1C27D"
                          BorderThickness="1"
                          ToolTip="Enter your phone number"/>
 
@@ -170,13 +179,14 @@
                         FontSize="12"
                         FontWeight="Bold"
                         Margin="0,0,0,5"
-                        Foreground="#2C3E50"/>
+                        Foreground="#502314"/>
                 <TextBox Text="{Binding DeliveryAddress, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource AccessibleTextBoxStyle}"
                          Padding="12,10"
                          FontSize="11"
                          Margin="0,0,0,20"
                          Background="White"
-                         BorderBrush="#BDC3C7"
+                         BorderBrush="#F1C27D"
                          BorderThickness="1"
                          TextWrapping="Wrap"
                          Height="60"
@@ -187,7 +197,7 @@
                 <!-- Required Fields Note -->
                 <TextBlock Text="* Required fields"
                         FontSize="10"
-                        Foreground="#95A5A6"
+                        Foreground="#8A4B2A"
                         Margin="0,0,0,20"/>
 
             </StackPanel>
@@ -195,7 +205,7 @@
 
         <!-- Footer with Buttons -->
         <Grid Grid.Row="2"
-                Background="White"
+                Background="#FFFDF7"
                 Margin="10,0,10,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -205,8 +215,9 @@
             <!-- Clear Button -->
             <Button Grid.Column="0"
                     Command="{Binding ClearFormCommand}"
-                    Background="#95A5A6"
-                    Foreground="White"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Background="#502314"
+                    Foreground="#FFF3DF"
                     Padding="15,12"
                     FontWeight="Bold"
                     FontSize="12"
@@ -218,13 +229,14 @@
             <!-- Register Button -->
             <Button Grid.Column="1"
                     Command="{Binding RegisterCommand}"
-                    Background="#27AE60"
-                    Foreground="White"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Background="#D62300"
+                    Foreground="#FFF3DF"
                     Padding="15,12"
                     FontWeight="Bold"
                     FontSize="12">
                 <TextBlock Text="Register"
-                        Foreground="White"/>
+                        Foreground="#FFF3DF"/>
             </Button>
         </Grid>
     </Grid>

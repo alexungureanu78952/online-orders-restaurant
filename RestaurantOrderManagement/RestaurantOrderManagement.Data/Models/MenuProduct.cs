@@ -7,7 +7,7 @@ namespace RestaurantOrderManagement.Data.Models
         public int ProductId { get; set; }
         public int Quantity { get; set; } = 1;
 
-        public Menu Menu { get; set; }
-        public Product Product { get; set; }
+        public Menu Menu { get; set; } = null!;
+        public Product Product { get; set; } = null!;
     }
 }

@@ -10,11 +10,13 @@ namespace RestaurantOrderManagement.Views
             InitializeComponent();
         }
 
-        private void OnCategorySelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void OnCategorySelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DataContext is MenuBrowseViewModel viewModel)
+            if (DataContext is MenuBrowseViewModel viewModel &&
+                !viewModel.IsLoading &&
+                e.AddedItems.Count > 0)
             {
-                viewModel.LoadProductsByCategoryCommand.ExecuteAsync(null);
+                await viewModel.LoadMenuAsync();
             }
         }
     }

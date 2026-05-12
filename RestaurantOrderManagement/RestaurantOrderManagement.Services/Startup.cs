@@ -14,7 +14,11 @@ namespace RestaurantOrderManagement.Services
         {
             // Configure DbContext
             services.AddDbContext<RestaurantDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(connectionString, sqlOptions =>
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorNumbersToAdd: null)));
 
             // Register repositories
             services.AddScoped<ProductRepository>();

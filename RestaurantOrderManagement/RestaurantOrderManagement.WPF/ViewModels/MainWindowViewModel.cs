@@ -85,20 +85,22 @@ namespace RestaurantOrderManagement.ViewModels
             _productManagementViewModel = productManagementViewModel;
             _inventoryViewModel = inventoryViewModel;
             _reportsViewModel = reportsViewModel;
+            _productManagementViewModel.CatalogChanged += OnCatalogChanged;
 
             _allNavigationItems = new List<NavigationItemViewModel>
             {
-                new("Restaurant Menu", "Categories, dishes, menus, prices, portions and allergens.", NavigationAccess.Public, _menuBrowseViewModel, _menuBrowseViewModel.RefreshAsync),
-                new("Search Menu", "Keyword and allergen based filtering grouped by category.", NavigationAccess.Public, _searchViewModel),
-                new("Create Account", "Register a new client account.", NavigationAccess.AnonymousOnly, _registrationViewModel),
-                new("Place Order", "Review cart and submit a food order.", NavigationAccess.Client, _orderCartViewModel),
-                new("My Orders", "Track active orders and cancel eligible ones.", NavigationAccess.Client, _orderHistoryViewModel, _orderHistoryViewModel.LoadUserOrdersAsync),
-                new("Manage Orders", "View active restaurant orders and update status.", NavigationAccess.Employee, _orderManagementViewModel, _orderManagementViewModel.LoadAllOrdersAsync),
-                new("Products & Categories", "Create, update and remove menu catalog records.", NavigationAccess.Employee, _productManagementViewModel, _productManagementViewModel.LoadProductsAndCategoriesAsync),
-                new("Inventory", "Review low-stock dishes and restock quantities.", NavigationAccess.Employee, _inventoryViewModel, _inventoryViewModel.LoadLowStockProductsAsync),
-                new("Reports", "Generate operational and revenue reports.", NavigationAccess.Employee, _reportsViewModel)
+                new("Restaurant Menu", "Browse food, portions, prices.", NavigationAccess.Public, _menuBrowseViewModel, _menuBrowseViewModel.RefreshAsync),
+                new("Search Menu", "Find dishes and allergens.", NavigationAccess.Public, _searchViewModel),
+                new("Create Account", "Register as a client.", NavigationAccess.AnonymousOnly, _registrationViewModel),
+                new("Place Order", "Checkout your cart.", NavigationAccess.Client, _orderCartViewModel),
+                new("My Orders", "Track and cancel orders.", NavigationAccess.Client, _orderHistoryViewModel, _orderHistoryViewModel.LoadUserOrdersAsync),
+                new("Manage Orders", "Update active orders.", NavigationAccess.Employee, _orderManagementViewModel, _orderManagementViewModel.LoadAllOrdersAsync),
+                new("Products", "Manage catalog records.", NavigationAccess.Employee, _productManagementViewModel, _productManagementViewModel.LoadProductsAndCategoriesAsync),
+                new("Inventory", "Review low-stock items.", NavigationAccess.Employee, _inventoryViewModel, _inventoryViewModel.LoadLowStockProductsAsync),
+                new("Reports", "Revenue and operations.", NavigationAccess.Employee, _reportsViewModel, _reportsViewModel.LoadReportsAsync)
             };
 
+            _menuBrowseViewModel.ConfigureCart(_orderCartViewModel, false);
             RebuildNavigation();
         }
 
@@ -106,9 +108,7 @@ namespace RestaurantOrderManagement.ViewModels
 
         private bool CanLogin()
         {
-            return !IsLoggingIn &&
-                   !string.IsNullOrWhiteSpace(LoginEmail) &&
-                   !string.IsNullOrWhiteSpace(LoginPassword);
+            return !IsLoggingIn;
         }
 
         [RelayCommand(CanExecute = nameof(CanLogin))]
@@ -120,12 +120,24 @@ namespace RestaurantOrderManagement.ViewModels
                 LoginErrorMessage = string.Empty;
                 LoginStatusMessage = string.Empty;
 
+                if (IsGuestLogin(LoginEmail))
+                {
+                    ContinueAsGuest();
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(LoginEmail) || string.IsNullOrWhiteSpace(LoginPassword))
+                {
+                    LoginErrorMessage = "Enter email and password, or choose Guest.";
+                    return;
+                }
+
                 var login = await _authenticationService.LoginAsync(LoginEmail.Trim(), LoginPassword);
                 if (!login.Success || !login.UserId.HasValue)
                 {
                     LoginErrorMessage = string.IsNullOrWhiteSpace(login.Message)
                         ? "Sign in failed."
-                        : login.Message;
+                        : ViewModelErrorMessages.FromServiceMessage("Sign in failed", login.Message);
                     return;
                 }
 
@@ -144,12 +156,30 @@ namespace RestaurantOrderManagement.ViewModels
             }
             catch (Exception ex)
             {
-                LoginErrorMessage = $"Sign in error: {ex.Message}";
+                LoginErrorMessage = ViewModelErrorMessages.FromException("Sign in failed", ex);
             }
             finally
             {
                 IsLoggingIn = false;
             }
+        }
+
+        [RelayCommand]
+        private void ContinueAsGuest()
+        {
+            CurrentUserId = null;
+            CurrentRole = "Guest";
+            CurrentUserDisplay = "Guest";
+            IsAuthenticated = false;
+            IsClient = false;
+            IsEmployee = false;
+            LoginEmail = string.Empty;
+            LoginPassword = string.Empty;
+            LoginErrorMessage = string.Empty;
+            LoginStatusMessage = "Browsing as guest.";
+            _menuBrowseViewModel.ConfigureCart(_orderCartViewModel, false);
+
+            RebuildNavigation();
         }
 
         [RelayCommand]
@@ -164,6 +194,7 @@ namespace RestaurantOrderManagement.ViewModels
             LoginPassword = string.Empty;
             LoginStatusMessage = "Signed out.";
             LoginErrorMessage = string.Empty;
+            _menuBrowseViewModel.ConfigureCart(_orderCartViewModel, false);
 
             RebuildNavigation();
         }
@@ -231,7 +262,12 @@ namespace RestaurantOrderManagement.ViewModels
             if (IsClient)
             {
                 _orderCartViewModel.InitializeCart(userId, string.Empty);
+                _menuBrowseViewModel.ConfigureCart(_orderCartViewModel, true);
                 _orderHistoryViewModel.Initialize(userId);
+            }
+            else
+            {
+                _menuBrowseViewModel.ConfigureCart(_orderCartViewModel, false);
             }
         }
 
@@ -246,8 +282,27 @@ namespace RestaurantOrderManagement.ViewModels
             }
             catch (Exception ex)
             {
-                LoginErrorMessage = $"Could not load {item.Title}: {ex.Message}";
+                LoginErrorMessage = ViewModelErrorMessages.FromException($"Could not load {item.Title}", ex);
             }
+        }
+
+        private async void OnCatalogChanged(object? sender, EventArgs e)
+        {
+            try
+            {
+                await _menuBrowseViewModel.RefreshAsync();
+            }
+            catch (Exception ex)
+            {
+                LoginErrorMessage = ViewModelErrorMessages.FromException("Could not refresh restaurant menu", ex);
+            }
+        }
+
+        private static bool IsGuestLogin(string email)
+        {
+            var normalized = email.Trim();
+            return string.Equals(normalized, "guest", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(normalized, "guest@local", StringComparison.OrdinalIgnoreCase);
         }
     }
 

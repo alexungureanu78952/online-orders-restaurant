@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="700"
         d:DesignWidth="1000"
-             Background="#F5F5F5">
+             Background="#FFF3DF">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -17,20 +17,20 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0"
-                Background="#2C3E50">
+                Background="#D62300">
             <TextBlock Text="Order History"
                     FontSize="28"
                     FontWeight="Bold"
-                    Foreground="White"/>
+                    Foreground="#FFF3DF"/>
             <TextBlock Text="View and manage your orders"
                     FontSize="14"
-                    Foreground="#ECF0F1"
+                    Foreground="#FFE6C7"
                     Margin="0,5,0,0"/>
         </StackPanel>
 
         <!-- Filters and Actions -->
         <Grid Grid.Row="1"
-                Background="White"
+                Background="#FFFDF7"
                 Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -45,36 +45,49 @@
             <TextBlock Text="Filter:"
                     FontSize="12"
                     FontWeight="Bold"
+                    Foreground="#502314"
                     VerticalAlignment="Center"
                     Grid.Column="0"
                     Margin="0,0,10,0"/>
 
             <!-- Filter Buttons -->
             <Button Content="All Orders"
-                    Background="{Binding StatusFilter, Converter={StaticResource StringEqualsConverter}, ConverterParameter=all, StringFormat={}, FallbackValue=#3498DB}"
-                    Foreground="White"
+                    Background="#502314"
+                    Foreground="#FFF3DF"
                     Padding="10,6"
                     Margin="0,0,5,0"
                     Grid.Column="1"
-                    Command="{Binding}"
-                    Tag="all"/>
+                    Command="{Binding SetStatusFilterCommand}"
+                    CommandParameter="all"/>
             <Button Content="Active"
-                    Background="#F39C12"
-                    Foreground="White"
+                    Background="#FFAA00"
+                    Foreground="#502314"
                     Padding="10,6"
                     Margin="0,0,5,0"
-                    Grid.Column="2"/>
+                    Grid.Column="2"
+                    Command="{Binding SetStatusFilterCommand}"
+                    CommandParameter="active"/>
             <Button Content="Completed"
-                    Background="#27AE60"
-                    Foreground="White"
+                    Background="#198754"
+                    Foreground="#FFF3DF"
                     Padding="10,6"
                     Margin="0,0,5,0"
-                    Grid.Column="3"/>
+                    Grid.Column="3"
+                    Command="{Binding SetStatusFilterCommand}"
+                    CommandParameter="completed"/>
+            <Button Content="Cancelled"
+                    Background="#8A4B2A"
+                    Foreground="#FFF3DF"
+                    Padding="10,6"
+                    HorizontalAlignment="Left"
+                    Grid.Column="4"
+                    Command="{Binding SetStatusFilterCommand}"
+                    CommandParameter="cancelled"/>
 
             <!-- Refresh Button -->
             <Button Content="Refresh"
-                    Background="#3498DB"
-                    Foreground="White"
+                    Background="#D62300"
+                    Foreground="#FFF3DF"
                     Padding="15,6"
                     HorizontalAlignment="Right"
                     Grid.Column="5"
@@ -91,37 +104,37 @@
 
             <!-- Orders List Panel -->
             <ListBox Grid.Column="0"
-                    ItemsSource="{Binding UserOrders}"
+                    ItemsSource="{Binding FilteredOrders}"
                     SelectedItem="{Binding SelectedOrder}"
-                     Background="White"
-                    BorderBrush="#E0E0E0"
+                     Background="#FFFDF7"
+                    BorderBrush="#F1C27D"
                     BorderThickness="1"
                     Margin="0,0,10,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="White"
-                                BorderBrush="#E0E0E0"
+                        <Border Background="#FFFDF7"
+                                BorderBrush="#F1C27D"
                                 BorderThickness="1"
                                 Padding="12"
                                 Margin="0,0,0,8"
-                                CornerRadius="4">
+                                CornerRadius="18">
                             <StackPanel>
                                 <!-- Order Code -->
                                 <TextBlock Text="{Binding OrderCode}"
                                         FontSize="14"
                                         FontWeight="Bold"
-                                        Foreground="#2C3E50"/>
+                                        Foreground="#502314"/>
 
                                 <!-- Order Date -->
                                 <TextBlock Text="{Binding OrderDate, StringFormat='Date: {0:g}'}"
                                         FontSize="11"
-                                        Foreground="#7F8C8D"
+                                        Foreground="#8A4B2A"
                                         Margin="0,5,0,5"/>
 
                                 <!-- Status -->
-                                <Border Background="#ECF0F1"
+                                <Border Background="#FFE6C7"
                                         Padding="5,3"
-                                        CornerRadius="3"
+                                        CornerRadius="10"
                                         Width="Auto"
                                         HorizontalAlignment="Left">
                                     <TextBlock FontSize="10"
@@ -136,7 +149,7 @@
                                 <TextBlock Text="{Binding TotalCost, StringFormat='Total: {0:C}'}"
                                         FontSize="12"
                                         FontWeight="Bold"
-                                        Foreground="#27AE60"
+                                        Foreground="#D62300"
                                         Margin="0,8,0,0"/>
                             </StackPanel>
                         </Border>
@@ -147,14 +160,14 @@
             <!-- Order Details Panel -->
             <ScrollViewer Grid.Column="1"
                     VerticalScrollBarVisibility="Auto"
-                    Background="White">
+                    Background="#FFFDF7">
                 <StackPanel
                         Visibility="{Binding SelectedOrder, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                     <!-- Success Message -->
                     <Border Background="#D4EDDA"
                             BorderBrush="#28A745"
                             BorderThickness="1"
-                            CornerRadius="4"
+                            CornerRadius="14"
                             Padding="12"
                             Margin="0,0,0,15"
                             Visibility="{Binding SuccessMessage, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
@@ -168,7 +181,7 @@
                     <Border Background="#F8D7DA"
                             BorderBrush="#DC3545"
                             BorderThickness="1"
-                            CornerRadius="4"
+                            CornerRadius="14"
                             Padding="12"
                             Margin="0,0,0,15"
                             Visibility="{Binding ErrorMessage, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
@@ -182,7 +195,7 @@
                     <TextBlock Text="{Binding SelectedOrder.OrderCode, StringFormat='Order: {0}'}"
                             FontSize="18"
                             FontWeight="Bold"
-                            Foreground="#2C3E50"
+                            Foreground="#502314"
                             Margin="0,0,0,15"/>
 
                     <!-- Order Details Grid -->
@@ -205,12 +218,12 @@
                         <TextBlock Text="Order Date:"
                                 FontSize="11"
                                 FontWeight="Bold"
-                                Foreground="#7F8C8D"
+                                Foreground="#8A4B2A"
                                 Grid.Row="0"
                                 Grid.Column="0"/>
                         <TextBlock Text="{Binding SelectedOrder.OrderDate, StringFormat='{}{0:g} }'}"
                                 FontSize="11"
-                                Foreground="#34495E"
+                                Foreground="#502314"
                                 Grid.Row="0"
                                 Grid.Column="1"/>
 
@@ -218,13 +231,13 @@
                         <TextBlock Text="Status:"
                                 FontSize="11"
                                 FontWeight="Bold"
-                                Foreground="#7F8C8D"
+                                Foreground="#8A4B2A"
                                 Grid.Row="1"
                                 Grid.Column="0"
                                 Margin="0,10,0,0"/>
                         <TextBlock Text="{Binding SelectedOrder.Status}"
                                 FontSize="11"
-                                Foreground="#34495E"
+                                Foreground="#502314"
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 Margin="0,10,0,0"
@@ -234,13 +247,13 @@
                         <TextBlock Text="Address:"
                                 FontSize="11"
                                 FontWeight="Bold"
-                                Foreground="#7F8C8D"
+                                Foreground="#8A4B2A"
                                 Grid.Row="2"
                                 Grid.Column="0"
                                 Margin="0,10,0,0"/>
                         <TextBlock Text="{Binding SelectedOrder.DeliveryAddress}"
                                 FontSize="11"
-                                Foreground="#34495E"
+                                Foreground="#502314"
                                 Grid.Row="2"
                                 Grid.Column="1"
                                 Margin="0,10,0,0"
@@ -250,13 +263,13 @@
                         <TextBlock Text="Est. Delivery:"
                                 FontSize="11"
                                 FontWeight="Bold"
-                                Foreground="#7F8C8D"
+                                Foreground="#8A4B2A"
                                 Grid.Row="3"
                                 Grid.Column="0"
                                 Margin="0,10,0,0"/>
                         <TextBlock Text="{Binding SelectedOrder.EstimatedDeliveryTime, StringFormat='{}{0:g} }'}"
                                 FontSize="11"
-                                Foreground="#34495E"
+                                Foreground="#502314"
                                 Grid.Row="3"
                                 Grid.Column="1"
                                 Margin="0,10,0,0"/>
@@ -265,13 +278,13 @@
                         <TextBlock Text="Subtotal:"
                                 FontSize="11"
                                 FontWeight="Bold"
-                                Foreground="#7F8C8D"
+                                Foreground="#8A4B2A"
                                 Grid.Row="4"
                                 Grid.Column="0"
                                 Margin="0,15,0,0"/>
                         <TextBlock Text="{Binding SelectedOrder.SubTotal, StringFormat='{}{0:C} }'}"
                                 FontSize="11"
-                                Foreground="#34495E"
+                                Foreground="#502314"
                                 Grid.Row="4"
                                 Grid.Column="1"
                                 Margin="0,15,0,0"/>
@@ -280,19 +293,19 @@
                         <TextBlock Text="Shipping:"
                                 FontSize="11"
                                 FontWeight="Bold"
-                                Foreground="#7F8C8D"
+                                Foreground="#8A4B2A"
                                 Grid.Row="5"
                                 Grid.Column="0"
                                 Margin="0,5,0,0"/>
                         <TextBlock Text="{Binding SelectedOrder.ShippingFee, StringFormat='{}{0:C} }'}"
                                 FontSize="11"
-                                Foreground="#34495E"
+                                Foreground="#502314"
                                 Grid.Row="5"
                                 Grid.Column="1"
                                 Margin="0,5,0,0"/>
 
                         <!-- Total -->
-                        <Rectangle Height="1" Fill="#E0E0E0"
+                        <Rectangle Height="1" Fill="#F1C27D"
                                 Grid.Row="6"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
@@ -302,38 +315,43 @@
                     <TextBlock Text="{Binding SelectedOrder.TotalCost, StringFormat='Total: {0:C}'}"
                             FontSize="14"
                             FontWeight="Bold"
-                            Foreground="#27AE60"
+                            Foreground="#D62300"
                             Margin="0,0,0,20"/>
 
                     <!-- Order Items -->
                     <TextBlock Text="Items:"
                             FontSize="12"
                             FontWeight="Bold"
-                            Foreground="#2C3E50"
+                            Foreground="#502314"
                             Margin="0,0,0,10"/>
                     <ItemsControl ItemsSource="{Binding SelectedOrder.OrderItems}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Background="#ECF0F1"
+                                <Grid Background="#FFE6C7"
                                         Margin="0,0,0,5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="60"/>
                                         <ColumnDefinition Width="80"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Product.Name}"
-                                            FontSize="11"
-                                            Foreground="#2C3E50"
-                                            Grid.Column="0"/>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{Binding DisplayName}"
+                                                FontSize="11"
+                                                FontWeight="Bold"
+                                                Foreground="#502314"/>
+                                        <TextBlock Text="{Binding ItemType}"
+                                                FontSize="10"
+                                                Foreground="#8A4B2A"/>
+                                    </StackPanel>
                                     <TextBlock Text="{Binding Quantity, StringFormat='Qty: {0}'}"
                                             FontSize="11"
-                                            Foreground="#7F8C8D"
+                                            Foreground="#8A4B2A"
                                             Grid.Column="1"
                                             TextAlignment="Right"/>
                                     <TextBlock Text="{Binding ItemTotal, StringFormat='{}{0:C} }'}"
                                             FontSize="11"
                                             FontWeight="Bold"
-                                            Foreground="#27AE60"
+                                            Foreground="#D62300"
                                             Grid.Column="2"
                                             TextAlignment="Right"/>
                                 </Grid>
@@ -343,8 +361,8 @@
 
                     <!-- Cancel Button -->
                     <Button Content="Cancel Order"
-                            Background="#E74C3C"
-                            Foreground="White"
+                            Background="#D62300"
+                            Foreground="#FFF3DF"
                             Padding="15,10"
                             Margin="0,20,0,0"
                             HorizontalAlignment="Left"
@@ -359,7 +377,7 @@
         <TextBlock Grid.Row="2"
                 Text="Loading orders..."
                 FontSize="14"
-                Foreground="#3498DB"
+                Foreground="#D62300"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"
                    Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"/>
@@ -368,7 +386,7 @@
         <TextBlock Grid.Row="2"
                 Text="No orders found. Start by placing an order!"
                 FontSize="14"
-                Foreground="#7F8C8D"
+                Foreground="#8A4B2A"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"
                    Visibility="{Binding UserOrders.Count, Converter={StaticResource ZeroToVisibilityConverter}, FallbackValue=Collapsed}"/>

@@ -57,32 +57,32 @@
                     Padding="12,6"
                     Margin="0,0,5,0"
                     Grid.Column="1"
-                    Command="{Binding}"
-                    Tag="active"/>
+                    Command="{Binding SetStatusFilterCommand}"
+                    CommandParameter="active"/>
             <Button Content="All Orders"
                     Background="#95A5A6"
                     Foreground="White"
                     Padding="12,6"
                     Margin="0,0,5,0"
                     Grid.Column="2"
-                    Command="{Binding}"
-                    Tag="all"/>
+                    Command="{Binding SetStatusFilterCommand}"
+                    CommandParameter="all"/>
             <Button Content="Delivered"
                     Background="#27AE60"
                     Foreground="White"
                     Padding="12,6"
                     Margin="0,0,5,0"
                     Grid.Column="3"
-                    Command="{Binding}"
-                    Tag="livrata"/>
+                    Command="{Binding SetStatusFilterCommand}"
+                    CommandParameter="livrata"/>
             <Button Content="Cancelled"
                     Background="#E74C3C"
                     Foreground="White"
                     Padding="12,6"
                     Margin="0,0,5,0"
                     Grid.Column="4"
-                    Command="{Binding}"
-                    Tag="anulata"/>
+                    Command="{Binding SetStatusFilterCommand}"
+                    CommandParameter="anulata"/>
 
             <!-- Refresh Button -->
             <Button Content="Refresh"
@@ -444,15 +444,18 @@
                                         <ColumnDefinition Width="90"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="{Binding Product.Name}"
+                                        <TextBlock Text="{Binding DisplayName}"
                                                 FontSize="11"
                                                 FontWeight="Bold"
                                                 Foreground="#2C3E50"/>
+                                        <TextBlock Text="{Binding ItemType}"
+                                                FontSize="10"
+                                                Foreground="#7F8C8D"/>
                                         <TextBlock Text="{Binding UnitPrice, StringFormat='@{0:C}/unit'}"
                                                 FontSize="10"
                                                 Foreground="#7F8C8D"/>
                                     </StackPanel>
-                                    <TextBlock Text="{Binding Quantity, StringFormat='{}{0}g'}"
+                                    <TextBlock Text="{Binding Quantity, StringFormat='{}{0} buc'}"
                                             FontSize="11"
                                             Foreground="#7F8C8D"
                                             Grid.Column="1"

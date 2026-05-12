@@ -21,7 +21,7 @@ namespace RestaurantOrderManagement.Data.Repositories
             return await _dbSet.ToListAsync();
         }
 
-        public virtual async Task<T> GetByIdAsync(int id)
+        public virtual async Task<T?> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
@@ -37,10 +37,10 @@ namespace RestaurantOrderManagement.Data.Repositories
             return entity;
         }
 
-        public virtual async Task<T> UpdateAsync(T entity)
+        public virtual Task<T> UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
-            return entity;
+            return Task.FromResult(entity);
         }
 
         public virtual async Task<bool> DeleteAsync(int id)

@@ -6,10 +6,6 @@ using System.Collections.ObjectModel;
 
 namespace RestaurantOrderManagement.WPF.ViewModels
 {
-    /// <summary>
-    /// MVVM ViewModel for inventory management
-    /// Allows employees to view low-stock products and perform restock operations
-    /// </summary>
     public partial class InventoryViewModel : ObservableObject
     {
         private readonly IInventoryService _inventoryService;
@@ -18,10 +14,10 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         private ObservableCollection<Product> lowStockProducts = new();
 
         [ObservableProperty]
-        private Product selectedProduct;
+        private Product? selectedProduct;
 
         [ObservableProperty]
-        private int restockQuantity = 500; // Default restock quantity in grams
+        private int restockQuantity = 500;
 
         [ObservableProperty]
         private bool isLoading;
@@ -33,16 +29,25 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         private string successMessage = string.Empty;
 
         [ObservableProperty]
-        private int lowStockThreshold = 500; // Default, will be loaded from config
+        private int lowStockThreshold = 500;
 
         public InventoryViewModel(IInventoryService inventoryService)
         {
             _inventoryService = inventoryService;
         }
 
-        /// <summary>
-        /// Load low-stock products and threshold
-        /// </summary>
+        public int ProjectedRestockQuantity => (SelectedProduct?.TotalQuantity ?? 0) + RestockQuantity;
+
+        partial void OnSelectedProductChanged(Product? value)
+        {
+            OnPropertyChanged(nameof(ProjectedRestockQuantity));
+        }
+
+        partial void OnRestockQuantityChanged(int value)
+        {
+            OnPropertyChanged(nameof(ProjectedRestockQuantity));
+        }
+
         [RelayCommand]
         public async Task LoadLowStockProductsAsync()
         {
@@ -51,10 +56,8 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 IsLoading = true;
                 ClearMessages();
 
-                // Load threshold from configuration
                 LowStockThreshold = await _inventoryService.GetLowStockThresholdAsync();
 
-                // Load low-stock products
                 var products = await _inventoryService.GetLowStockProductsAsync();
                 LowStockProducts.Clear();
                 foreach (var product in products.OrderBy(p => p.TotalQuantity))
@@ -77,9 +80,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Restock selected product
-        /// </summary>
         [RelayCommand]
         public async Task RestockProductAsync()
         {
@@ -105,10 +105,9 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 {
                     SuccessMessage = $"{restocked.Name} restocked by {RestockQuantity}g. New quantity: {restocked.TotalQuantity}g";
 
-                    // Refresh the list to show updated quantities
                     await LoadLowStockProductsAsync();
                     SelectedProduct = null;
-                    RestockQuantity = 500; // Reset to default
+                    RestockQuantity = 500;
                 }
                 else
                 {
@@ -125,9 +124,15 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Get stock status display text
-        /// </summary>
+        [RelayCommand]
+        public void SetRestockQuantity(string quantity)
+        {
+            if (int.TryParse(quantity, out var parsedQuantity) && parsedQuantity > 0)
+            {
+                RestockQuantity = parsedQuantity;
+            }
+        }
+
         public string GetStockStatusDisplay(int currentQuantity, int threshold)
         {
             if (currentQuantity == 0)
@@ -140,34 +145,25 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 return "Adequate";
         }
 
-        /// <summary>
-        /// Get stock status color for UI
-        /// </summary>
         public string GetStockStatusColor(int currentQuantity, int threshold)
         {
             if (currentQuantity == 0)
-                return "#E74C3C"; // Red - out of stock
+                return "#E74C3C";
             else if (currentQuantity < threshold / 2)
-                return "#C0392B"; // Dark red - critical
+                return "#C0392B";
             else if (currentQuantity < threshold)
-                return "#E67E22"; // Orange - low
+                return "#E67E22";
             else
-                return "#27AE60"; // Green - adequate
+                return "#27AE60";
         }
 
-        /// <summary>
-        /// Get stock percentage for progress bar
-        /// </summary>
         public double GetStockPercentage(int currentQuantity, int threshold)
         {
             if (threshold <= 0) return 0;
             var percentage = (double)currentQuantity / threshold * 100;
-            return Math.Min(percentage, 100); // Cap at 100%
+            return Math.Min(percentage, 100);
         }
 
-        /// <summary>
-        /// Format quantity for display
-        /// </summary>
         public string FormatQuantity(int quantity)
         {
             return $"{quantity}g";

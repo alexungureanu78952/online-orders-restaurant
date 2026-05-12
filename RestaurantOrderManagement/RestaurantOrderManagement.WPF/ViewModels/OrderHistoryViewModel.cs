@@ -6,10 +6,6 @@ using System.Collections.ObjectModel;
 
 namespace RestaurantOrderManagement.WPF.ViewModels
 {
-    /// <summary>
-    /// MVVM ViewModel for order history and order tracking
-    /// Allows clients to view past orders and active orders, and cancel active orders
-    /// </summary>
     public partial class OrderHistoryViewModel : ObservableObject
     {
         private readonly IOrderService _orderService;
@@ -19,10 +15,13 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         private ObservableCollection<Order> userOrders = new();
 
         [ObservableProperty]
-        private Order selectedOrder;
+        private ObservableCollection<Order> filteredOrders = new();
 
         [ObservableProperty]
-        private string statusFilter = "all"; // all, active, completed, cancelled
+        private Order? selectedOrder;
+
+        [ObservableProperty]
+        private string statusFilter = "all";
 
         [ObservableProperty]
         private bool isLoading;
@@ -38,18 +37,12 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             _orderService = orderService;
         }
 
-        /// <summary>
-        /// Initialize view model with current user
-        /// </summary>
         public void Initialize(int userId)
         {
             _currentUserId = userId;
             _ = LoadUserOrdersAsync();
         }
 
-        /// <summary>
-        /// Load all orders for current user
-        /// </summary>
         [RelayCommand]
         public async Task LoadUserOrdersAsync()
         {
@@ -65,6 +58,8 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 {
                     UserOrders.Add(order);
                 }
+
+                ApplyStatusFilter();
             }
             catch (Exception ex)
             {
@@ -76,26 +71,18 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Filter orders based on current status filter
-        /// </summary>
-        public IEnumerable<Order> FilteredOrders
+        [RelayCommand]
+        public void SetStatusFilter(string statusFilter)
         {
-            get
-            {
-                return StatusFilter switch
-                {
-                    "active" => UserOrders.Where(o => o.Status != "livrata" && o.Status != "anulata"),
-                    "completed" => UserOrders.Where(o => o.Status == "livrata"),
-                    "cancelled" => UserOrders.Where(o => o.Status == "anulata"),
-                    _ => UserOrders
-                };
-            }
+            StatusFilter = string.IsNullOrWhiteSpace(statusFilter) ? "all" : statusFilter;
+            ApplyStatusFilter();
         }
 
-        /// <summary>
-        /// Cancel selected order
-        /// </summary>
+        partial void OnStatusFilterChanged(string value)
+        {
+            ApplyStatusFilter();
+        }
+
         [RelayCommand]
         public async Task CancelOrderAsync()
         {
@@ -144,9 +131,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Get status display text
-        /// </summary>
         public string GetStatusDisplay(string status)
         {
             return status switch
@@ -160,19 +144,16 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             };
         }
 
-        /// <summary>
-        /// Get status color for UI
-        /// </summary>
         public string GetStatusColor(string status)
         {
             return status switch
             {
-                "inregistrata" => "#3498DB", // Blue
-                "se pregateste" => "#F39C12", // Orange
-                "a plecat la client" => "#E67E22", // Dark Orange
-                "livrata" => "#27AE60", // Green
-                "anulata" => "#E74C3C", // Red
-                _ => "#95A5A6" // Gray
+                "inregistrata" => "#3498DB",
+                "se pregateste" => "#F39C12",
+                "a plecat la client" => "#E67E22",
+                "livrata" => "#27AE60",
+                "anulata" => "#E74C3C",
+                _ => "#95A5A6"
             };
         }
 
@@ -180,6 +161,27 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         {
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
+        }
+
+        private void ApplyStatusFilter()
+        {
+            FilteredOrders.Clear();
+
+            foreach (var order in FilteredOrdersSource())
+            {
+                FilteredOrders.Add(order);
+            }
+        }
+
+        private IEnumerable<Order> FilteredOrdersSource()
+        {
+            return StatusFilter switch
+            {
+                "active" => UserOrders.Where(o => o.Status != "livrata" && o.Status != "anulata"),
+                "completed" => UserOrders.Where(o => o.Status == "livrata"),
+                "cancelled" => UserOrders.Where(o => o.Status == "anulata"),
+                _ => UserOrders
+            };
         }
     }
 }

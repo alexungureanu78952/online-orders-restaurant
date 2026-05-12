@@ -10,26 +10,39 @@ namespace RestaurantOrderManagement.Data.Repositories
         {
         }
 
-        /// <summary>
-        /// Get current configuration using parameterized stored procedure sp_GetConfiguration
-        /// </summary>
+        
         public async Task<Configuration> GetConfigurationAsync()
         {
-            return await _context.Configurations
+            var configuration = await _context.Configurations
                 .FromSqlRaw("EXEC dbo.sp_GetConfiguration")
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
+
+            return configuration ?? new Configuration
+            {
+                MinOrderForFreeShipping = 100,
+                ShippingFee = 15,
+                LargeOrderDiscountThreshold = 200,
+                LargeOrderDiscountPercent = 10,
+                FrequentOrderThreshold = 5,
+                FrequentOrderTimeWindow = 30,
+                FrequentOrderDiscountPercent = 8,
+                LowStockThreshold = 500
+            };
         }
 
-        /// <summary>
-        /// Update configuration using parameterized stored procedure sp_UpdateConfiguration
-        /// </summary>
+        
         public async Task<bool> UpdateConfigurationAsync(decimal? minOrderForFreeShipping, decimal? shippingFee,
             decimal? largeOrderDiscountThreshold, decimal? largeOrderDiscountPercent, int? lowStockThreshold)
         {
-            var result = await _context.Database.ExecuteSqlRawAsync(
+            await _context.Database.ExecuteSqlRawAsync(
                 "EXEC dbo.sp_UpdateConfiguration @MinOrderForFreeShipping = {0}, @ShippingFee = {1}, @LargeOrderDiscountThreshold = {2}, @LargeOrderDiscountPercent = {3}, @LowStockThreshold = {4}",
-                minOrderForFreeShipping, shippingFee, largeOrderDiscountThreshold, largeOrderDiscountPercent, lowStockThreshold);
-            return result > 0;
+                minOrderForFreeShipping ?? (object)DBNull.Value,
+                shippingFee ?? (object)DBNull.Value,
+                largeOrderDiscountThreshold ?? (object)DBNull.Value,
+                largeOrderDiscountPercent ?? (object)DBNull.Value,
+                lowStockThreshold ?? (object)DBNull.Value);
+            return true;
         }
     }
 }

@@ -9,10 +9,6 @@ using RestaurantOrderManagement.Services.Interfaces;
 
 namespace RestaurantOrderManagement.Services.Implementations
 {
-    /// <summary>
-    /// Service for generating business reports
-    /// Uses parameterized stored procedures for data retrieval
-    /// </summary>
     public class ReportService : IReportService
     {
         private readonly RestaurantDbContext _context;
@@ -22,9 +18,6 @@ namespace RestaurantOrderManagement.Services.Implementations
             _context = context;
         }
 
-        /// <summary>
-        /// Get order summary by status for a date range
-        /// </summary>
         public async Task<IEnumerable<OrderSummaryDto>> GetOrderSummaryAsync(DateTime? fromDate = null, DateTime? toDate = null)
         {
             try
@@ -40,9 +33,6 @@ namespace RestaurantOrderManagement.Services.Implementations
             }
         }
 
-        /// <summary>
-        /// Get revenue summary by status for a date range
-        /// </summary>
         public async Task<IEnumerable<RevenueSummaryDto>> GetRevenueSummaryAsync(DateTime? fromDate = null, DateTime? toDate = null)
         {
             try
@@ -58,9 +48,6 @@ namespace RestaurantOrderManagement.Services.Implementations
             }
         }
 
-        /// <summary>
-        /// Get current inventory levels by category
-        /// </summary>
         public async Task<IEnumerable<InventorySummaryDto>> GetInventorySummaryAsync()
         {
             try
@@ -73,9 +60,6 @@ namespace RestaurantOrderManagement.Services.Implementations
             }
         }
 
-        /// <summary>
-        /// Get detailed orders for a date range with customer and revenue info
-        /// </summary>
         public async Task<IEnumerable<OrderDetailDto>> GetOrderDetailsByDateRangeAsync(DateTime? fromDate = null, DateTime? toDate = null)
         {
             try
@@ -91,9 +75,6 @@ namespace RestaurantOrderManagement.Services.Implementations
             }
         }
 
-        /// <summary>
-        /// Calculate total revenue for a date range
-        /// </summary>
         public async Task<decimal> GetTotalRevenueAsync(DateTime? fromDate = null, DateTime? toDate = null)
         {
             try
@@ -107,9 +88,6 @@ namespace RestaurantOrderManagement.Services.Implementations
             }
         }
 
-        /// <summary>
-        /// Get order count for a date range
-        /// </summary>
         public async Task<int> GetOrderCountAsync(DateTime? fromDate = null, DateTime? toDate = null)
         {
             try

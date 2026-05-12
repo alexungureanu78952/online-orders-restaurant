@@ -2,56 +2,83 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RestaurantOrderManagement.Services.DTOs;
 using RestaurantOrderManagement.Services.Interfaces;
+using RestaurantOrderManagement.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RestaurantOrderManagement.ViewModels
 {
-    /// <summary>
-    /// ViewModel for menu browsing view
-    /// Manages categories and products, exposing only DTOs (no internal IDs)
-    /// </summary>
     public partial class MenuBrowseViewModel : BaseViewModel
     {
         private readonly IProductService _productService;
+        private OrderCartViewModel? _orderCartViewModel;
+        private readonly SemaphoreSlim _loadGate = new(1, 1);
 
         [ObservableProperty]
         private ObservableCollection<CategoryDTO> categories = new();
 
         [ObservableProperty]
-        private ObservableCollection<ProductDTO> productsByCategory = new();
+        private ObservableCollection<RestaurantMenuGroupDTO> menuGroups = new();
 
         [ObservableProperty]
-        private CategoryDTO selectedCategory;
+        private string searchQuery = string.Empty;
+
+        [ObservableProperty]
+        private int resultCount;
+
+        [ObservableProperty]
+        private CategoryDTO? selectedCategory;
 
         [ObservableProperty]
         private bool isLoading = false;
 
         [ObservableProperty]
-        private string errorMessage;
+        private string errorMessage = string.Empty;
+
+        [ObservableProperty]
+        private string cartStatusMessage = string.Empty;
+
+        [ObservableProperty]
+        private bool canAddItems;
+
+        private static readonly CategoryDTO AllCategories = new()
+        {
+            Name = "Toate categoriile",
+            Description = "Afiseaza toate preparatele si meniurile",
+            IsActive = true
+        };
 
         public MenuBrowseViewModel(IProductService productService)
         {
             _productService = productService;
         }
 
-        /// <summary>
-        /// Load all categories
-        /// </summary>
+        public void ConfigureCart(OrderCartViewModel orderCartViewModel, bool canAddItems)
+        {
+            _orderCartViewModel = orderCartViewModel;
+            CanAddItems = canAddItems;
+            CartStatusMessage = canAddItems
+                ? "Alege preparate sau meniuri si adauga-le in cos."
+                : string.Empty;
+        }
+
         [RelayCommand]
         public async Task LoadCategoriesAsync()
         {
+            await _loadGate.WaitAsync();
             try
             {
                 IsLoading = true;
                 ErrorMessage = string.Empty;
 
-                var categories = await _productService.GetCategoriesAsync();
-                Categories = new ObservableCollection<CategoryDTO>(categories);
+                var categories = (await _productService.GetCategoriesAsync()).ToList();
+                Categories = new ObservableCollection<CategoryDTO>(
+                    new[] { AllCategories }.Concat(categories));
 
-                // Auto-select first category
                 if (Categories.Count > 0)
                 {
                     SelectedCategory = Categories[0];
@@ -59,108 +86,109 @@ namespace RestaurantOrderManagement.ViewModels
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Failed to load categories: {ex.Message}";
+                ErrorMessage = ViewModelErrorMessages.FromException("Failed to load categories", ex);
             }
             finally
             {
                 IsLoading = false;
+                _loadGate.Release();
             }
         }
 
-        /// <summary>
-        /// Load products for selected category
-        /// </summary>
         [RelayCommand]
-        public async Task LoadProductsByCategoryAsync()
+        public async Task LoadMenuAsync()
         {
-            if (SelectedCategory == null)
-                return;
-
+            await _loadGate.WaitAsync();
             try
             {
                 IsLoading = true;
                 ErrorMessage = string.Empty;
 
-                var products = await _productService.GetProductsByCategoryAsync(SelectedCategory.Name);
-                ProductsByCategory = new ObservableCollection<ProductDTO>(products);
+                var categoryName = SelectedCategory?.Name == AllCategories.Name ? null : SelectedCategory?.Name;
+                var groups = await _productService.GetRestaurantMenuAsync(categoryName, SearchQuery);
+                MenuGroups = new ObservableCollection<RestaurantMenuGroupDTO>(groups);
+                ResultCount = MenuGroups.Sum(group => group.ItemCount);
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Failed to load products: {ex.Message}";
-                ProductsByCategory.Clear();
+                ErrorMessage = ViewModelErrorMessages.FromException("Failed to load menu", ex);
+                MenuGroups.Clear();
+                ResultCount = 0;
             }
             finally
             {
                 IsLoading = false;
+                _loadGate.Release();
             }
         }
 
-        /// <summary>
-        /// Refresh menu data
-        /// </summary>
         [RelayCommand]
         public async Task RefreshAsync()
         {
-            ProductsByCategory.Clear();
+            MenuGroups.Clear();
             await LoadCategoriesAsync();
             if (SelectedCategory != null)
             {
-                await LoadProductsByCategoryAsync();
+                await LoadMenuAsync();
             }
         }
 
-        /// <summary>
-        /// Search products by keyword
-        /// </summary>
         [RelayCommand]
-        public async Task SearchProductsAsync(string keyword)
+        public async Task ApplyFiltersAsync()
         {
-            if (string.IsNullOrWhiteSpace(keyword))
+            await LoadMenuAsync();
+        }
+
+        [RelayCommand]
+        public async Task ClearSearchAsync()
+        {
+            SearchQuery = string.Empty;
+            await LoadMenuAsync();
+        }
+
+        [RelayCommand]
+        public void AddMenuItemToCart(RestaurantMenuItemDTO item)
+        {
+            if (!CanAddItems || _orderCartViewModel == null)
             {
-                await LoadProductsByCategoryAsync();
+                CartStatusMessage = "Autentifica-te ca si client pentru a comanda.";
                 return;
             }
 
-            try
-            {
-                IsLoading = true;
-                ErrorMessage = string.Empty;
+            if (item == null)
+                return;
 
-                var products = await _productService.SearchProductsAsync(keyword);
-                ProductsByCategory = new ObservableCollection<ProductDTO>(products);
-            }
-            catch (Exception ex)
+            if (!item.IsAvailable)
             {
-                ErrorMessage = $"Search failed: {ex.Message}";
-                ProductsByCategory.Clear();
+                CartStatusMessage = $"{item.Name} este indisponibil.";
+                return;
             }
-            finally
+
+            if (string.IsNullOrWhiteSpace(item.OrderKey))
             {
-                IsLoading = false;
+                CartStatusMessage = "Acest item nu poate fi comandat momentan.";
+                return;
             }
+
+            _orderCartViewModel.AddMenuItem(item);
+            CartStatusMessage = $"{item.Name} a fost adaugat in cos.";
         }
 
-        /// <summary>
-        /// Validate that no ID fields are exposed in DTOs
-        /// </summary>
         public void ValidateNoIdsExposed()
         {
-            // Verify Categories contain no ID fields
             foreach (var cat in Categories)
             {
-                // CategoryDTO should not have CategoryId property
                 var idProperty = cat.GetType().GetProperty("CategoryId");
                 if (idProperty != null)
                     throw new InvalidOperationException("CategoryDTO should not expose CategoryId");
             }
 
-            // Verify Products contain no ProductId field
-            foreach (var prod in ProductsByCategory)
+            foreach (var item in MenuGroups.SelectMany(group => group.Items))
             {
-                // ProductDTO should only have DisplayCode, not ProductId
-                var idProperty = prod.GetType().GetProperty("ProductId");
+                var idProperty = item.GetType().GetProperties()
+                    .FirstOrDefault(property => property.Name.EndsWith("Id", StringComparison.OrdinalIgnoreCase));
                 if (idProperty != null)
-                    throw new InvalidOperationException("ProductDTO should not expose ProductId");
+                    throw new InvalidOperationException("Restaurant menu DTO should not expose database IDs");
             }
         }
     }

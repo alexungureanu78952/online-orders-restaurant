@@ -498,12 +498,16 @@ BEGIN
     SELECT 
         oi.OrderItemId,
         oi.ProductId,
+        oi.MenuId,
+        oi.ItemType,
+        oi.ItemName,
         oi.Quantity,
         oi.UnitPrice,
         oi.ItemTotal,
-        p.[Name] AS ProductName
+        COALESCE(NULLIF(oi.ItemName, ''), p.[Name], m.[Name]) AS ItemDisplayName
     FROM dbo.OrderItem oi
-    INNER JOIN dbo.Product p ON oi.ProductId = p.ProductId
+    LEFT JOIN dbo.Product p ON oi.ProductId = p.ProductId
+    LEFT JOIN dbo.Menu m ON oi.MenuId = m.MenuId
     WHERE oi.OrderId = @OrderId
     ORDER BY oi.OrderItemId;
 END;
@@ -731,12 +735,12 @@ BEGIN
     SELECT 
         [Status],
         COUNT(*) AS OrderCount,
-        AVG(CAST(Total AS DECIMAL(10,2))) AS AvgOrderValue,
-        MIN(CreatedDate) AS FirstOrder,
-        MAX(CreatedDate) AS LastOrder
+        AVG(CAST(TotalCost AS DECIMAL(10,2))) AS AvgOrderValue,
+        MIN(OrderDate) AS FirstOrder,
+        MAX(OrderDate) AS LastOrder
     FROM dbo.[Order]
-    WHERE CreatedDate >= @FromDate
-        AND CreatedDate <= @ToDate
+    WHERE OrderDate >= @FromDate
+        AND OrderDate <= @ToDate
     GROUP BY [Status]
     ORDER BY OrderCount DESC;
 END;
@@ -764,11 +768,11 @@ BEGIN
         CAST(SUM(SubTotal) AS DECIMAL(10,2)) AS TotalSubtotal,
         CAST(SUM(ShippingFee) AS DECIMAL(10,2)) AS TotalShipping,
         CAST(SUM(DiscountAmount) AS DECIMAL(10,2)) AS TotalDiscount,
-        CAST(SUM(Total) AS DECIMAL(10,2)) AS TotalRevenue,
-        CAST(AVG(Total) AS DECIMAL(10,2)) AS AvgOrderTotal
+        CAST(SUM(TotalCost) AS DECIMAL(10,2)) AS TotalRevenue,
+        CAST(AVG(TotalCost) AS DECIMAL(10,2)) AS AvgOrderTotal
     FROM dbo.[Order]
-    WHERE CreatedDate >= @FromDate
-        AND CreatedDate <= @ToDate
+    WHERE OrderDate >= @FromDate
+        AND OrderDate <= @ToDate
     GROUP BY [Status]
     ORDER BY TotalRevenue DESC;
 END;
@@ -822,21 +826,21 @@ BEGIN
         o.OrderCode,
         u.FirstName + ' ' + u.LastName AS CustomerName,
         u.Email,
-        o.CreatedDate,
+        o.OrderDate AS CreatedDate,
         o.[Status],
         o.SubTotal,
         o.ShippingFee,
         o.DiscountAmount,
-        o.Total,
+        o.TotalCost AS Total,
         COUNT(oi.OrderItemId) AS ItemCount
     FROM dbo.[Order] o
     INNER JOIN dbo.[User] u ON o.UserId = u.UserId
     LEFT JOIN dbo.OrderItem oi ON o.OrderId = oi.OrderId
-    WHERE o.CreatedDate >= @FromDate
-        AND o.CreatedDate <= @ToDate
-    GROUP BY o.OrderId, o.OrderCode, u.FirstName, u.LastName, u.Email, o.CreatedDate, o.[Status], 
-             o.SubTotal, o.ShippingFee, o.DiscountAmount, o.Total
-    ORDER BY o.CreatedDate DESC;
+    WHERE o.OrderDate >= @FromDate
+        AND o.OrderDate <= @ToDate
+    GROUP BY o.OrderId, o.OrderCode, u.FirstName, u.LastName, u.Email, o.OrderDate, o.[Status], 
+             o.SubTotal, o.ShippingFee, o.DiscountAmount, o.TotalCost
+    ORDER BY o.OrderDate DESC;
 END;
 GO
 

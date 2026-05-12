@@ -6,10 +6,6 @@ using System.Collections.ObjectModel;
 
 namespace RestaurantOrderManagement.WPF.ViewModels
 {
-    /// <summary>
-    /// MVVM ViewModel for employee order management
-    /// Allows employees to view all orders, filter by status, and update order status
-    /// </summary>
     public partial class OrderManagementViewModel : ObservableObject
     {
         private readonly IOrderService _orderService;
@@ -18,13 +14,13 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         private ObservableCollection<Order> allOrders = new();
 
         [ObservableProperty]
-        private Order selectedOrder;
+        private Order? selectedOrder;
 
         [ObservableProperty]
-        private string statusFilter = "active"; // active, all, pending, preparing, intransit, delivered, cancelled
+        private string statusFilter = "active";
 
         [ObservableProperty]
-        private string newStatusSelection = "se pregateste"; // Status to update to
+        private string newStatusSelection = "se pregateste";
 
         [ObservableProperty]
         private bool isLoading;
@@ -35,14 +31,14 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         [ObservableProperty]
         private string successMessage = string.Empty;
 
-        // Status options for dropdown
         [ObservableProperty]
         private ObservableCollection<string> statusOptions = new(new[]
         {
             "inregistrata",
             "se pregateste",
             "a plecat la client",
-            "livrata"
+            "livrata",
+            "anulata"
         });
 
         public OrderManagementViewModel(IOrderService orderService)
@@ -50,23 +46,31 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             _orderService = orderService;
         }
 
-        /// <summary>
-        /// Load all orders for management
-        /// </summary>
         [RelayCommand]
         public async Task LoadAllOrdersAsync()
+        {
+            await LoadOrdersAsync(clearMessages: true);
+        }
+
+        [RelayCommand]
+        public async Task SetStatusFilterAsync(string filter)
+        {
+            StatusFilter = string.IsNullOrWhiteSpace(filter) ? "active" : filter;
+            await LoadOrdersAsync(clearMessages: true);
+        }
+
+        private async Task LoadOrdersAsync(bool clearMessages)
         {
             try
             {
                 IsLoading = true;
-                ClearMessages();
+                if (clearMessages)
+                    ClearMessages();
 
-                // Load orders based on filter
-                IEnumerable<Order> orders = null;
+                IEnumerable<Order> orders;
 
                 if (StatusFilter == "active")
                 {
-                    // Active orders: not delivered and not cancelled
                     orders = await _orderService.GetAllOrdersAsync(limit: 500);
                     orders = orders.Where(o => o.Status != "livrata" && o.Status != "anulata");
                 }
@@ -96,9 +100,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Update selected order status
-        /// </summary>
         [RelayCommand]
         public async Task UpdateOrderStatusAsync()
         {
@@ -119,15 +120,24 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 IsLoading = true;
                 ClearMessages();
 
-                var updated = await _orderService.UpdateOrderStatusAsync(SelectedOrder.OrderId, NewStatusSelection);
+                var updatedOrderId = SelectedOrder.OrderId;
+                var updatedOrderCode = SelectedOrder.OrderCode;
+                var updatedStatus = NewStatusSelection;
+
+                var updated = await _orderService.UpdateOrderStatusAsync(updatedOrderId, updatedStatus);
                 if (updated)
                 {
-                    SuccessMessage = $"Order {SelectedOrder.OrderCode} updated to {NewStatusSelection}";
+                    var switchedToAllOrders = StatusFilter == "active" && IsTerminalStatus(updatedStatus);
+                    if (switchedToAllOrders)
+                        StatusFilter = "all";
 
-                    // Refresh the list to show updated status
-                    await LoadAllOrdersAsync();
-                    SelectedOrder = null;
-                    NewStatusSelection = "se pregateste";
+                    await LoadOrdersAsync(clearMessages: false);
+                    SelectedOrder = AllOrders.FirstOrDefault(order => order.OrderId == updatedOrderId);
+                    NewStatusSelection = GetNextStatusSelection(SelectedOrder?.Status ?? updatedStatus);
+
+                    SuccessMessage = switchedToAllOrders
+                        ? $"Order {updatedOrderCode} updated to {updatedStatus}. Switched to All Orders so it remains visible."
+                        : $"Order {updatedOrderCode} updated to {updatedStatus}";
                 }
                 else
                 {
@@ -144,9 +154,22 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Get customer display name
-        /// </summary>
+        private static bool IsTerminalStatus(string status)
+        {
+            return status == "livrata" || status == "anulata";
+        }
+
+        private static string GetNextStatusSelection(string currentStatus)
+        {
+            return currentStatus switch
+            {
+                "inregistrata" => "se pregateste",
+                "se pregateste" => "a plecat la client",
+                "a plecat la client" => "livrata",
+                _ => "se pregateste"
+            };
+        }
+
         public string GetCustomerName(Order order)
         {
             return order?.User != null
@@ -154,9 +177,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 : "Unknown";
         }
 
-        /// <summary>
-        /// Get order summary
-        /// </summary>
         public string GetOrderSummary(Order order)
         {
             if (order?.OrderItems == null || order.OrderItems.Count == 0)
@@ -164,12 +184,9 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
             var itemCount = order.OrderItems.Count;
             var itemSum = order.OrderItems.Sum(oi => oi.Quantity);
-            return $"{itemCount} items, {itemSum}g total";
+            return $"{itemCount} items, {itemSum} buc total";
         }
 
-        /// <summary>
-        /// Get status display text
-        /// </summary>
         public string GetStatusDisplay(string status)
         {
             return status switch
@@ -183,32 +200,24 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             };
         }
 
-        /// <summary>
-        /// Get status color for UI
-        /// </summary>
         public string GetStatusColor(string status)
         {
             return status switch
             {
-                "inregistrata" => "#3498DB", // Blue
-                "se pregateste" => "#F39C12", // Orange
-                "a plecat la client" => "#E67E22", // Dark Orange
-                "livrata" => "#27AE60", // Green
-                "anulata" => "#E74C3C", // Red
-                _ => "#95A5A6" // Gray
+                "inregistrata" => "#3498DB",
+                "se pregateste" => "#F39C12",
+                "a plecat la client" => "#E67E22",
+                "livrata" => "#27AE60",
+                "anulata" => "#E74C3C",
+                _ => "#95A5A6"
             };
         }
 
-        /// <summary>
-        /// Check if order can transition to new status
-        /// </summary>
         public bool CanTransitionTo(string currentStatus, string newStatus)
         {
-            // Delivered and cancelled orders cannot be modified
             if (currentStatus == "livrata" || currentStatus == "anulata")
                 return false;
 
-            // Valid transitions
             var validTransitions = new Dictionary<string, List<string>>
             {
                 { "inregistrata", new[] { "se pregateste", "anulata" }.ToList() },

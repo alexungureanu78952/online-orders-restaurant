@@ -11,22 +11,16 @@ using System.Threading.Tasks;
 
 namespace RestaurantOrderManagement.WPF.ViewModels
 {
-    /// <summary>
-    /// MVVM ViewModel for report generation and export
-    /// Allows employees to generate business reports and export to CSV
-    /// </summary>
     public partial class ReportsViewModel : ObservableObject
     {
         private readonly IReportService _reportService;
 
-        // Date Range Selection
         [ObservableProperty]
         private DateTime reportFromDate = DateTime.Now.AddMonths(-1);
 
         [ObservableProperty]
         private DateTime reportToDate = DateTime.Now;
 
-        // Order Summary Report
         [ObservableProperty]
         private ObservableCollection<OrderSummaryDisplay> orderSummaryData = new();
 
@@ -36,7 +30,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         [ObservableProperty]
         private decimal totalOrdersAvgValue = 0;
 
-        // Revenue Summary Report
         [ObservableProperty]
         private ObservableCollection<RevenueSummaryDisplay> revenueSummaryData = new();
 
@@ -49,15 +42,12 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         [ObservableProperty]
         private decimal totalDiscount = 0;
 
-        // Inventory Report
         [ObservableProperty]
         private ObservableCollection<InventorySummaryDisplay> inventorySummaryData = new();
 
-        // Order Details Report
         [ObservableProperty]
         private ObservableCollection<OrderDetailDisplay> orderDetailsData = new();
 
-        // UI State
         [ObservableProperty]
         private bool isLoading;
 
@@ -68,18 +58,23 @@ namespace RestaurantOrderManagement.WPF.ViewModels
         private string successMessage = string.Empty;
 
         [ObservableProperty]
-        private int selectedReportTab = 0; // 0: Order Summary, 1: Revenue, 2: Inventory, 3: Details
+        private int selectedReportTab = 0;
 
         public ReportsViewModel(IReportService reportService)
         {
             _reportService = reportService;
         }
 
-        #region Report Generation Commands
+        [RelayCommand]
+        public async Task LoadReportsAsync()
+        {
+            await GenerateOrderSummaryAsync();
+            await GenerateRevenueSummaryAsync();
+            await GenerateInventorySummaryAsync();
+            await GenerateOrderDetailsAsync();
+            SelectedReportTab = 0;
+        }
 
-        /// <summary>
-        /// Generate order summary report
-        /// </summary>
         [RelayCommand]
         public async Task GenerateOrderSummaryAsync()
         {
@@ -88,7 +83,8 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 IsLoading = true;
                 ClearMessages();
 
-                var summaries = await _reportService.GetOrderSummaryAsync(ReportFromDate, ReportToDate);
+                var (fromDate, toDate) = GetInclusiveReportRange();
+                var summaries = await _reportService.GetOrderSummaryAsync(fromDate, toDate);
                 var summaryList = summaries.ToList();
 
                 OrderSummaryData.Clear();
@@ -105,7 +101,9 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 }
 
                 TotalOrdersCount = summaryList.Sum(s => s.OrderCount);
-                TotalOrdersAvgValue = summaryList.Average(s => s.AvgOrderValue);
+                TotalOrdersAvgValue = summaryList.Count == 0
+                    ? 0
+                    : summaryList.Average(s => s.AvgOrderValue);
 
                 SelectedReportTab = 0;
                 SuccessMessage = $"Order summary loaded: {TotalOrdersCount} orders";
@@ -120,9 +118,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Generate revenue summary report
-        /// </summary>
         [RelayCommand]
         public async Task GenerateRevenueSummaryAsync()
         {
@@ -131,7 +126,8 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 IsLoading = true;
                 ClearMessages();
 
-                var summaries = await _reportService.GetRevenueSummaryAsync(ReportFromDate, ReportToDate);
+                var (fromDate, toDate) = GetInclusiveReportRange();
+                var summaries = await _reportService.GetRevenueSummaryAsync(fromDate, toDate);
                 var summaryList = summaries.ToList();
 
                 RevenueSummaryData.Clear();
@@ -166,9 +162,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Generate inventory summary report
-        /// </summary>
         [RelayCommand]
         public async Task GenerateInventorySummaryAsync()
         {
@@ -208,9 +201,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Generate order details report
-        /// </summary>
         [RelayCommand]
         public async Task GenerateOrderDetailsAsync()
         {
@@ -219,7 +209,8 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 IsLoading = true;
                 ClearMessages();
 
-                var details = await _reportService.GetOrderDetailsByDateRangeAsync(ReportFromDate, ReportToDate);
+                var (fromDate, toDate) = GetInclusiveReportRange();
+                var details = await _reportService.GetOrderDetailsByDateRangeAsync(fromDate, toDate);
 
                 OrderDetailsData.Clear();
                 foreach (var detail in details)
@@ -253,13 +244,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        #endregion
-
-        #region CSV Export Commands
-
-        /// <summary>
-        /// Export order summary to CSV
-        /// </summary>
         [RelayCommand]
         public async Task ExportOrderSummaryToCsvAsync()
         {
@@ -283,9 +267,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Export revenue summary to CSV
-        /// </summary>
         [RelayCommand]
         public async Task ExportRevenueSummaryToCsvAsync()
         {
@@ -309,9 +290,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Export inventory summary to CSV
-        /// </summary>
         [RelayCommand]
         public async Task ExportInventorySummaryToCsvAsync()
         {
@@ -335,9 +313,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        /// <summary>
-        /// Export order details to CSV
-        /// </summary>
         [RelayCommand]
         public async Task ExportOrderDetailsToCsvAsync()
         {
@@ -360,10 +335,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
                 ErrorMessage = $"Failed to export order details: {ex.Message}";
             }
         }
-
-        #endregion
-
-        #region CSV Generation Helpers
 
         private string GenerateOrderSummaryCSV()
         {
@@ -456,10 +427,6 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             return field;
         }
 
-        #endregion
-
-        #region File Operations
-
         private async Task SaveCsvFileAsync(string fileName, string content)
         {
             try
@@ -479,25 +446,30 @@ namespace RestaurantOrderManagement.WPF.ViewModels
             }
         }
 
-        #endregion
-
-        #region Helpers
-
         private void ClearMessages()
         {
             ErrorMessage = string.Empty;
             SuccessMessage = string.Empty;
         }
 
-        #endregion
+        private (DateTime FromDate, DateTime ToDate) GetInclusiveReportRange()
+        {
+            var fromDate = ReportFromDate.Date;
+            var toDate = ReportToDate.Date.AddDays(1).AddTicks(-1);
+
+            if (toDate < fromDate)
+            {
+                (fromDate, toDate) = (toDate.Date, fromDate.Date.AddDays(1).AddTicks(-1));
+            }
+
+            return (fromDate, toDate);
+        }
+
     }
 
-    /// <summary>
-    /// Display DTOs for reports
-    /// </summary>
     public class OrderSummaryDisplay
     {
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         public int OrderCount { get; set; }
         public decimal AvgOrderValue { get; set; }
         public DateTime FirstOrder { get; set; }
@@ -506,7 +478,7 @@ namespace RestaurantOrderManagement.WPF.ViewModels
 
     public class RevenueSummaryDisplay
     {
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         public int OrderCount { get; set; }
         public decimal TotalSubtotal { get; set; }
         public decimal TotalShipping { get; set; }
@@ -518,7 +490,7 @@ namespace RestaurantOrderManagement.WPF.ViewModels
     public class InventorySummaryDisplay
     {
         public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
         public int ProductCount { get; set; }
         public int TotalStock { get; set; }
         public int AvgStockPerProduct { get; set; }
@@ -530,11 +502,11 @@ namespace RestaurantOrderManagement.WPF.ViewModels
     public class OrderDetailDisplay
     {
         public int OrderId { get; set; }
-        public string OrderCode { get; set; }
-        public string CustomerName { get; set; }
-        public string Email { get; set; }
+        public string OrderCode { get; set; } = string.Empty;
+        public string CustomerName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         public decimal SubTotal { get; set; }
         public decimal ShippingFee { get; set; }
         public decimal DiscountAmount { get; set; }
